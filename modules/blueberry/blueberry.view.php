@@ -47,7 +47,8 @@ class blueberryView extends blueberry
 	/**
 	 * @brief display the category list
 	 **/
-	function dispBlueberryList(){
+	function dispBlueberryList()
+	{
 		// check if the use_category option is enabled
 		if($this->module_info->use_category=='Y')
 		{
