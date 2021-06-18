@@ -38,11 +38,7 @@ class blueberryView extends blueberry
 		/**
 		 * check the access grant (all the grant has been set by the module object)
 		 **/
-		 //////////개발중
-		if(!$this->grant->manager){
-			throw new Rhymix\Framework\Exceptions\NotPermitted('msg_not_permitted');
-		}
-		 //////////개발중
+		
 		print_r($this->grant);
 		if(!$this->grant->access || !$this->grant->view_data)
 		{

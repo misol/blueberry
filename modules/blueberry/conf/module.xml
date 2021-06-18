@@ -22,13 +22,28 @@
 		<action name="dispBlueberryContent" type="view" permission="view_data" standalone="false" index="true">
 			<route route="$data_srl:int" priority="100" />
 			<route route="$data_srl:int/page/$page:int" priority="100" />
+			<route route="+$group_id:word" priority="90" />
+			<route route="@$member_id:word" priority="90" />
+			<route route="@$member_id:word/$data_srl:int" priority="90" />
+			<route route="@$member_id:word/page/$page:int" priority="90" />
+			<route route="@$member_id:word/$data_srl:int/page/$page:int" priority="90" />
+			
 			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any" priority="60" />
 			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any/page/$page:int" priority="60" />
+			<route route="@$member_id:word/category/$category_srl:int/search/$search_target:word/$search_keyword:any" priority="60" />
+			<route route="@$member_id:word/category/$category_srl:int/search/$search_target:word/$search_keyword:any/page/$page:int" priority="60" />
+			
 			<route route="search/$search_target:word/$search_keyword:any" priority="50" />
 			<route route="search/$search_target:word/$search_keyword:any/page/$page:int" priority="50" />
+			<route route="@$member_id:word/search/$search_target:word/$search_keyword:any" priority="50" />
+			<route route="@$member_id:word/search/$search_target:word/$search_keyword:any/page/$page:int" priority="50" />
+			
 			<route route="category/$category_srl:int" priority="40" />
 			<route route="category/$category_srl:int/page/$page:int" priority="40" />
+			<route route="@$member_id:word/category/$category_srl:int" priority="40" />
+			<route route="@$member_id:word/category/$category_srl:int/page/$page:int" priority="40" />
 			<route route="page/$page:int" priority="10" />
+			
 		</action>
 		<action name="dispBlueberryNCA" type="view" permission="add_data" standalone="false" meta-noindex="true">
 			<route route="nca" />
