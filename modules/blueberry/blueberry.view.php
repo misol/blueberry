@@ -8,6 +8,10 @@
  **/
 class blueberryView extends blueberry
 {
+	function __construct()
+	{
+		parent::__construct();
+	}
 	
 	/**
 	 * @brief initialization
@@ -15,6 +19,14 @@ class blueberryView extends blueberry
 	 **/
 	function init()
 	{
+		$oSecurity = new Security();
+		$oSecurity->encodeHTML('data_srl', 'comment_srl', 'vid', 'mid', 'page', 'category', 'search_target', 'search_keyword', 'sort_index', 'order_type', 'trackback_srl');
+		
+		// set template html path
+		$this->setTemplatePath($this->module_path . 'tpl');
+		
+		Context::loadLang('./modules/document/lang');
+		Context::loadLang('./modules/comment/lang');
 	}
 	
 
@@ -26,20 +38,25 @@ class blueberryView extends blueberry
 		/**
 		 * check the access grant (all the grant has been set by the module object)
 		 **/
-		if(!$this->grant->access || !$this->grant->list)
+		 //////////개발중
+		if(!$this->grant->manager){
+			throw new Rhymix\Framework\Exceptions\NotPermitted('msg_not_permitted');
+		}
+		 //////////개발중
+		print_r($this->grant);
+		if(!$this->grant->access || !$this->grant->view_data)
 		{
-			return $this->dispBoardMessage('msg_not_permitted');
+			throw new Rhymix\Framework\Exceptions\NotPermitted('msg_not_permitted');
 		}
 		
-
+		if (Context::get('data_srl')) {
+			print(Context::get('data_srl'));
+		}
 		/**
 		 * display the category list, and then setup the category list on context
 		 **/
 		$this->dispBlueberryList();
 		
-		
-		// display the board content
-		$this->dispBoardContentView();
 
 	}
 	

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants>
+		<grant name="list" default="member">
+			<title xml:lang="ko">목록 보기</title>
+			<title xml:lang="en">View list</title>
+		</grant>
+		<grant name="add_data" default="member">
+			<title xml:lang="ko">데이터 추가</title>
+			<title xml:lang="en">Add data</title>
+		</grant>
+		<grant name="view_data" default="member">
+			<title xml:lang="ko">데이터 보기</title>
+			<title xml:lang="en">View data</title>
+		</grant>
+		<grant name="manage_data" default="manager">
+			<title xml:lang="ko">데이터 관리</title>
+			<title xml:lang="en">Manage data</title>
+		</grant>
+	</grants>
+	<actions>
+		<action name="dispBlueberryContent" type="view" permission="view_data" standalone="false" index="true">
+			<route route="$data_srl:int" priority="100" />
+			<route route="$data_srl:int/page/$page:int" priority="100" />
+			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any" priority="60" />
+			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any/page/$page:int" priority="60" />
+			<route route="search/$search_target:word/$search_keyword:any" priority="50" />
+			<route route="search/$search_target:word/$search_keyword:any/page/$page:int" priority="50" />
+			<route route="category/$category_srl:int" priority="40" />
+			<route route="category/$category_srl:int/page/$page:int" priority="40" />
+			<route route="page/$page:int" priority="10" />
+		</action>
+		<action name="dispBlueberryNCA" type="view" permission="add_data" standalone="false" meta-noindex="true">
+			<route route="nca" />
+			<route route="$data_srl/nca" />
+		</action>
+		<action name="dispBlueberryDelete" type="view" permission="add_data" standalone="false" meta-noindex="true" route="$data_srl/delete" />
+	</actions>
+
+	<menus>
+		<menu name="blueberry" type="all">
+			<title xml:lang="en">Blueberry</title>
+			<title xml:lang="ko">Blueberry</title>
+		</menu>
+	</menus>
+</module>
