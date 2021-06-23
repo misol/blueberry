@@ -7,7 +7,8 @@
 	<column name="dose" type="float" size="11" />
 	<column name="dose_unit" type="varchar" size="60" default="mg" />
 	<column name="dosing_route" type="char" size="5" default="IVeBo" />
-	<column name="dosing" type="char" size="1" default="S" />
+	<column name="dose_repeat" type="char" size="1" default="S" />
+	<column name="tau" type="float" size="11" default="0" />
 	<column name="integration_method" type="varchar" size="60" />
 	<column name="extrapolation_method" type="varchar" size="60" />
 	<column name="time_unit" type="varchar" size="60" default="min" />

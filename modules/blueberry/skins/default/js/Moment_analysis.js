@@ -983,7 +983,7 @@ function saveData () {
 		
 		'dose': Number($('#dose').val()),
 		'dose_unit': String($('#dose_unit').val()).trim(),
-		'dose_route': String($('#dose_route').val()).trim(),
+		'dosing_route': String($('#dose_route').val()).trim(),
 		'dose_repeat': String($('#dose_repeat').val()).trim(),
 		
 		'last_dosing_time': Number($('#last_dosing_time').val()),

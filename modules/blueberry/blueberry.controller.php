@@ -11,22 +11,28 @@ class blueberryController extends blueberry
 	/**
 	 * @brief initialization
 	 **/
-	function init()
+	public function init()
 	{
 	}
 	
 	/**
 	 * @brief insert data
 	 **/
-	function procBlueberryUpsertData()
+	public function procBlueberryUpsertData()
 	{
+		
 		// check grant
 		if(!$this->grant->add_data)
 		{
 			throw new Rhymix\Framework\Exceptions\NotPermitted;
 		}
 		
-		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dose_route', 'dose_repeat', 'integration_method'];
+		if(!checkCSRF())
+		{
+			throw new Rhymix\Framework\Exceptions\SecurityViolation;
+		}
+		
+		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method'];
 		$float_inputs = ['dose', 'last_dosing_time', 'tau'];
 		
 		// setup variables
@@ -52,6 +58,65 @@ class blueberryController extends blueberry
 			}
 		}
 		
+	}
+	
+	/**
+	 * Insert the data
+	 * @param object $obj
+	 * @return object
+	 */
+	public function insertBlueberryData($obj) {
+		if(!checkCSRF())
+		{
+			throw new Rhymix\Framework\Exceptions\SecurityViolation;
+		}
+		
+		// Return error if content is too large.
+		$document_length_limit = ($this->module_info->document_length_limit ?: 1024) * 1024;
+		if (strlen(trim($obj->content)) > $document_length_limit && !$this->grant->manager)
+		{
+			throw new Rhymix\Framework\Exception('msg_content_too_long');
+		}
+		
+		// begin transaction
+		$oDB = DB::getInstance();
+		$oDB->begin();
+		
+		$args = new stdClass;
+		// sanitize variables
+		$text_inputs = ['title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method', 'extrapolation_method', 'password', 'user_id', 'user_name', 'nick_name', 'status', 'comment_status'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'time_min', 'time_max'];
+		$int_inputs = ['data_srl', 'category_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
+		$unset_inputs = ['regdate', 'last_update', 'ipaddress', 'allow_trackback', 'notify_message'];
+		
+		foreach ($text_inputs as $key) {
+			if(isset($obj->{$key})) {
+			
+				$args->{$key} = trim(utf8_clean(strval($obj->{$key})));
+			}
+		}
+		
+		foreach ($float_inputs as $key) {
+			if(isset($obj->{$key})) {
+			
+				$args->{$key} = floatval($obj->{$key});
+			}
+		}
+		
+		foreach ($int_inputs as $key) {
+			if(isset($obj->{$key})) {
+			
+				$args->{$key} = intval($obj->{$key});
+			}
+		}
+		
+		foreach ($unset_inputs as $key) {
+			if(isset($obj->{$key})) {
+			
+				unset($obj->{$key});
+			}
+		}
+		
 		if (!is_array($obj->TC_data['time']) || !is_array($obj->TC_data['concentration']) || !is_array($obj->TC_data['lnC']) || !is_array($obj->TC_data['time-concentration']))
 		{
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
@@ -63,12 +128,8 @@ class blueberryController extends blueberry
 		foreach ($obj->TC_data['time-concentration'] as $key => $val) {
 			$obj->TC_data['time-concentration'][$key] = array_map(floatval, $val);
 		}
+		$args->time_concentration = serialize($obj->TC_data);
 		
-		// Return error if content is too large.
-		$document_length_limit = ($this->module_info->document_length_limit ?: 1024) * 1024;
-		if (strlen($obj->content) > $document_length_limit && !$this->grant->manager)
-		{
-			throw new Rhymix\Framework\Exception('msg_content_too_long');
-		}
+		
 	}
 }
