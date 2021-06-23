@@ -1,0 +1,23 @@
+<div cond="!$mi->board_title_visible" class="app-board-header">
+  <include target="components/title.html" />
+  <include target="components/category.html" />
+  {@ // <include target="components/tools.html" /> }
+</div>
+
+<div cond="$mi->board_title_visible == 'Y'" class="app-board-container--only-mobile">
+  <include target="components/category.html" />
+</div>
+
+<div class="app-board-section">
+  <include target="../templates/default/default.html" />
+
+  <include target="empty-space.html" />
+  <include target="tools-bottom.html" />
+</div>
+
+<include cond="!Mobile::isMobileCheckByAgent()" target="components/pagination.html" />
+
+{@ // 모바일용 페이지네이션 }
+<include cond="Mobile::isMobileCheckByAgent()" target="components/pagination.m.html" />
+
+<include target="fr-button/fr-button.html" />

@@ -21,7 +21,7 @@ class blueberry extends ModuleObject
 	 * 
 	 * @var array
 	 */
-	public static $statusList = array(
+	static public $statusList = array(
 		'temp' => 'TEMP',
 		'private' => 'PRIVATE',
 		'public' => 'PUBLIC',
@@ -35,12 +35,21 @@ class blueberry extends ModuleObject
 		'other' => 'OTHER',
 	);
 	
+	static public $search_option = array('title_content','title','dose_dose_unit','dosing_route','user_name','nick_name','last_updater', 'email_address' , 'regdate', 'last_update','user_id','tag'); /// search option
+
+	static public $order_target = array('list_order', 'update_order', 'regdate', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id'); // 정렬 옵션
+
+	static public $skin = "default"; ///< skin name
+	static public $list_count = 20; ///< the number of documents displayed in a page
+	static public $page_count = 10; ///< page number
+	static public $category_list = NULL; ///< category list
+	
 	/**
 	 * constructor
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 	}
@@ -48,7 +57,7 @@ class blueberry extends ModuleObject
 	/**
 	 * @brief install the module
 	 **/
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// enabled in the admin model
 		$oModuleController = getController('module');
@@ -63,7 +72,7 @@ class blueberry extends ModuleObject
 	/**
 	 * @brief chgeck module method
 	 **/
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -82,7 +91,7 @@ class blueberry extends ModuleObject
 	/**
 	 * @brief update module
 	 **/
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -96,6 +105,7 @@ class blueberry extends ModuleObject
 			$args->browser_title = 'Blueberry';
 			$args->meta_keywords = 'Pharmacokinetics, Pharmaceutics, Non-compartmental analysis, Moment analysis';
 			$args->meta_description = 'The standard moment analysis module for Pharmacokinetics.';
+			$args->skin = 'default';
 			$output = $oModuleController->insertModule($args);
 			$msg_code = 'success_registed';
 			if(!$output->toBool()) return $output;
@@ -110,7 +120,7 @@ class blueberry extends ModuleObject
 		}
 	}
 
-	function moduleUninstall()
+	public function moduleUninstall()
 	{
 		@set_time_limit(0);
 

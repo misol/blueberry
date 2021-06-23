@@ -1,0 +1,28 @@
+.app-board-status-icon {
+  position: relative;
+  top: -1px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 16px;
+  height: 16px;
+  margin-right: 0.25rem;
+  
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: var(--color-success);
+  border-radius: 9999px;
+
+  &.app-updated {
+    background-color: var(--color-info);
+  }
+}
+
+
+.app-board-type-icon {
+  // margin-right: 0.5rem;
+  color: var(--color-gray-700);
+  font-size: 1rem;
+}

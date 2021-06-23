@@ -1,0 +1,13 @@
+.app-board-header {
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+
+  @media (max-width: $mobile) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .app-board-title {
+    padding-left: 0.25rem;
+  }
+}

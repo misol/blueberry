@@ -1,0 +1,254 @@
+<include target="_config.html" />
+<include target="components/base/_header.html" />
+<load target="write_form.scss" vars="$themeConfig->variables" />
+
+
+<load target="./css/PBPK.css" />
+<load target="/common/css/xeicon/xeicon.css" />
+<load target="./css/custom.scss" vars="$themeConfig->variables" />
+<load target="./js/jsuites/dist/jsuites.css" />
+
+
+<load target="./js/CSPL/CSPL.js" type="body" />
+<load target="./js/Moment_analysis.js" type="body" />
+<load target="./js/jspreadsheet-ce-4.6.0/jexcel.js" type="body" />
+<load target="./js/jsuites/dist/jsuites.js" type="body" />
+<load target="./js/plotly-2.1.0.min.js" type="body" />
+
+<div class="app-write-form__back-wrap">
+	<a class="app-write-form__back" href="{getUrl('','mid',$mid)}">
+		<ion-icon name="arrow-back-sharp"></ion-icon>
+		<span>{$module_info->title ? $module_info->title : $module_info->browser_title}</span>
+	</a>
+</div>
+
+
+
+<div class="app-card">
+	<div class="app-board-section app-board-section-padding">
+		<form action="./" method="post" onsubmit="return procFilter(this, window.insert)" class="ed write-form inner-container">
+		
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="act" value="procBlueberryUpsertData" />
+			<input type="hidden" name="data_srl" value="{$data_srl}" />
+			
+			<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('common.cmd_input')}</h2>
+			<!--//  작성자 정보 입력란 -->
+			<div class="tw-flex tw-items-center tw-mb-3">
+				<div cond="!$is_logged">
+					<input type="text" name="nick_name" class="app-input tw-mr-3" value="{htmlspecialchars($oData->get('nick_name'))}" placeholder="{$lang->writer}" />
+					<input type="password" name="password" class="app-input tw-mr-3" placeholder="{$lang->password}" />
+				</div>
+	
+			</div>
+
+			<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+				<div class="app-select sm:tw-mb-3 sm:tw-w-full tw-mr-3" cond="$module_info->use_category=='Y'">
+					<select name="category_srl">
+						<option value="">{$lang->category}</option>
+						<option loop="$category_list => $val" disabled="disabled"|cond="!$val->grant" value="{$val->category_srl}" selected="selected"|cond="$val->grant&&$val->selected||$val->category_srl==$oDocument->get('category_srl')">
+							{str_repeat("&nbsp;&nbsp;",$val->depth)} {$val->title} ({$val->data_count})
+						</option>
+					</select>
+				</div>
+				
+				<input type="text" name="title" id="title_text" title="{$lang->title}" value="{$oData->getTitle()}"|cond="$oData->getTitle()" placeholder="{lang('common.title')}" class="app-input tw-flex-1 sm:tw-w-full" />
+			</div>
+			
+			<!--// 메모 입력칸 -->
+			<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+				<textarea name="content" id="content_area" class="app-input tw-flex-1 sm:tw-w-full" placeholder="{lang('blueberry.data_description')}">{$oData->getContent()}</textarea>
+			</div>
+			
+			<!--// Dose -->
+			<div class="tw-items-center tw-mb-6">
+				<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.dosing_regimen')}</h2>
+				<label class="isss input_box" id="dose_label" for="dose" class="tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.dose')}</label>
+				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+					<input type="number" step="0.01" min="0.01" max="10000" id="dose" placeholder="0.5" onchange="updateTCtable( false );return false;"  class="app-input tw-w-2/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full" />
+					<select id="dose_unit" onchange="updateTCtable( false );return false;"  class="app-input tw-w-1/3 sm:tw-w-full">
+						<option value="pg">pg</option>
+						<option value="ng">ng</option>
+						<option value="ug">μg</option>
+						<option value="mg" selected="selected">mg</option>
+						<option value="g">g</option>
+						<option value="IU">IU</option>
+						<option value="pmol">pmol</option>
+						<option value="nmol">nmol</option>
+						<option value="umol">μmol</option>
+						<option value="mmol">mmol</option>
+						<option value="mol">mol</option>
+						<option value="pg/kg">pg/kg</option>
+						<option value="ng/kg">ng/kg</option>
+						<option value="ug/kg">μg/kg</option>
+						<option value="mg/kg">mg/kg</option>
+						<option value="g/kg">g/kg</option>
+						<option value="IU/kg">IU/kg</option>
+						<option value="pmol/kg">pmol/kg</option>
+						<option value="nmol/kg">nmol/kg</option>
+						<option value="umol/kg">μmol/kg</option>
+						<option value="mmol/kg">mmol/kg</option>
+						<option value="mol/kg">mol/kg</option>
+					</select>
+				</div>
+				
+				<label class="isss input_box" id="doseing_route_label" for="dose_route" class="select_box tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.dosing_route')}</label>
+				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+					<select id="dose_route" onchange="updateTCtable( false );return false;" class="app-input tw-w-1/2 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<option value="IV_bolus">{lang('blueberry.iv_bolus')}</option>
+						<option value="IV_infusion">{lang('blueberry.iv_infusion')}</option>
+						<option value="EX">{lang('blueberry.extravenous')}</option>
+					</select>
+					<select id="dose_repeat" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/2 sm:tw-w-full">
+						<option value="single">{lang('blueberry.single_dose')}</option>
+						<!--//option value="multiple">{lang('blueberry.repeated_dose')}</option-->
+					</select>
+				</div>
+				
+				<section id="multiple_dosing" class="tw-items-center tw-mb-6" >
+					<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.repeated_dose')}</h2>
+					<label for="last_dosing_time" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="last_dosing_time_box">{lang('blueberry.time_of_last_dose')}</label>
+					<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+						<input type="number" id="last_dosing_time" step="0.01" placeholder="0"  class="app-input tw-w-full sm:tw-w-full" />
+					</div>
+					<label for="tau" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="tau_box">Tau</label>
+					<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+						<input type="number" id="tau" step="0.01" placeholder="0"  class="app-input tw-w-full sm:tw-w-full" />
+					</div>
+				</section>
+			</div>
+			
+			
+			<!--// Dose -->
+			<div class="tw-items-center tw-mb-6">
+				<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.numerical_integration')}</h2>
+				
+				<label for="integration_method" id="integration_method_box" class="select_box tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.interpolation_method')}</label>
+				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+					<select id="integration_method" onchange="updateTCtable( false );return false;"  class="app-input tw-w-full sm:tw-w-full">
+						<option value="linear-trapezoidal">{lang('blueberry.linear_trapezoidal_method')}</option>
+						<option value="logarithmic-trapezoidal">{lang('blueberry.log_trapezoidal_method')}</option>
+						<option value="linear-trapezoidal-with-end-correction">{lang('blueberry.linear_trapezoidal_method_w_end_corr')}</option>
+					</select>
+				</div>
+				<!-- //label for="extrapolation_function" class="select_box" id="extrapolation_method_box">Extrapolation function method</label>
+				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+					<select id="extrapolation_function" disabled="disabled" onchange="updateTCtable( false );return false;"  class="app-input tw-w-full text-gray-50 disabled:opacity-50 sm:tw-w-full">
+						<option value="exponential">Exponential function</option>
+					</select>
+				</div -->
+			</div>
+			
+			
+			
+			<!--// Units -->
+			<div id="unit_settings" class="tw-items-center tw-mb-6">
+				<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.in_vivo_observation_data')}</h2>
+				<label for="time_unit" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="Unit_label">{lang('blueberry.in_vivo_units')}</label>
+				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+					<select id="time_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<option value="s">{lang('common.unit_sec')}</option>
+						<option value="min" selected="selected">{lang('common.unit_min')}</option>
+						<option value="h">{lang('common.unit_hour')}</option>
+						<option value="d">{lang('common.unit_day')}</option>
+						<option value="week">{lang('blueberry.unit_week_letter')}</option>
+					</select>
+					
+					<select id="amount_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<option value="pg">pg</option>
+						<option value="ng" selected="selected">ng</option>
+						<option value="ug">μg</option>
+						<option value="mg">mg</option>
+						<option value="g">g</option>
+						<option value="IU">IU</option>
+						<option value="pmol">pmol</option>
+						<option value="nmol">nmol</option>
+						<option value="umol">μmol</option>
+						<option value="mmol">mmol</option>
+						<option value="mol">mol</option>
+					</select>
+					
+					<select id="volume_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/3 sm:tw-w-full">
+						<option value="pL">pL</option>
+						<option value="nL">nL</option>
+						<option value="uL">μL</option>
+						<option value="mL" selected="selected">mL</option>
+						<option value="L">L</option>
+					</select>
+				</div>
+				
+				<section class="control-group">
+					<label for="time-concentration-data" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="TC_table_label">{lang('blueberry.time_concentration_profile')}</label>
+					<div id="time-concentration-data" class="tw-block tw-mb-3"></div>
+					<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+						<button onclick="updateTCtable();return false;" class="app-button sm:tw-mb-1 tw-mr-1 tw-w-1/2 sm:tw-w-full ">{lang('blueberry.cmd_trim_table')}</button>
+						<button onclick="saveData();return false;" class="app-button primary sm:tw-m-0 tw-ml-1 tw-w-1/2 sm:tw-w-full ">{lang('common.cmd_save')}</button>
+					</div>
+				</section>
+			</div>
+			
+		</form>
+	</div>
+</div>
+<div class="app-card">
+	<div class="app-board-section app-board-section-padding">
+	
+		<section class="control-group">
+			<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.analysed_results')}</h2>
+			<span id="system_message"></span>
+			<h3>{lang('blueberry.pharmacokinetic_parameters')}</h3>
+			<div id="data-analysis" class="tw-mb-3">
+				<table id="data-estimates" class="data-table tw-border-collapse tw-table-auto" width="100%"></table>
+			</div>
+			<h3>{lang('blueberry.in_vivo_time_conc_plot')}</h3>
+			<div id="data-plot" class="pagebreak">
+			</div>
+		</section>
+	</div>
+	
+</div>
+<div class="app-card">
+	<div class="app-board-section app-board-section-padding">
+	
+		<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.reference_list')}</h2>
+		<ol>
+			<li>Gibaldi, Milo, and Donald Perrier. 1982. <cite><em>Pharmacokinetics</em></cite> (Marcel Dekker)</li>
+			<li>Moin, Parviz. 2010. <cite><em>Fundamentals of Engineering Numerical Analysis</em></cite> (Cambridge University Press)</li>
+		</ol>
+
+	</div>
+	
+</div>
+
+<address>
+	ⓒ 2019-2021 PK-square. The latest update: 2021.05.24.
+</address>
+
+<script>
+var TCtable;
+$(document).ready(function() {
+	console.log('Copyright (C) 2019-2021 Min-Soo Kim at Seoul National University.');
+	
+	TCtable = jexcel(document.getElementById('time-concentration-data'), {
+		data:[],
+		tableWidth: "100%",
+		columns: [
+			{ type: 'numeric', title:'Time', width: '100', mask:'#.#', decimal:'.' },
+			{ type: 'numeric', title:'Concentration', width: '170', mask:'#.#', decimal:'.' },
+		],
+		onchange: function() { triggerUpdateSheet(); },
+		minDimensions:[2,5],
+		allowInsertColumn: false,
+		allowManualInsertColumn:false,
+		allowDeleteColumn: false,
+		allowRenameColumn: false,
+		
+	});
+	procUpdateSheet();
+});
+$(window).resize(function (){
+	triggerUpdateSheet();
+});
+</script>
+
+<include target="components/base/_footer.html" />

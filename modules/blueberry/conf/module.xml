@@ -50,6 +50,9 @@
 			<route route="$data_srl/nca" />
 		</action>
 		<action name="dispBlueberryDelete" type="view" permission="add_data" standalone="false" meta-noindex="true" route="$data_srl/delete" />
+		
+		<action name="procBlueberryUpsertData" type="controller" permission="add_data" standalone="false" meta-noindex="true" />
+		
 	</actions>
 
 	<menus>

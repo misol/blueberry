@@ -1,0 +1,10 @@
+<div cond="!$document_list && !$notice_list" class="app-card tw-text-center tw-py-8 tw-px-4 tw-border-b tw-border-gray-300">
+  <ion-icon name="newspaper-outline" class="tw-text-gray-600 tw-text-2xl tw-mb-4"></ion-icon>
+  <div class="tw-text-black tw-font-bold tw-text-sm tw-mb-2">{lang('blueberry.no_data')}</div>
+  <div class="tw-text-sm tw-text-gray-700 tw-mb-6">{lang('blueberry.no_data_description')}</div>
+
+  <a cond="$grant->write_document" href="{getUrl('act','dispBoardWrite','document_srl','')}" class="app-button primary app-button-rounded app-button-xs">
+    <ion-icon name="add-outline"></ion-icon>
+    <span>{$lang->cmd_write}</span>
+  </a>
+</div>

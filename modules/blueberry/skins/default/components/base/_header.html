@@ -1,0 +1,7 @@
+{@
+  $is_anonymous_mode = '';
+  if($module_info->anonymous_mode == 'Y') $is_anonymous_mode = 'app-board--anonymous';
+}
+
+<div id="app-board" class="app-board-skin {$is_anonymous_mode}">
+  {$module_info->header_text}

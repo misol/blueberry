@@ -1,0 +1,44 @@
+<div cond="$grant->manager" class="app-board-container--only-mobile tw-flex tw-items-center tw-pt-4 tw-pb-5">  
+  
+  <a class="app-link" href="{getUrl('','module','blueberry','act','dispBlueberryManageData')}" onclick="popopen(this.href,'manageData'); return false;">
+    <ion-icon name="checkmark-done-outline" class="tw-mr-2"></ion-icon>
+    {lang('blueberry.cmd_manage_nca_data')}
+  </a>
+
+  <div class="tw-flex-1"></div>
+
+  {@ // 검색 }
+  <a class="app-icon-button" onclick="toggleDialog('app-board-search')">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  </a>
+
+  <div id="app-board-search" class="app-dialog">
+    <div class="app-dialog-container">
+      <div class="app-dialog-box">
+        <div class="app-dialog-header">
+          <h3>{$lang->cmd_search}</h3>
+        </div>
+        
+        <form class="app-dialog-body" action="{getUrl()}" method="get" onsubmit="return procFilter(this, search)" no-error-return-url="true">
+          <input type="hidden" name="vid" value="{$vid}" />
+          <input type="hidden" name="mid" value="{$mid}" />
+          <input type="hidden" name="category" value="{$category}" />
+      
+          <div class="app-select app-expand tw-mb-3">
+            <select name="search_target" placeholder="{lang('common.search_target')}">
+              <option loop="$search_option=>$key,$val" value="{$key}" selected="selected"|cond="$search_target==$key">{$val}</option>
+            </select>
+          </div>
+
+          <input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" placeholder="{lang('common.search_keyword')}" class="app-input app-input-expand tw-mb-3" />
+  
+          <div class="tw-flex tw-justify-end">
+            <button type="submit" class="app-button app-button-rounded primary">{lang('common.cmd_search')}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

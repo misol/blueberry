@@ -1,0 +1,17 @@
+<include target="_config.html" />
+<include target="components/base/_header.html" />
+
+<form action="./" method="get" onsubmit="return procFilter(this, delete_document)" class="ed text-center">
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="page" value="{$page}" />
+  <input type="hidden" name="document_srl" value="{$document_srl}" />
+  
+  <h3>{sprintf($lang->comfirm_act_msg,$lang->document,$lang->cmd_delete,$lang->msg_rul)}</h3>
+  
+	<div class="ed text-center">
+		<input type="submit" class="ed button button-primary button-rounded" value="{$lang->cmd_delete}" />
+		<button type="button" class="ed button button-default button-rounded" onclick="history.back()">{$lang->cmd_cancel}</button>
+	</div>
+</form>
+
+<include target="components/base/_footer.html" />

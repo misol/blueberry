@@ -1,0 +1,93 @@
+<load target="default.scss" vars="$themeConfig->variables" />
+
+<div class="app-card">
+  <!--@if($data_list || $notice_list)-->
+  <ul class="app-board-template-list">
+    <block cond="$grant->manager">
+      <li cond="$data_list || $notice_list">
+        <div class="app-list-container">
+          <input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" id="check-all" class="app-input-checkbox" title="Check All" />
+          <label for="check-all">{lang('common.cmd_select_all')}</label>
+        </div>
+      </li>
+    </block>
+
+    {@ // 공지 }
+    <include target="default-notice-item.html" />
+    
+    {@ // 일반 }
+    <li loop="$data_list=>$no,$data" class="app-active"|cond="$data_srl==$data->data_srl">
+      <div cond="$grant->manager" class="tw-pt-4 tw-pl-4">
+        <input type="checkbox" name="cart" value="{$data->data_srl}" id="{$data->data_srl}" class="app-input-checkbox" title="Check This Article" onclick="doAddDocumentCart(this)" checked="checked"|cond="$data->isCarted()" />
+        <label for="{$data->data_srl}" class="tw-m-0"></label>
+      </div>
+
+      <a class="tw-flex-1"|cond="!$grant->manager" class="tw-flex-1 tw-pl-2"|cond="$grant->manager" href="{getUrl('data_srl',$data->data_srl, 'listStyle', $listStyle, 'cpage','')}">
+        <div cond="$data->thumbnailExists()" class="app-thumbnail">
+          <img src="{$data->getThumbnail(100, 100, 'crop')}"/>
+        </div>
+    
+        <div class="tw-flex-1">
+          <div class="app-list-title tw-flex-wrap">
+            <span class="tw-mr-1">{$data->getTitle($module_info->list_title_limit)}</span>
+          </div>
+          
+          <div class="app-list-meta">
+            <span cond="$data->get('category_srl')" style="color:{$category_list[$data->get('category_srl')]->color}"|cond="$category_list[$data->get('category_srl')]->color!='transparent'">{$category_list[$data->get('category_srl')]->title}</span>
+            
+            <block loop="$list_config=>$key,$val">
+              <span cond="$val->type === 'nick_name' && $val->idx === -1">
+                <include target="../../components/anony-random-color.html" />
+                
+                <div class="app-list-member" style="color: #{$anony_random_color};">
+                  <div class="app-avatar" style="width: 1.25rem; height: 1.25rem;">
+                    <img cond="$data->getProfileImage()" src="{$data->getProfileImage()}" alt="profile" title="{$data->getNickName()}" />
+                    <img cond="!$data->getProfileImage()" src="../../assets/images/ic_profile_default.png" />
+                  </div>
+                  
+                  <div class="member_{$data->get('member_srl')} tw-inline-flex tw-items-center">{$data->getNickName()}</div>
+                </div>
+              </span>
+        
+              <span cond="$val->type === 'user_id' && $val->idx === -1">{$data->getUserID()}</span>
+              <span cond="$val->type === 'user_name' && $val->idx === -1">{$data->getUserName()}</span>
+              <span title="{$data->getRegdateDT('Y-m-d H:i:s')}" cond="$val->type === 'regdate' && $val->idx === -1">{$data->getRegdateDT('Y.m.d')}</span>
+              <span cond="$val->type === 'last_update' && $val->idx === -1">{zdate($data->get('last_update'),'Y.m.d')}</span>
+              <span cond="$val->type === 'last_post' && $val->idx === -1">
+                <block cond="(int)($data->get('comment_count'))>0">
+                  <a href="{$data->getPermanentUrl()}#comment" title="Last Reply">
+                    {zdate($data->get('last_update'),'Y.m.d')}
+                  </a>
+                  <span cond="$data->getLastUpdater()" class="ed text-muted text-xsmall margin-xsmall">
+                    <sub>by</sub>
+                    {$data->getLastUpdater()}
+                  </span>
+                </block>
+                <block cond="(int)($data->get('comment_count'))==0">&nbsp;</block>
+              </span>
+        
+              <span cond="$val->type === 'readed_count' && $val->idx === -1">
+                <span class="tw-mr-1">조회</span>
+                <span>{$data->get('readed_count')>0?$data->get('readed_count'):'0'}</span>
+              </span>
+              
+              <span cond="$val->type === 'voted_count' && $val->idx === -1" class="app-list__voted-count <!--@if($data->get('voted_count') > 0)-->active<!--@end-->">
+                <ion-icon name="heart"></ion-icon>
+                <span>{$data->get('voted_count')!=0?$data->get('voted_count'):'0'}</span>
+              </span>
+      
+              <span cond="$val->type === 'blamed_count' && $val->idx === -1">
+                <span class="tw-mr-1">비추천</span>
+                <span>{$data->get('blamed_count')!=0?$data->get('blamed_count'):'0'}</span>
+              </span>
+              <span cond="$val->idx!=-1">{$data->getExtraValueHTML($val->idx)}&nbsp;</span>
+            </block>
+          </div>
+        </div>
+
+        <div class="app-list-comment" cond="$data->getCommentCount()">{$data->getCommentCount()}</div>
+      </a>
+    </li>
+  </ul>
+  <!--@end-->
+</div>

@@ -34,6 +34,7 @@ class blueberryItem extends BaseObject
 
 	public function setDataSrl($data_srl, $reload = false)
 	{
+		if(!$data_srl) return;
 		$this->data_srl = $data_srl;
 		$this->reload = $reload;
 		$this->_loadFromDB();
@@ -96,7 +97,7 @@ class blueberryItem extends BaseObject
 	}
 
 
-	private function isExists()
+	public function isExists()
 	{
 		return (bool) ($this->data_srl);
 	}
@@ -263,7 +264,17 @@ class blueberryItem extends BaseObject
 		
 		return $cut_size ? escape(cut_str($this->get('title'), $cut_size, $tail)) : escape($this->get('title'));
 	}
-
+	
+	
+	public function getContent($cut_size = 0, $tail = '...')
+	{
+		if(!$this->isExists())
+		{
+			return;
+		}
+		
+		return $cut_size ? escape(cut_str($this->get('content'), $cut_size, $tail)) : escape($this->get('content'));
+	}
 	
 	public function getVoted()
 	{

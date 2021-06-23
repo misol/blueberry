@@ -1,0 +1,36 @@
+{@
+	$chk_movie = $chk_image = $chk_attach = false;
+
+	if(strpos($document->getContent(),'youtube.com/embed')!==false || strpos($document->getContent(),'vimeo.com/video')!==false || strpos($document->getContent(),'kakao.com/embed')!==false || strpos($document->getContent(),'naver.com/flash')!==false || ($module_info->common_play_icon == '' && ( strpos($document->getContent(),'https://youtu.be/')!==false || strpos($document->getContent(),'https://www.youtube.com/watch?v=')!==false ) ) ):
+		$chk_movie = true;
+	elseif(preg_match("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $document->getContent())):
+		$chk_image = true;
+	endif;
+
+	if (!$chk_movie && !$chk_image)
+		$showIconArea = false;
+	else
+		$showIconArea = true;
+}
+
+  <block cond="$document->getExtraImages()">
+		<span class="app-board-status-icon app-new" cond="in_array('new',$document->getExtraImages())">N</span>
+		
+		<span class="app-board-status-icon app-updated" cond="in_array('update',$document->getExtraImages())">U</span>
+
+		<ion-icon cond="in_array('secret', $document->getExtraImages())" name="lock-closed-outline" class="app-board-type-icon tw-mr-1"></ion-icon>
+	</block>
+	
+	<block loop="$document->getUploadedFiles()=>$key,$file">
+	{@
+		$filetmp = strtolower(substr(strrchr($file->source_filename,'.'),1));
+		if($filetmp == 'jpg' || $filetmp == 'gif' || $filetmp == 'png' || $filetmp == 'svg' || $filetmp == 'jpeg' || $filetmp == 'bmp')
+			$chk_image = true;
+		else
+			$chk_attach = true;
+	}
+	</block>
+	
+	<ion-icon cond="$chk_movie" name="play-circle-outline" class="app-board-type-icon tw-mr-1"></ion-icon>
+	<ion-icon cond="$chk_image" name="image-outline" class="app-board-type-icon tw-mr-1"></ion-icon>
+	<ion-icon cond="$chk_attach" name="folder-outline" class="app-board-type-icon"></ion-icon>

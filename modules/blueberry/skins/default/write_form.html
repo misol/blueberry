@@ -1,0 +1,150 @@
+<include target="_config.html" />
+<include target="components/base/_header.html" />
+<load target="write_form.scss" vars="$themeConfig->variables" />
+
+<div class="app-write-form__back-wrap">
+  <a class="app-write-form__back" href="{getUrl('','mid',$mid)}">
+    <ion-icon name="arrow-back-sharp"></ion-icon>
+    <span>{$module_info->title ? $module_info->title : $module_info->browser_title}</span>
+  </a>
+</div>
+
+<div class="app-card">
+  <div class="app-board-section app-board-section-padding">
+    <form action="./" method="post" onsubmit="return procFilter(this, window.insert)" class="ed write-form inner-container">
+      <input type="hidden" name="mid" value="{$mid}" />
+      <input type="hidden" name="content" value="<!--@if($oDocument->getContentText())-->{$oDocument->getContentText()}<!--@else-->{htmlspecialchars($mi->writeform_default_content)}<!--@end-->" />
+      <input type="hidden" name="document_srl" value="{$document_srl}" />
+  
+      {@ // 작성자 정보 입력란 }
+      <div class="tw-flex tw-items-center tw-mb-3">
+        <div cond="!$is_logged">
+          <input type="text" name="nick_name" class="app-input tw-mr-3" value="{htmlspecialchars($oDocument->get('nick_name'))}" placeholder="{$lang->writer}" />
+          <input type="password" name="password" class="app-input tw-mr-3" placeholder="{$lang->password}" />
+        </div>
+  
+        {@ // 관리자 전용 옵션 }
+        <block cond="$grant->manager">
+          <include target="components/write/write-colorpicker.html" />
+  
+          <div class="tw-mr-3">
+            <input id="is_notice" class="app-input-toggle" type="checkbox" name="is_notice" value="Y" checked="checked"|cond="$oDocument->isNotice()" />
+            <label for="is_notice">{$lang->notice}</label>
+          </div>
+    
+          <input id="title_bold" class="app-input-toggle" type="checkbox" name="title_bold" value="Y" checked="checked"|cond="$oDocument->get('title_bold')=='Y'" />
+          <label for="title_bold">{$lang->title_bold}</label>
+        </block>
+      </div>
+    
+      <div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+        <div class="app-select sm:tw-mb-3 sm:tw-w-full tw-mr-3" cond="$module_info->use_category=='Y'">
+          <select name="category_srl">
+            <option value="">{$lang->category}</option>
+            <option loop="$category_list => $val" disabled="disabled"|cond="!$val->grant" value="{$val->category_srl}" selected="selected"|cond="$val->grant&&$val->selected||$val->category_srl==$oDocument->get('category_srl')">
+              {str_repeat("&nbsp;&nbsp;",$val->depth)} {$val->title} ({$val->document_count})
+            </option>
+          </select>
+        </div>
+        
+        <input type="text" name="title" title="{$lang->title}" value="{htmlspecialchars($oDocument->getTitleText())}"|cond="$oDocument->getTitleText()" placeholder="제목을 입력해주세요." class="app-input tw-flex-1 sm:tw-w-full" />
+      </div>
+      
+      {@ // 사용자 정의 입력폼 }
+      <block cond="count($extra_keys)">
+        <div class="tw-text-xs tw-text-gray-700 tw-mb-2">
+          <span class="tw-text-danger">*</span>
+          <span>: {$lang->is_required}</span>
+        </div>
+  
+        <table cond="count($extra_keys)" class="app-extra-form">
+          <tr loop="$extra_keys=>$key,$val">
+            <th>
+              {$val->name}
+              <span class="tw-text-danger tw-text-xs" cond="$val->is_required=='Y'">*</span>
+            </th>
+            <td>{$val->getFormHTML()}</td>
+          </tr>
+        </table>
+      </block>
+    
+      {@ // EDITOR }
+      <div class="app-board-editor-wrap tw-mb-3">{$oDocument->getEditor()}</div>
+      
+      {@ // 각종 토글 }
+      <div>
+        <div class="tw-flex tw-items-center tw-mb-6">
+          <div cond="$is_logged && $module_info->write_notify_checkbox === 'Y'" class="tw-mr-3">
+            <input id="notify_message" class="app-toggle" type="checkbox" name="notify_message" value="Y" checked="checked"|cond="$oDocument->useNotify()" />
+            <label for="notify_message">{$lang->notify}</label>
+          </div>
+    
+          <div cond="$module_info->secret === 'Y'" class="tw-mr-3">
+            <input id="is_secret" class="app-toggle" type="checkbox" name="is_secret" value="Y" checked="checked"|cond="$oDocument->isSecret()" />  
+            <label for="is_secret">{$lang->secret}</label>
+          </div>
+  
+          <div class="tw-mr-3">
+            <input id="comment_status" class="app-toggle" type="checkbox" name="comment_status" value="ALLOW" checked="checked"|cond="$oDocument->allowComment()" />
+            <label for="comment_status">{$lang->allow_comment}</label>
+          </div>
+        </div>
+    
+        <div class="tw-mb-3">
+          <label for="tags" class="tw-block tw-text-blck tw-font-bold tw-mb-1">{$lang->tag}</label>
+    
+          <input type="text" name="tags" id="tags" value="{htmlspecialchars($oDocument->get('tags'))}" class="app-input app-input-expand" title="Tag" placeholder="{$lang->about_tag}" />
+        </div>	
+        
+        <div class="sm:tw-block tw-flex tw-items-center">
+          <div class="tw-flex tw-items-center sm:tw-pb-3" cond="!$oDocument->isExists() || $oDocument->get('status') == 'TEMP'">
+            <button cond="$is_logged" type="button" onclick="doDocumentSave(this)" class="app-button tw-mr-2">{$lang->cmd_temp_save}</button>
+            <button cond="$is_logged" type="button" onclick="doDocumentLoad(this)" class="app-button tw-mr-2">{$lang->cmd_load}</button>
+          </div>
+  
+          <div class="tw-flex-1"></div>
+          
+          <div class="tw-flex">
+            <a href="{getUrl('','mid',$mid,'page',$page,'document_srl','')}" class="app-button tw-mr-2 sm:tw-flex-1">{$lang->cmd_cancel}</a>
+            <button type="submit" onclick="return duplicateCheck(this)" class="app-button primary sm:tw-flex-1">{$lang->cmd_registration}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+</div>
+
+<script>
+  function duplicateCheck(obj) {
+    const delaytime = 10000 // 몇초 후 재활성화 해줄 건지 설정 1000 = 1초
+    let submingText = '{$lang->cmd_comment_registering}' // 클릭했을 때 보여줄 멘트..등록중
+    const ori_text = jQuery(obj).val()
+    let checkInput = false
+    
+    //button 인지 submit인지 체크.
+    if(!ori_text) {
+      checkInput = false
+      ori_text = jQuery(obj).text()
+    } else {
+      checkInput = true
+    }
+    
+    //현재 버튼 이름이 submingText와 동일한 경우 전송중으로 판단 전송하지 않음.
+    if(ori_text == submingText) return false
+    
+    //기존 멘트를 바꿔준다.
+    if(!checkInput) jQuery(obj).text(submingText)
+    else jQuery(obj).val(submingText)
+    
+    
+    // 설정한 시간이 지나면 다시 활성화
+    setTimeout(function() {
+      if(checkInput) jQuery(obj).val(ori_text)
+      else jQuery(obj).text(ori_text)
+    }, delaytime)
+    
+    return true
+  }
+</script>
+<include target="components/base/_footer.html" />

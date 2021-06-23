@@ -1,0 +1,44 @@
+.app-write-form {
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-3);
+
+    color: $color-gray-800;
+    font-size: 1rem;
+    font-weight: 500;
+
+    transition: .2s ease;
+
+    ion-icon {
+      color: $color-gray-700;
+      margin-right: 0.5rem;
+      transition: .2s ease;
+    }
+
+    &:hover {
+      color: $color-black;
+      background-color: $color-gray-300;
+      ion-icon {
+        color: $color-gray-800;
+      }
+    }
+    &:active {
+      background-color: $color-gray-400;
+    }
+
+    &-wrap {
+      padding-bottom: 1rem;
+
+      @media (max-width: $mobile) {
+        position: relative;
+        z-index: 1;
+        padding-top: 1rem;
+        padding-left: 0.75rem;
+        background-color: $color-grouped-content-background;
+        border-bottom: 1px solid $color-gray-300;
+      }
+    }
+  }
+}

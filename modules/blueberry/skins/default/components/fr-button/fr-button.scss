@@ -1,0 +1,39 @@
+.app-fr-button {
+  position: fixed;
+  right: auto;
+  bottom: 2rem;
+  margin-right: -53px;
+  
+  z-index: 10;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+
+  color: $color-text-primary;
+  background-color: $color-primary;
+
+  border-radius: 100%;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 6px 24px;
+
+  @media (max-width: $mobile) {
+    right: 1rem;
+    margin-right: 0;
+    bottom: calc(var(--header-height) + env(safe-area-inset-bottom) + 1rem);
+
+    width: 3rem;
+    height: 3rem;
+  }
+
+  & > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.app-fr-button-wrap {
+  display: flex;
+  justify-content: flex-end;
+}

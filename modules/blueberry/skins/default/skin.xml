@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">Blueberry 기본 스킨</title>
+	<title xml:lang="en">Blueberry default skin</title>
+	<description xml:lang="ko">Blueberry 모듈의 첫 번째 기본 스킨</description>
+	<description xml:lang="en">The first skin of Blueberry module</description>
+	<version>0.1</version>
+	<date>2021-06-22</date>
+	<author email_address="misol.kr@gmail.com" link="https://github.com/misol">
+		<name xml:lang="ko">Min-Soo Kim</name>
+		<name xml:lang="en">Min-Soo Kim</name>
+	</author>
+	<license>GPL v2</license>
+	<extra_vars>
+	</extra_vars>
+</skin>
+
