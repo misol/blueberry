@@ -1,0 +1,22 @@
+{@
+  $oDocumentModel = &getModel('document');
+  $oMemberModel = &getModel('member');
+
+  //문서목록 설정
+  $author_post_args = new stdClass();
+  $author_post_args->member_srl = $oDocument->get('member_srl');
+  $author_post_args->list_count = 3;
+  $author_post_args->sort_index = 'voted_count';
+  $author_post_args->order_type = 'desc';
+
+  // 정렬기준 설정값이 있을 경우 반영
+  if($mi->article_author_post_sort)
+    $author_post_args->sort_index = $mi->article_author_post_sort;
+
+  // 디자인이 썸네일형일 경우 갯수를 3개로 변경
+  if($mi->article_author_post_design == 'thumbnail')
+    $author_post_args->list_count = 4;
+  
+  $author_post_output = executeQueryArray('document.getDocumentList', $author_post_args, false);
+  $author_posts = $author_post_output->data;
+}

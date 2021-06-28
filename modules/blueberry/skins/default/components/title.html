@@ -1,6 +1,7 @@
 <div class="app-board-title">
   <div class="tw-flex tw-items-center">
-    <a cond="$module_info->list_board_title !== 'N'" class="tw-inline-block tw-font-medium tw-text-2xl tw-font-bold tw-mr-1" href="{getUrl('','mid',$mid)}">{$module_info->title ? $module_info->title : $module_info->browser_title}</a>
+    <a cond="$module_info->list_board_title !== 'N'" class="tw-inline-block tw-font-medium tw-text-2xl tw-font-bold tw-mr-1" href="{getUrl('','mid',$mid)}">
+  {sprintf(lang('blueberry.blueberry_mydata'),escape($logged_info->nick_name))}<!--//{$module_info->title ? $module_info->title : $module_info->browser_title}//--></a>
 
     <div class="tw-flex-1"></div>
     

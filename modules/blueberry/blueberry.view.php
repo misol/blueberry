@@ -77,8 +77,28 @@ class blueberryView extends blueberry
 			Context::set('category_list', array());
 			return;
 		}
-
-		Context::set('category_list', DocumentModel::getCategoryList($this->module_srl));
+		$logged_info = Context::get('logged_info');
+		
+		if(!Context::get('is_logged'))
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted('msg_not_permitted');
+		}
+		
+		if(!intval(Context::get('owner_id'))) {
+			Context::set('owner_id',$logged_info->nick_name);
+		}
+		$owner_id = intval(Context::get('owner_id'));
+		if(!$owner_id) {
+			$owner_id = $logged_info->member_srl;
+		}
+		
+		if(!$owner_id || $owner_id !== $logged_info->member_srl) {
+			throw new Rhymix\Framework\Exceptions\InvalidRequest;
+		}
+		
+		$args = new stdClass();
+		$args->member_srl = $owner_id;
+		Context::set('data_list', blueberryModel::getInVivoDataByMemberSrl($args, $columnList = array()));
 
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('category_list.', 'category_list.childs.');

@@ -25,12 +25,17 @@
 
 
 <div class="app-card">
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/blueberry/skins/default/1'" class="app-board-section app-board-section-padding message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
 	<div class="app-board-section app-board-section-padding">
 		<form action="./" method="post" onsubmit="return procFilter(this, window.insert)" class="ed write-form inner-container">
 		
 			<input type="hidden" name="mid" value="{$mid}" />
-			<input type="hidden" name="act" value="procBlueberryUpsertData" />
+			<input type="hidden" name="act" value="procBlueberryInsertData" />
 			<input type="hidden" name="data_srl" value="{$data_srl}" />
+			<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', $act)}" />
+			<input type="hidden" name="xe_validator_id" value="modules/blueberry/skins/default/1" />
 			
 			<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('common.cmd_input')}</h2>
 			<!--//  작성자 정보 입력란 -->

@@ -1,0 +1,87 @@
+{@
+  $isDocumentOwner = ($comment->member_srl != 0 && ($comment->member_srl == $oDocument->variables['member_srl'] || ($comment->member_srl * -1) == $oDocument->variables['member_srl'])) || ($comment->member_srl == 0 && $comment->getIpaddress() == $oDocument->get('ipaddress'));
+
+  // 내 댓글 검증
+  $is_my_comment = '';
+  if($mi->annonymous_mode == 'Y' && $comment->isGranted())
+    $is_my_comment = 'Y';
+  elseif($comment->get('member_srl') == $logged_info->member_srl)
+    $is_my_comment = 'Y';
+
+  // 닉네임 컬러 정의
+  $nickname_color = '';
+  if($is_my_comment == 'Y')
+    $nickname_color = '2957ff';
+  elseif($mi->anonymous_mode == 'Y') // 내 익명 모드일 때
+    $nickname_color = substr(md5($comment->getNickName()), 0, 6);
+}
+
+<div class="tw-flex tw-items-center tw-flex-wrap">
+  {@ // 댓글 작성자 정보 }
+  <div class="tw-flex tw-items-center tw-text-sm tw-font-bold <!--@if($isDocumentOwner)-->tw-text-primary<!--@end-->">
+    <a cond="!$comment->member_srl && $comment->homepage" class="tw-flex tw-items-center" style="color: #{$nickname_color};" href="{$comment->getHomepageUrl()}" target="_blank">{$comment->getNickName()}</a>
+    
+    <span class="tw-flex tw-items-center" cond="!$comment->member_srl && !$comment->homepage" style="color: #{$nickname_color};">{$comment->getNickName()}</span>
+
+    <a cond="$comment->member_srl" href="#popup_menu_area" class="tw-flex tw-items-center member_{$comment->member_srl}" onclick="return false" style="color: #{$nickname_color};">{$comment->getNickName()}</a>
+
+    <ion-icon name="lock-closed-outline" class="app-comment-secret tw-ml-1" cond="$comment->isSecret()"></ion-icon>
+    <!-- <span class="app-comment-secret tw-ml-1" cond="$comment->isSecret()">
+    </span> -->
+  </div>
+
+  <!--@if($is_my_comment == 'Y')-->
+  <div class="app-comment-item__head-badge app--mycomment">내댓글</div>
+  <!--@elseif($isDocumentOwner)-->
+  <div class="app-comment-item__head-badge">작성자</div>
+  <!--@end-->
+
+  <el-tooltip content="{zdate($comment->get('regdate'), 'Y-m-d H:i:s')}">
+    <div class="tw-ml-2 tw-mr-4 tw-text-gray-700">{$comment->getRegdateDT('Y.m.d')}</div>
+  </el-tooltip>
+  
+  <div class="tw-flex-1"></div>
+
+  {@ // 첨부파일 }
+  <app-dropdown right class="tw-mr-3" cond="$comment->hasUploadedFiles()" style="display: none;">
+    <a class="app-link">
+      <span>{$lang->uploaded_file}</span>
+      <span>[{$comment->get('uploaded_count')}]</span>
+    </a>
+
+    <div slot="menu" style="width: 200px">
+      <div class="tw-py-3 tw-px-6 tw-text-sm tw-font-bold tw-border-b tw-border-gray-300">{$lang->uploaded_file}</div>
+
+      <ul class="tw-m-0">
+        <li loop="$comment->getUploadedFiles()=>$key,$file">
+          <a href="{getUrl('')}{$file->download_url}">
+            <div>
+              <span>{$file->source_filename}</span>
+              <span>({FileHandler::filesize($file->file_size)})</span>
+              <div class="tw-text-gray-700 tw-text-xs">(다운 횟수: {number_format($file->download_count)})</div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </app-dropdown>
+  
+  {@ // 관리자 메뉴 }
+  <a cond="$is_logged && $grant->manager" class="app-link comment_{$comment->comment_srl} this" href="#popup_menu_area" onclick="return false">
+    관리
+  </a>
+</div>
+
+<div cond="$comment->get('depth')" class="tw-pt-2 tw-text-xs">
+  {@
+    $parent_anony_random_color = '';
+    if($mi->anonymous_mode == 'Y') $parent_anony_random_color = substr(md5($comment_parent->getNickName()), 0, 6);
+  }
+
+  <span class="tw-text-black" style="color: #{$parent_anony_random_color} !important;">
+    <!-- <ion-icon name="chatbubbles"></ion-icon> -->
+    <span>@{$comment_parent->getNickName()}</span>
+  </span>
+
+  <span class="tw-text-gray-700">님에게 보내는 답글</span>
+</div>

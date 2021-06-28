@@ -1,0 +1,17 @@
+<!--@if($module_info->article_author_post !== 'N')-->
+<load target="article-author-post.scss" vars="$themeConfig->variables" />
+
+<include target="article-author-post__config.html" />
+
+<div class="app-author-post app-board-section app-author-post--{$mi->article_author_post_design}">
+  <div class="app-author-post__title">작성자의 다른 글</div>
+
+  <ul class="app-author-post-list">
+    <!--@if($module_info->article_author_post_design == 'thumbnail')-->
+    <include target="article-author-post-item--thumbnail.html" />
+    <!--@else-->
+    <include target="article-author-post-item--card.html" />
+    <!--@end-->
+  </ul>
+</div>
+<!--@end-->

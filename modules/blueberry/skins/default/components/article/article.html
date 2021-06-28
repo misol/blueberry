@@ -1,0 +1,88 @@
+<div class="app-article-wrap" style="max-width: {$mi->max_width}">
+  <load target="article.scss" vars="$themeConfig->variables" />
+    <load target="article-content.scss" vars="$themeConfig->variables" />
+    
+    {@ // 본문 플로팅 메뉴 }
+    <include target="article-floating-menu/article-floating-menu.html" />
+    
+    <div class="app-card app-board-section">
+      {@ // 본문 상단 }
+      <include target="article-head.html" />
+    
+      <div class="app-board-container app-article-container">
+        {@ // 본문 사용자 정의 테이블 }
+        <block cond="$oDocument->isExtraVarsExists() && (!$oDocument->isSecret() || $oDocument->isGranted())">
+          <table border="1" cellspacing="0" summary="Extra Form Output" class="app-board-extra-value">
+            <tr loop="$oDocument->getExtraVars() => $key,$val" cond="$val->getValueHTML()">
+              <th scope="row">{$val->name}</th>
+              <td>{$val->getValueHTML()}&nbsp;</td>
+            </tr>
+          </table>
+        </block>
+    
+        {@ // 본문 }
+        <div class="app-article-content app-clearfix">
+          <div class="tw-text-center tw-mb-6" cond="$module_info->article_top_ad">
+            {$module_info->article_top_ad}
+          </div>
+    
+          {@ // 비밀번호 입력 }
+          <!--@if($oDocument->isSecret() && !$oDocument->isGranted())-->
+          <include target="article-grantform.html"/>
+          <!--@else-->
+          {$oDocument->getContent(false)}
+          <!--@end-->
+    
+          <div class="tw-text-center tw-pt-6" cond="$module_info->article_bottom_ad">
+            {$module_info->article_bottom_ad}
+          </div>
+          
+          <div class="tw-flex tw-pt-8">
+            <include target="article-tag.html" />
+            <div class="tw-flex-1"></div>
+            <include target="article-file.html" />
+          </div>
+        </div>
+    
+        {@ // article Footer }
+        <include target="article-footer.html" />
+      </div>
+    
+    
+      <!-- 툴바 -->
+      <div class="app-article-toolbar">
+        <div class="app-board-container">
+          <a class="app-link" href="{getUrl('', 'mid', $mid)}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            <span>{$lang->cmd_list}으로</span>
+          </a>
+          
+          <div class="tw-flex-1"></div>
+          
+          {@ // 수정, 삭제 }
+          <div cond="$oDocument->isEditable()" class="tw-ml-2 tw-mr-2 tw-text-sm">
+            <a href="{getUrl('act','dispBoardWrite','document_srl',$oDocument->document_srl,'comment_srl','')}" class="app-link tw-mr-2">
+              {$lang->cmd_modify}
+            </a>
+            
+            <a class="app-link tw-mr-2 tw-text-sm" onclick="onClickDocumentDelete()">
+              {$lang->cmd_delete}
+            </a>
+          </div>
+      
+          <a class="app-link tw-text-sm document_{$oDocument->document_srl}" href="#popup_menu_area" title="이 게시물을..." onclick="return false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <include target="article-author-post/article-author-post.html" />
+    <include target="../hot-post/hot-post.html" />
+    
+    <include target="../comment/comment.html" />
+</div>

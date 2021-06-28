@@ -2,7 +2,7 @@
 $lang->last_updater = '최근 편집자';
 $lang->no_data = '저장된 데이터가 없습니다.';
 $lang->no_data_description = '첫 데이터를 생성해보세요.';
-
+$lang->blueberry_mydata = '%s님의 Blueberry 데이터';
 
 $lang->cmd_new_nca = '새로운 데이터 추가';
 $lang->cmd_manage_nca_data = '데이터 관리';

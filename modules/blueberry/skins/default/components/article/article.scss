@@ -1,0 +1,120 @@
+.app-article-wrap {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.app-board-article-profile {
+  .app-profile-image {
+    position: relative;
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 100%;
+    overflow: hidden;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .app-profile-body {
+    padding-left: 1rem;
+
+    .author {
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+
+.app-board-article-head {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-gray-300);
+
+  .app-article-category {
+    color: var(--color-gray-700);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  .app-article-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    color: var(--color-gray-700);
+    font-size: 13px;
+
+    @media (max-width: 1366px) {
+      font-size: 0.75rem;
+    }
+
+    .app-article-meta-divider {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+      color: var(--color-gray-600);
+    }
+
+    & > a {
+      color: var(--color-black);
+      font-weight: 600;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    /* margin-right: 1rem;
+
+    font-size: 0.875rem;
+
+    &-label {
+      color: var(--color-gray-600);
+      margin-right: 0.5rem;
+    } */
+  }
+}
+
+.app-article-container {
+  padding-bottom: 1.25rem;
+}
+
+.app-article-content {
+  max-width: 100vw;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+
+.app-article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  
+  & > li {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    & > a {
+      cursor: pointer;
+      display: block;
+      padding: 0.25rem 0.5rem;
+      
+      color: var(--color-gray-700);
+      font-size: 0.75rem;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 9999px;
+
+      background-color: var(--color-gray-100);
+    }
+  }
+}

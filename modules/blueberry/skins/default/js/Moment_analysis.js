@@ -993,19 +993,9 @@ function saveData () {
 	};
 	
 	var response_tags = new Array('error','message','results');
-	exec_xml('blueberry', 'procBlueberryUpsertData', params, function(a,b) { return; }, response_tags);
+	exec_xml('blueberry', 'procBlueberryInsertData', params, function(a,b) { alert(a.message); window.location.href = a.redirect_url; return; }, response_tags);
 	
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

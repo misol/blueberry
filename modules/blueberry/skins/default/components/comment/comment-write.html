@@ -1,0 +1,189 @@
+<load target="../../assets/js/sticker.js" cond="$mi->comment_sticker === 'Y'" />
+<load target="../../assets/js/autosize.min.js" />
+
+<script>
+  // XE jQuery 호환성
+  var $ = jQuery;
+  
+  jQuery(function($) {
+    autosize($('textarea'));
+  });
+
+  // 댓글에 답글 작성
+  var reComment = function(doc_srl, cmt_srl, edit_url) {
+    var tmp = $('#recomment-write').eq(0);
+    
+    tmp.find('input[name=error_return_url]').val('/' + doc_srl);
+    tmp.find('input[name=mid]').val(current_mid);
+    tmp.find('input[name=document_srl]').val(doc_srl);
+    
+    $('#comment_' + cmt_srl).after(tmp);
+    tmp.show().find('input[name=parent_srl]').val(cmt_srl);
+    
+    tmp.find('#use-editor').attr('href', edit_url);
+    tmp.find('textarea').focus();
+    tmp.find('#recomment-sticker').attr('onclick', 'loadStickerList(undefined, '+cmt_srl+');');
+    tmp.find('.app-sticker').addClass('app-sticker-closed');
+    tmp.find('.app-sticker > .app-sticker-header > .sticker_pack, ed.sticker > .app-sticker-body').html('');
+  }
+
+  // Textarea replace
+  String.prototype.replaceAll = function(searchStr, replaceStr) {
+    var temp = this;
+    while (temp.indexOf(searchStr) != -1) {
+      temp = temp.replace(searchStr, replaceStr);
+    }
+    return temp;
+  }
+</script>
+
+<script type="text/javascript" cond="$mi->comment_write_type !== 'wysiwyg'">
+  function setTextareaReplaceComment() {
+    var str = document.getElementById("temp-{$oDocument->document_srl}").value;
+    str = "<p>" + str.replace(/(?:\r\n|\r|\n)/g, "</p>\r\n<p>") + "</p>";
+    str = str.replaceAll("<p></p>", "<p>&nbsp;</p>");
+    document.getElementById("editor-{$oDocument->document_srl}").value = str;
+  };
+</script>
+
+{@ // 기본 댓글 작성 }
+<!--@if($grant->write_comment && $oDocument->isEnableComment())-->
+<div class="app-comment-write">
+  <form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" class="" id="write_comment">
+    <input type="hidden" name="mid" value="{$mid}" />
+    <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+    <input type="hidden" name="comment_srl" value="" />
+
+    <div class="tw-flex">
+      <!--@if($mi->comment_write_type !== 'wysiwyg')-->
+      <div class="app-avatar">
+        <img cond="$logged_info->profile_image->src" src="{$logged_info->profile_image->src}" alt="Profile" />
+        <img cond="!$logged_info->profile_image->src" src="../../assets/images/ic_profile_default.png" alt="Profile" />
+      </div>
+      <!--@end-->
+
+      <div class="tw-w-full"|cond="$mi->comment_write_type == 'wysiwyg'" class="tw-flex-1 tw-pl-2"|cond="$mi->comment_write_type !== 'wysiwyg'">
+        <div cond="!$is_logged" class="tw-flex tw-mb-3">
+          <input type="text" name="nick_name" placeholder="{$lang->writer}" class="app-input tw-mr-3" style="max-width: 150px; width: 100%;" />
+          <input type="password" name="password" placeholder="{$lang->password}" class="app-input tw-mr-3" style="max-width: 150px; width: 100%;" />
+        </div>
+        
+        <div class="tw-mb-3">
+          <!--@if($mi->comment_write_type == 'wysiwyg')-->
+          <input type="hidden" name="content" value="" />
+          {$oDocument->getCommentEditor()}
+          <!--@else-->
+          <textarea id="temp-{$oDocument->document_srl}" class="app-textarea" style="resize: none"></textarea>
+          <textarea id="editor-{$oDocument->document_srl}" name="content" style="display: none;"></textarea>
+          <!--@end-->
+        </div>
+
+        <div class="tw-flex tw-items-start">
+          <div class="tw-flex tw-items-center">
+            <div cond="$mi->secret=='Y'" class="tw-mr-2">
+              <input type="checkbox" name="is_secret" value="Y" id="is_secret" class="app-input-toggle" />
+              <label for="is_secret"><div>비밀</div></label>
+            </div>
+  
+            <div cond="$is_logged && $mi->comment_notify_checkbox == 'Y'" class="tw-mr-2">
+              <input type="checkbox" name="notify_message" value="Y" id="notify_message" class="app-input-toggle" />
+              <label for="notify_message"><div>{$lang->notify}</div></label>
+            </div>
+
+            <el-tooltip cond="$is_logged && $mi->comment_sticker == 'Y'" content="스티커">
+              <a class="app-icon-button app-icon-button-gray tw-mr-1" href="javascript:;" onclick="loadStickerList();">
+                <ion-icon name="happy-outline"></ion-icon>
+              </a>
+            </el-tooltip>
+  
+            <div class="ed editor-select">
+              <!--@if($mi->comment_write_type === 'wysiwyg')-->
+              <a class="app-link" href="#" onclick="$.cookie('editor_type', 'textarea');location.reload();return false">텍스트</a>
+              <!--@else-->
+              <a class="app-link" href="#" onclick="$.cookie('editor_type', 'wysiwyg');location.reload();return false">에디터</a>
+              <!--@end-->
+            </div>
+          </div>
+          
+          <div class="tw-flex-1"></div>
+
+          <button type="submit" onclick="setTextareaReplaceComment()"|cond="$mi->comment_write_type !== 'wysiwyg'" class="app-button app-button-rounded app-button-xs primary">{$lang->cmd_registration}</button>
+        </div>
+
+        {@ // 스티커 모달 }
+        <div cond="$mi->comment_sticker === 'Y'" class="app-sticker-comment">
+          <include target="comment-sticker.html" />
+        </div>
+
+      </div>
+    </div>
+    
+  </form>
+</div>
+<!--@else-->
+
+<div class="tw-text-center tw-py-8 tw-px-4">
+  <ion-icon name="finger-print-outline" class="tw-text-gray-600 tw-text-2xl tw-mb-4"></ion-icon>
+  <div class="tw-text-black tw-font-bold tw-text-sm tw-mb-2">{$lang->write_comment}</div>
+  <div class="tw-text-sm tw-text-gray-700">{$lang->msg_not_permitted}</div>
+</div>
+
+<!--@end-->
+
+{@ // 대댓글 작성 }
+<div cond="$rd_idx==0" id="recomment-write" class="app-comment-write app-recomment-form" style="display: none">
+  <form action="./" method="post" onsubmit="return procFilter(this,insert_comment)">
+    <input type="hidden" name="mid" value="{$mid}" />
+		<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+    <input type="hidden" name="parent_srl" value="" />
+    
+    <div cond="!$is_logged" class="tw-flex tw-items-center tw-mb-3">
+      <input type="text" name="nick_name" placeholder="{$lang->writer}" class="app-input tw-mr-2" style="width: 100px" />
+      <input type="password" name="password" placeholder="{$lang->password}" class="app-input tw-mr-2" style="width: 100px" />
+    </div>
+
+    <textarea id="temp-recomment" class="app-textarea" style="resize: none"></textarea>
+    <textarea style="display: none;" id="editor-recomment" name="content"></textarea>
+
+    <script type="text/javascript">
+      function setTextareaReplaceReComment() {
+        var str = document.getElementById("temp-recomment").value;
+        str = "<p>" + str.replace(/(?:\r\n|\r|\n)/g, "</p>\r\n<p>") + "</p>";
+        str = str.replaceAll("<p></p>", "<p>&nbsp;</p>");
+        document.getElementById("editor-recomment").value = str;
+      };
+    </script>
+
+    <div class="tw-flex tw-items-start tw-pt-3">
+      <div class="tw-flex tw-items-center tw-flex-wrap tw-mb-3">
+        <div class="tw-mr-2" cond="$mi->secret=='Y'">
+          <input type="checkbox" name="is_secret" value="Y" id="is_secret_recmt" class="app-input-toggle" />
+          <label for="is_secret_recmt"><div>비밀</div></label>
+        </div>
+  
+        <el-tooltip cond="$is_logged && $mi->comment_sticker == 'Y'" content="스티커">
+          <a id="recomment-sticker" class="app-icon-button app-icon-button-gray tw-mr-1" href="javascript:;">
+            <ion-icon name="happy-outline"></ion-icon>
+          </a>
+        </el-tooltip>
+  
+        <div class="tw-mr-3" cond="$is_logged && $mi->comment_notify_checkbox === 'Y'">
+          <input type="checkbox" name="notify_message" value="Y" id="notify_message_recmt" class="app-input-toggle" />
+          <label for="notify_message_recmt"><div>{$lang->notify}</div></label>
+        </div>
+  
+        <a id="use-editor" class="app-link tw-mr-3" href="">에디터</a>
+      </div>
+
+      <div class="tw-flex-1"></div>
+
+      <button type="button" class="app-button app-button-rounded app-button-xs tw-mr-2" onclick="jQuery('#recomment-write').toggle().parent().find('#reComment').focus();return false">{$lang->cmd_cancel}</button>
+      <button type="submit" onclick="setTextareaReplaceReComment()" class="app-button app-button-rounded app-button-xs primary">{$lang->cmd_registration}</button>
+    </div>
+  </form>
+
+  {@ // 스티커 모달 }
+  <div cond="$mi->comment_sticker === 'Y'" class="app-sticker-recomment">
+    <include target="comment-sticker.html" />
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<load target="article-author-post-item--thumbnail.scss" vars="$themeConfig->variables" />
+
+<li loop="$author_posts=>$no,$doc_item">
+  {@ $document = $oDocumentModel->getDocument($doc_item->document_srl); }
+  <a class="app-author-post-item" href="{getUrl('', 'document_srl', $document->document_srl)}">
+    <div class="app-author-post-item__thumbnail">
+      <!--@if($document->thumbnailExists())-->
+      <img src="{$document->getThumbnail('200px', '150px', 'crop');}" alt="{$document->getTitle()}">
+      <!--@else-->
+      <ion-icon name="image-outline"></ion-icon>
+      <!--@end-->
+    </div>
+    
+    <div class="app-author-post-item__body">
+      <span class="app-author-post-item__title">{$document->getTitle()}</span>
+      <span cond="$document->getCommentCount()" class="app-author-post-item__comment-count">{$document->getCommentCount()}</span>
+      <span class="app-author-post-item__date">{$document->getRegdateDT('Y.m.d')}</span>
+    </div>
+  </a>
+</li>

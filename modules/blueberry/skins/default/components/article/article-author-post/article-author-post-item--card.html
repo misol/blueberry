@@ -1,0 +1,31 @@
+<load target="article-author-post-item--card.scss" vars="$themeConfig->variables" />
+
+<li loop="$author_posts=>$no,$doc_item">
+  {@
+    $document = $oDocumentModel->getDocument($doc_item->document_srl);
+  }
+  <a class="app-ap-item" href="{getUrl('', 'document_srl', $document->document_srl)}">
+    <!--@if($document->thumbnailExists())-->
+    <div class="app-ap-item__thumbnail">
+      <img src="{$document->getThumbnail('200px', '150px', 'crop');}" alt="{$document->getTitle()}">
+    </div>
+    <!--@else-->
+    <div class="app-ap-item__thumbnail--empty">
+      <ion-icon name="document-text-outline"></ion-icon>
+    </div>
+    <!--@end-->
+    
+    <div class="app-ap-item__body">
+      <div class="app-ap-item__title-wrap">
+        <span class="app-ap-item__title">{$document->getTitle()}</span>
+        <span cond="$document->getCommentCount()" class="app-ap-item__comment-count">{$document->getCommentCount()}</span>
+      </div>
+
+      <div class="app-ap-item__text">{$document->getSummary()}</div>
+    </div>
+
+    <div class="app-ap-item__footer">
+      <span class="app-ap-item__date">{$document->getRegdateDT('Y.m.d')}</span>
+    </div>
+  </a>
+</li>

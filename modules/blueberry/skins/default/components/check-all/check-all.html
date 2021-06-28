@@ -1,0 +1,13 @@
+<load target="check-all.scss" vars="$themeConfig->variables" />
+
+<div class="app-board-check-all" cond="$grant->manager">
+  <input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" id="check-all" class="app-input-checkbox" title="Check All" />
+  <label for="check-all">전체 선택</label>
+
+  <div class="tw-flex-1"></div>
+
+  <a class="app-link" href="{getUrl('','module','document','act','dispDocumentManageDocument')}" onclick="popopen(this.href,'manageDocument'); return false;">
+    <ion-icon name="checkmark-done-outline" class="tw-mr-2"></ion-icon>
+    선택한 {$lang->cmd_manage_document}
+  </a>
+</div>

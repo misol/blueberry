@@ -1,0 +1,11 @@
+<query id="getInVivoData" action="select">
+	<tables>
+		<table name="blueberry_invivo_data" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="data_srl" var="data_srl" filter="number" notnull="notnull" />
+	</conditions>
+</query>

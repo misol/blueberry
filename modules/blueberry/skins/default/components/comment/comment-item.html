@@ -1,0 +1,62 @@
+<li loop="$oDocument->getComments()=>$key,$comment" id="comment_{$comment->comment_srl}" class="app-comment-item app-clearfix <!--@if($comment->get('depth'))-->app-comment-depth<!--@end-->">
+  <block cond="$comment->get('depth')">
+    {@
+      $oComment = &getModel('comment');
+      $comment_parent = $oComment->getComment($comment->parent_srl);
+    }
+  </block>
+
+  {@ // 프로필 이미지 }
+  <div class="app-comment-profile-image-wrap tw-flex-initial">
+    {@ // 대댓글 시 타겟의 프로필 이미지 표시 }
+    <block cond="$comment->get('depth')">
+      <div class="app-comment-profile-image app-avatar">
+        <img cond="$comment_parent->getProfileImage()" src="{$comment_parent->getProfileImage()}" alt="{$comment_parent->getNickName()}" />
+        <img cond="!$comment_parent->getProfileImage()" src="../../assets/images/ic_profile_default.png" alt="{$comment_parent->getNickName()}" />
+      </div>
+    </block>
+
+    <div class="app-comment-profile-image app-owner-profile app-avatar">
+      <img cond="$comment->getProfileImage()" src="{$comment->getProfileImage()}" alt="{$comment->getNickName()}" />
+      <img cond="!$comment->getProfileImage()" src="../../assets/images/ic_profile_default.png" alt="{$comment->getNickName()}" />
+    </div>
+  </div>
+  
+  {@ // 바디 영역 }
+  <div class="tw-flex-1 tw-pl-4">
+    {@ // 댓글 아이템 해더 }
+    <include target="comment-item-head.html" />
+    
+    {@ // 첨부파일 리스트 }
+    <div cond="$comment->hasUploadedFiles()">
+      <ul id="ed-files" class="ed list margin-vertical-xsmall" style="display: none">
+        <li loop="$comment->getUploadedFiles()=>$key,$file">
+          <a href="{getUrl('')}{$file->download_url}" class="ed link-muted">
+            {$file->source_filename}
+            <span>({FileHandler::filesize($file->file_size)})</span>
+            <span class="fileSize">(다운 횟수: {number_format($file->download_count)})</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="app-comment-content tw-py-3">
+      <!--@if($comment->status == RX_STATUS_DELETED)-->
+      {@ // 삭제된 댓글 }
+      <div class="xe_content deleted">{$lang->msg_deleted_comment}</div>
+      <!--@elseif($comment->status == RX_STATUS_DELETED_BY_ADMIN)-->
+      {@ // 관리자에 의해 삭제된 댓글 }
+      <div class="xe_content deleted deleted_by_admin">{$lang->msg_admin_deleted_comment}</div>
+      <!--@elseif(!$comment->isAccessible())-->
+      {@ // 비밀번호 입력 }
+      <include target="comment-grantform.html" />
+      <!--@else-->
+      {@ // 댓글 본문 }
+      <div>{$comment->getContent(false)}</div>
+      <!--@end-->
+    </div>
+
+    {@ // 댓글 액션 }
+    <include target="comment-item-actions" />
+  </div>
+</li>

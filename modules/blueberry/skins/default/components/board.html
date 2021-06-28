@@ -1,0 +1,25 @@
+<div id="board-list" class="app-board-header">
+  <include target="components/title.html" />
+  <include target="components/category.html" />
+  <include target="components/tools.html" />
+</div>
+
+<div class="app-board-section">
+  <!--@if($module_info->board_type == "table")-->
+  <include target="../templates/table.html" />
+  <!--@elseif($module_info->board_type == "grid")-->
+    <include target="../templates/grid.html" />
+  <!--@elseif($module_info->board_type == "faq")-->
+  <include target="../templates/faq.html" />
+  <!--@else-->
+  <include target="../templates/default/default.html" />
+  <!--@end-->
+
+  <include target="empty-space.html" />
+  <include target="tools-bottom.html" />
+</div>
+
+<include cond="!Mobile::isMobileCheckByAgent()" target="components/pagination.html" />
+
+{@ // 모바일용 페이지네이션 }
+<include cond="Mobile::isMobileCheckByAgent()" target="components/pagination.m.html" />

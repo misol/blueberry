@@ -1,0 +1,22 @@
+<load target="comment-vote.scss" vars="$themeConfig->variables" />
+<load target="comment-vote.js" />
+
+<div class="app-comment-vote" data-target-srl="{$comment->comment_srl}">
+  <button class="app-comment-vote__up"|cond="!$comment->getVote() == 1" class="app-comment-vote__up active"|cond="$comment->getVote()" data-type="up" data-count="{$comment->get('voted_count')}" onclick="appCommentVote(this)">
+    <ion-icon name="thumbs-up-sharp"></ion-icon>
+    <span class="app-comment-vote__count">
+      <!--@if($comment->get('voted_count') > 0)-->
+      {$comment->get('voted_count')}
+      <!--@end-->
+    </span>
+  </button>
+  
+  <button class="app-comment-vote__down"|cond="!$comment->getVote()" class="app-comment-vote__down active"|cond="$comment->getVote() == -1" data-type="down" data-count="{$comment->get('voted_count')}" onclick="appCommentVote(this)">
+    <ion-icon name="thumbs-down-sharp"></ion-icon>
+    <span class="app-comment-vote__count">
+      <!--@if($comment->get('blamed_count') > 0)-->
+      {$comment->get('blamed_count') * 1}
+      <!--@end-->
+    </span>
+  </button>
+</div>

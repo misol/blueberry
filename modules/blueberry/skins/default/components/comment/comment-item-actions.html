@@ -1,0 +1,38 @@
+<div class="app-comment-actions tw-flex tw-items-center">
+  <include target="comment-vote/comment-vote.html" />
+
+  <a cond="$comment->isAccessible() && $oDocument->allowComment()" class="comment-item-tool app-link tw-mr-2" 
+    onclick="reComment('{$comment->get('document_srl')}',
+      '{$comment->get('comment_srl')}',
+      '{getUrl('act','dispBoardReplyComment','comment_srl',$comment->comment_srl)}');
+      return false;"
+  >{$lang->cmd_reply}</a>
+
+  <div class="app-dropdown">
+    <a class="app-dropdown-toggle app-icon-button app-icon-button-gray">
+      <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+    </a>
+
+    <div class="app-dropdown-menu">
+      <ul>
+        <li>
+          <a cond="$comment->isGranted()||!$comment->get('member_srl')" href="{getUrl('act','dispBoardModifyComment','comment_srl',$comment->comment_srl)}">
+            {$lang->cmd_modify}
+          </a>
+        </li>
+  
+        <li>
+          <a cond="$comment->isGranted()||!$comment->get('member_srl')" onClick="commentDelete('{$comment->comment_srl}', '{$mid}', '{$page}', '{$comment->document_srl}')">
+            {$lang->cmd_delete}
+          </a>
+        </li>
+  
+        <li>
+          <a href="#" onclick="doCallModuleAction('comment','procCommentDeclare','{$comment->comment_srl}');return false">
+            {$lang->cmd_declare}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

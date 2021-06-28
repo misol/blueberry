@@ -1,0 +1,17 @@
+<div class="tw-text-center">
+  <ion-icon name="lock-closed-outline" class="tw-text-gray-600 tw-text-2xl tw-mb-4"></ion-icon>
+
+  <h3 class="tw-text-sm tw-font-bold tw-mb-2">{$lang->msg_is_secret}</h3>
+  <p class="tw-text-xs tw-text-gray-700 tw-mb-6">{$lang->msg_input_password}</p>
+
+  <div class="tw-flex tw-justify-center">
+    <form action="./" method="get" onsubmit="return procFilter(this, input_password)" style="max-width: 320px; width: 100%;">
+      <input type="hidden" name="mid" value="{$mid}" />
+      <input type="hidden" name="page" value="{$page}" />
+      <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+  
+      <input type="password" name="password" id="cpw" class="app-input app-input-expand tw-mb-3" />
+      <input type="submit" value="{$lang->cmd_input}" class="app-button app-button-expand primary" />
+    </form>
+  </div>
+</div>

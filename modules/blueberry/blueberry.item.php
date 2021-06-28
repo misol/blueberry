@@ -12,7 +12,7 @@ class blueberryItem extends BaseObject
 	 * Document number
 	 * @var int
 	 */
-	private $data_srl = 0;
+	public $data_srl = 0;
 	private $reload = false;
 	/**
 	 * grant
@@ -82,7 +82,7 @@ class blueberryItem extends BaseObject
 		$this->setAttribute($blueberry_item);
 	}
 
-	private function setAttribute($attribute)
+	public function setAttribute($attribute)
 	{
 		if(!is_object($attribute) || !$attribute->data_srl)
 		{

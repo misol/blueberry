@@ -1,0 +1,32 @@
+// Color Picker Input
+.app-colorpicker {
+  width: 100px;
+  height: 34px;
+  padding-left: 38px !important;
+  padding-right: 6px;
+  background-color: $color-background;
+  border-radius: 4px;
+
+  outline: none;
+  border: 1px solid $color-gray-300;
+
+  color: $color-black;
+  
+  transition: .2s ease;
+
+  &::-webkit-input-placeholder {
+    color: $color-gray-600;
+  }
+  &:-ms-input-placeholder {
+    color: $color-gray-600;
+  }
+  
+  &:hover {
+    border-color: $color-gray-500;
+    background-color: $color-gray-100;
+  }
+}
+
+.minicolors-swatch {
+  border-color: $color-gray-300 !important;
+}

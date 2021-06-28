@@ -2,6 +2,7 @@
 $lang->last_updater = 'Latest editor';
 $lang->no_data = 'There is no saved data.';
 $lang->no_data_description = 'Let\'s analyse your data.';
+$lang->blueberry_mydata = '%s\'s Blueberry data';
 
 
 $lang->cmd_new_nca = 'Add new data';

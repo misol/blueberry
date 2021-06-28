@@ -1,0 +1,50 @@
+<load target="comment.scss" vars="$themeConfig->variables" />
+
+{@ // 댓글 상단 광고 }
+<div class="ed text-center margin-vertical-small" cond="$module_info->comment_top_ad">
+  {$module_info->comment_top_ad}
+</div>
+
+<div class="app-card app-board-comment app-board-section">
+  <div class="app-board-comment-target" id="comment"></div>
+
+  <div class="app-comment-header app-board-container tw-flex tw-items-center">
+    <div class="tw-font-bold tw-text-base tw-mr-2">{$lang->comment}</div>
+    <div class="tw-text-sm">
+      <span class="tw-text-gray-700">총 </span>
+      <span class="tw-text-primary tw-font-bold">{$oDocument->getCommentcount()}</span><span class="tw-text-gray-700">개</span>
+    </div>
+  </div>
+
+  {@ // 댓글 리스트 }
+  <include target="comment-list.html" />
+  
+  {@ // 페이지네이션 }
+  <div cond="$oDocument->comment_page_navigation" class="app-board-section-padding tw-border-b tw-border-gray-300">
+    <ul class="app-pagination">
+      <li>
+        <a href="{getUrl('cpage',1)}#comment" class="app-pagination-prev">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </a>
+      </li>
+
+      <li loop="$page_no=$oDocument->comment_page_navigation->getNextPage()" class="app-active"|cond="$cpage == $page_no">
+        <a href="{getUrl('cpage',$page_no)}#comment">{$page_no}</a>
+      </li>
+
+      <li>
+        <a  href="{getUrl('cpage',$oDocument->comment_page_navigation->last_page)}#comment" class="app-pagination-prev">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+  {@ // 댓글 작성 }
+  <include target="comment-write.html" />
+</div>
+
+{@ // 댓글 하단 광고 }
+<div class="tw-text-center tw-my-3" cond="$module_info->comment_bottom_ad">
+  {$module_info->comment_bottom_ad}
+</div>

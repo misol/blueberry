@@ -74,6 +74,7 @@ class blueberry extends ModuleObject
 	 **/
 	public function checkUpdate()
 	{
+		// begin transaction
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 

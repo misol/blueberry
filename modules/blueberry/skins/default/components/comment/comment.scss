@@ -1,0 +1,146 @@
+.app-board-comment {
+  position: relative;
+
+  &-target {
+    position: absolute;
+    top: calc(var(--header-height) * -1);
+    left: 0;
+  }
+
+  .app-comment-header {
+    // position: sticky;
+    // top: var(--header-height);
+    // z-index: 10;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-gray-300);
+    // background-color: var(--header-background);
+    // backdrop-filter: var(--header-backdrop);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+
+    @media (max-width: 1366px) {
+      position: relative;
+      top: auto;
+      z-index: inherit;
+      border-radius: 0;
+    }
+  }
+}
+@keyframes comment-item-active {
+  from {
+    /* background-color: var(--color-gray-100); */
+  }
+  to {
+    background-color: $color-primary !important;
+  }
+}
+
+.app-board-comment-list {
+  .app-comment-item {
+    position: relative;
+    
+    // .app-comment-item-target {
+    //   position: absolute;
+    //   top: calc(var(--header-height) * -2);
+    //   left: 0;
+    // }
+
+    & {
+      display: flex;
+      padding: 1rem;
+      border-bottom: 1px solid var(--color-gray-300);
+      
+      .app-comment-profile-image {
+        position: relative;
+        flex: 0 0 auto;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 100%;
+        overflow: hidden;
+
+        img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
+      }
+
+      .app-comment-item__head-badge {
+        padding: 0.25rem 0.5rem 0.25rem;
+        margin-left: 0.25rem;
+        color: white;
+        font-size: 0.75rem;
+        line-height: 1;
+        background-color: var(--color-primary);
+        border-radius: 5rem;
+
+        &.app--mycomment {
+          background-color: var(--color-success);
+        }
+      }
+
+      &.app-comment-depth {
+        padding-left: 1.75rem;
+        background-color: var(--color-gray-100);
+
+        .app-comment-profile-image-wrap {
+          position: relative;
+          top: -2rem;
+        }
+        .app-comment-profile-image {
+          width: 2rem;
+          height: 2rem;
+          border: 2px solid var(--color-gray-100);
+
+          &.app-owner-profile {
+            position: relative;
+            top: -0.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.app-board-comment-list .app-comment-item.active {
+  // animation: comment-item-active .6s 3 alternate;
+  // animation-delay: 1s;
+  background-color: mix($color-grouped-content-background, $color-primary, 90%);
+  border-left: 3px solid $color-primary;
+}
+
+/* 댓글 작성 폼 */
+.app-comment-write {
+  padding: 1rem;
+}
+.app-recomment-form {
+  padding-left: 4.75rem;
+  border-bottom: 1px solid var(--color-gray-300);
+}
+
+.app-comment-vote.app-active {
+  color: var(--color-success);
+}
+.app-comment-blame.app-active {
+  color: var(--color-danger);
+}
+
+
+// 댓글 콘텐츠
+.app-comment-content {
+  .xe_content {
+    a {
+      color: $color-primary;
+      word-break: break-all;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+.app-board-check-all {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid $color-gray-300;
+
+  @if $dark-mode {
+    border-bottom-color: $color-gray-100;
+  }
+}

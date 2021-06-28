@@ -1,0 +1,92 @@
+$article-vote-up-color: #ff5a57;
+
+.app-article-vote {
+  & > button {
+    cursor: pointer;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px;
+    padding: 0.75rem 1rem;
+    margin-right: 0.5rem;
+    
+    color: $color-gray-700;
+    font-size: 14px;
+    text-decoration: none;
+    
+    border: 1px solid $color-gray-300;
+    outline: none;
+    border-radius: $border-radius-2;
+    background-color: transparent;
+    
+    transition: .2s ease;
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    span {
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 0.25rem;
+    }
+
+    &:hover {
+      color: $color-gray-800;
+      border-color: $color-gray-400;
+      background-color: $color-gray-100;
+    }
+    &:active {
+      color: $color-black;
+      border-color: $color-gray-400;
+      background-color: $color-gray-200;
+    }
+  }
+
+  & > &__up {
+    color: $article-vote-up-color;
+    border-color: #ffd0cf;
+    background-color: #ffefee;
+
+    &:hover {
+      color: $article-vote-up-color;
+      border-color: #ffbcbb;
+      background-color: #fddedc;
+    }
+    &:active {
+      color: $article-vote-up-color;
+      border-color: #faadab;
+      background-color: #f7cdca;
+    }
+
+    @if $dark-mode {
+      color: $article-vote-up-color;
+      border-color: #6a3a39;
+      background-color: #452b2a;
+
+      &:hover {
+        color: $article-vote-up-color;
+        border-color: #5f3131;
+        background-color: #422726;
+      }
+      &:active {
+        color: $article-vote-up-color;
+        border-color: #582c2c;
+        background-color: #3d2221;
+      }
+    }
+
+    &.active {
+      color: $color-text-primary;
+      background-color: $article-vote-up-color;
+      border-color: $article-vote-up-color;
+    }
+  }
+  & > &__down {
+    &.active {
+      color: $color-primary;
+    }
+  }
+}

@@ -1,0 +1,79 @@
+<div class="app-board-article-head">
+  <div class="app-board-container">
+    <!-- <img src="{$oDocument->getThumbnail()}" alt=""> -->
+
+    <div class="app-article-category" style="color: {$category_list[$oDocument->get('category_srl')]->color}" cond="$oDocument->get('category_srl')">{$category_list[$oDocument->get('category_srl')]->title}</div>
+
+    <h1 class="tw-font-bold tw-text-3xl md:tw-text-xl">{$oDocument->getTitle()}</h1>
+
+    <div class="tw-flex tw-items-end">
+      <div class="app-board-article-profile tw-flex tw-items-center" cond="$module_info->article_profile !== 'N'">
+        <div class="app-profile-image app-avatar">
+          <img cond="$oDocument->getProfileImage()" src="{$oDocument->getProfileImage()}" alt="Profile" />
+          <img cond="!$oDocument->getProfileImage()" src="../../assets/images/ic_profile_default.png" alt="Profile" />
+        </div>
+      
+        <div class="tw-flex-1 app-profile-body">
+          {@
+            $anony_random_color = '';
+            if($mi->anonymous_mode == 'Y') $anony_random_color = substr(md5($oDocument->getNickName()), 0, 6);
+          }
+
+          <a class="tw-flex tw-items-center tw-font-bold tw-text-sm link member_{$oDocument->get('member_srl')} author" href="#popup_menu_area" onclick="return false" style="color: #{$anony_random_color};">{$oDocument->getNickName()}</a>
+          <div class="app-article-meta">
+            <el-tooltip content="{zdate($oDocument->get('regdate'), 'Y-m-d H:i:s')}">
+              <div class="app-article-meta-item">{$oDocument->getRegdateDT('Y.m.d')}</div>
+            </el-tooltip>
+            <div class="app-article-meta-divider"> ・ </div>
+            <div class="app-article-meta-item">{$lang->readed_count} {$oDocument->get('readed_count')}</div>
+            <div class="app-article-meta-divider"> ・ </div>
+            <div class="app-article-meta-item">{$lang->voted_count} {$oDocument->get('voted_count')}</div>
+            <div class="app-article-meta-divider app-pc-only"> ・ </div>
+            <a href="#comment" class="app-pc-only app-article-meta-item">{$lang->comment} {$oDocument->getCommentcount()}</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tw-flex-1"></div>
+
+      {@ // 수정, 삭제 }
+      <include target="article-edit.html" />
+    </div>
+
+  </div>
+</div>
+
+<div class="app-board-container tw-flex tw-items-center tw-pt-5">
+  <ion-icon name="link-outline" class="tw-text-base tw-mr-2"></ion-icon>
+  <a class="app-link" href="{$oDocument->getPermanentUrl()}">
+    <span>{$oDocument->getPermanentUrl()}</span>
+  </a>
+
+  <div class="tw-flex-1"></div>
+
+  <block cond="!$module_info->article_file === 'N'">
+    <div cond="$oDocument->hasUploadedFiles()" class="ed flex flex-right">
+      <div class="ed dropdown dropdown-shadow dropdown-right">
+        <a class="ed dropdown-toggle link-muted">
+          <i class="fas fa-paperclip fa-fw"></i>
+          <span>{$lang->uploaded_file} 파일 {$oDocument->get('uploaded_count')}개</span>
+        </a>
+
+        <ul class="ed dropdown-menu" style="width: 200px;">
+          <li loop="$oDocument->getUploadedFiles()=>$key,$file">
+            {@
+              $path = pathinfo($file->source_filename);
+              $ext = strtolower($path['extension']);
+            }
+
+            <a href="{getUrl('')}{$file->download_url}" title="{$file->source_filename} / Download {number_format($file->download_count)}">
+              <span class="filename" style="word-wrap: break-word;">{$file->source_filename} ({FileHandler::filesize($file->file_size)})</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="ed dropdown-close"></div>
+      </div>
+    </div>
+  </block>
+</div>
