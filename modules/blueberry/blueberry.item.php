@@ -12,7 +12,7 @@ class blueberryItem extends BaseObject
 	 * Document number
 	 * @var int
 	 */
-	public $data_srl = 0;
+	private $data_srl = 0;
 	private $reload = false;
 	/**
 	 * grant
@@ -84,13 +84,13 @@ class blueberryItem extends BaseObject
 
 	public function setAttribute($attribute)
 	{
-		if(!is_object($attribute) || !$attribute->data_srl)
+		if(!is_object($attribute) || !intval($attribute->data_srl))
 		{
 			$this->data_srl = null;
 			return;
 		}
 		
-		$this->data_srl = $attribute->data_srl;
+		$this->data_srl = intval($attribute->data_srl);
 		$this->adds($attribute);
 		
 		
@@ -220,8 +220,11 @@ class blueberryItem extends BaseObject
 		return '*' . strstr($this->get('ipaddress'), '.');
 	}
 
+	public function getDataSrl() {
+		return $this->data_srl;
+	}
 	public function getPermanentUrl() {
-		return getFullUrl('', 'mid', $this->getDataMid(), 'owner_id', $this->get('user_id'), 'data_srl', $this->get('data_srl'));
+		return getFullUrl('', 'mid', $this->getDataMid(), 'owner_id', $this->getUserID(), 'data_srl', $this->data_srl);
 	}
 
 	/**

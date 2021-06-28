@@ -8,7 +8,7 @@
   <div class="app-dropdown-menu app-right" style="width: 170px;">
     <ul>
       <li cond="$oData->isEditable()">
-        <a href="{getUrl('act','dispBoardWrite','document_srl',$oData->document_srl,'comment_srl','')}">
+        <a href="{getUrl('act','dispBlueberryNCA','data_srl',$oData->getDataSrl(),'owner_id',$oData->getUserID(),'comment_srl','')}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
@@ -36,7 +36,7 @@
       var params = {
         mid: current_mid,
         page: '',
-        data_srl: '{$oData->data_srl}'
+        data_srl: '{$oData->getDataSrl()}'
       }
 
       exec_json('', params, function(res) {

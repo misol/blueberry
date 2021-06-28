@@ -2,7 +2,7 @@
   <load target="article-vote.scss" vars="$themeConfig->variables" />
   <load target="article-vote.js" />
     
-  <div class="app-article-vote" data-target-srl="{$oData->data_srl}">
+  <div class="app-article-vote" data-target-srl="{$oData->getDataSrl()}">
     <button class="app-article-vote__up"|cond="$oData->getVoted() !== 1" class="app-article-vote__up active"|cond="$oData->getVoted() == 1" data-type="up" onclick="appArticleVote(this)">
       <!--@if($mi->article_vote_icon == 'like')-->
       <ion-icon cond="$oData->getVoted() !== 1" name="heart-outline"></ion-icon>

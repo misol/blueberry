@@ -13,10 +13,10 @@
     </block>
     
     {@ // 일반 }
-    <li loop="$data_list=>$no,$data" class="app-active"|cond="$data_srl==$data->data_srl">
+    <li loop="$data_list=>$no,$data" class="app-active"|cond="$data_srl==$data->getDataSrl()">
       <div cond="$grant->manager" class="tw-pt-4 tw-pl-4">
-        <input type="checkbox" name="cart" value="{$data->data_srl}" id="{$data->data_srl}" class="app-input-checkbox" title="Check This Article" onclick="doAddDocumentCart(this)" checked="checked"|cond="$data->isCarted()" />
-        <label for="{$data->data_srl}" class="tw-m-0"></label>
+        <input type="checkbox" name="cart" value="{$data->getDataSrl()}" id="data_{$data->getDataSrl()}" class="app-input-checkbox" title="Check This Article" onclick="doAddDocumentCart(this)" checked="checked"|cond="$data->isCarted()" />
+        <label for="data_{$data->getDataSrl()}" class="tw-m-0"></label>
       </div>
 
       <a class="tw-flex-1"|cond="!$grant->manager" class="tw-flex-1 tw-pl-2"|cond="$grant->manager" href="{$data->getPermanentUrl()}">

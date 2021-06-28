@@ -92,20 +92,17 @@ class blueberryView extends blueberry
 			throw new Rhymix\Framework\Exceptions\NotPermitted('msg_not_permitted');
 		}
 		
-		if(!intval(Context::get('owner_id'))) {
-			Context::set('owner_id',$logged_info->nick_name);
+		if(!strval(Context::get('owner_id'))) {
+			Context::set('owner_id', $logged_info->user_id);
 		}
-		$owner_id = intval(Context::get('owner_id'));
-		if(!$owner_id) {
-			$owner_id = $logged_info->member_srl;
-		}
+		$owner_id = strval(Context::get('owner_id'));
 		
-		if(!$owner_id || $owner_id !== $logged_info->member_srl) {
+		if(!$owner_id || $owner_id !== $logged_info->user_id) {
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
-		
+		$ownder_info = memberModel::getMemberInfoByUserID($owner_id);
 		$args = new stdClass();
-		$args->member_srl = $owner_id;
+		$args->member_srl = $ownder_info->member_srl;
 		Context::set('data_list', blueberryModel::getInVivoDataByMemberSrl($args, $columnList = array()));
 
 	}
