@@ -1,6 +1,6 @@
 <query id="getData" action="select">
 	<tables>
-		<table name="blueberry_data" />
+		<table name="blueberry_invivo_data" />
 	</tables>
 	<columns>
 		<column name="*" />

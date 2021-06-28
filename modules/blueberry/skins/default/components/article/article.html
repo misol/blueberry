@@ -10,28 +10,26 @@
       <include target="article-head.html" />
     
       <div class="app-board-container app-article-container">
-        {@ // 본문 사용자 정의 테이블 }
-        <block cond="$oDocument->isExtraVarsExists() && (!$oDocument->isSecret() || $oDocument->isGranted())">
-          <table border="1" cellspacing="0" summary="Extra Form Output" class="app-board-extra-value">
-            <tr loop="$oDocument->getExtraVars() => $key,$val" cond="$val->getValueHTML()">
-              <th scope="row">{$val->name}</th>
-              <td>{$val->getValueHTML()}&nbsp;</td>
-            </tr>
-          </table>
-        </block>
-    
         {@ // 본문 }
         <div class="app-article-content app-clearfix">
           <div class="tw-text-center tw-mb-6" cond="$module_info->article_top_ad">
             {$module_info->article_top_ad}
           </div>
     
-          {@ // 비밀번호 입력 }
-          <!--@if($oDocument->isSecret() && !$oDocument->isGranted())-->
-          <include target="article-grantform.html"/>
-          <!--@else-->
-          {$oDocument->getContent(false)}
-          <!--@end-->
+          {escape($oData->getContent(false))}
+		  
+		  <table class="tw-border-collapse tw-w-screen tw-text-center tw-leading-normal tw-border tw-table-auto">
+			<thead class="tw-border-collapse tw-border">
+				<th>Time ({$oData->getTimeUnit()})</th>
+				<th>Concentration ({$oData->getAmountUnit()}/{$oData->getVolumeUnit()})</th>
+			</thead>
+			<tbody>
+				<tr loop="$oData->getTimeConcentrationArray()['time-concentration']=>$key,$val">
+					<td>{$val[0]}</td>
+					<td>{$val[1]}</td>
+				</tr>
+			<tbody>
+		  </table>
     
           <div class="tw-text-center tw-pt-6" cond="$module_info->article_bottom_ad">
             {$module_info->article_bottom_ad}
@@ -39,8 +37,6 @@
           
           <div class="tw-flex tw-pt-8">
             <include target="article-tag.html" />
-            <div class="tw-flex-1"></div>
-            <include target="article-file.html" />
           </div>
         </div>
     
@@ -62,17 +58,17 @@
           <div class="tw-flex-1"></div>
           
           {@ // 수정, 삭제 }
-          <div cond="$oDocument->isEditable()" class="tw-ml-2 tw-mr-2 tw-text-sm">
-            <a href="{getUrl('act','dispBoardWrite','document_srl',$oDocument->document_srl,'comment_srl','')}" class="app-link tw-mr-2">
+          <div cond="$oData->isEditable()" class="tw-ml-2 tw-mr-2 tw-text-sm">
+            <a href="{getUrl('act','dispBlueberryNCA','data_srl',$oData->data_srl)}" class="app-link tw-mr-2">
               {$lang->cmd_modify}
             </a>
             
-            <a class="app-link tw-mr-2 tw-text-sm" onclick="onClickDocumentDelete()">
+            <a class="app-link tw-mr-2 tw-text-sm" onclick="onClickDataDelete()">
               {$lang->cmd_delete}
             </a>
           </div>
       
-          <a class="app-link tw-text-sm document_{$oDocument->document_srl}" href="#popup_menu_area" title="이 게시물을..." onclick="return false">
+          <a class="app-link tw-text-sm document_{$oDocument->document_srl}" href="#popup_menu_area" title="{lang('document.cmd_document_do')}..." onclick="return false">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
             </svg>
@@ -81,8 +77,5 @@
       </div>
     </div>
     
-    <include target="article-author-post/article-author-post.html" />
-    <include target="../hot-post/hot-post.html" />
     
-    <include target="../comment/comment.html" />
 </div>

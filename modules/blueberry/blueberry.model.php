@@ -78,9 +78,12 @@ class blueberryModel extends module
 			$output = executeQueryArray('blueberry.getInVivoDataByMemberSrl', $obj, $obj->columnList);
 		
 		// Return if no result or an error occurs
-		if(!$output->toBool() || !$result = $output->data)
-		{
+		if(!$output->toBool()) {
 			return $output;
+		}
+		if(!$result = $output->data)
+		{
+			return array();
 		}
 		
 		$output->data = array();

@@ -180,6 +180,11 @@ class blueberryItem extends BaseObject
 		}
 	}
 
+	public function isEditable()
+	{
+		return (bool) (!$this->get('member_srl') || $this->isGranted());
+	}
+	
 	public function doCart()
 	{
 		if(!$this->isExists())
@@ -215,6 +220,31 @@ class blueberryItem extends BaseObject
 		return '*' . strstr($this->get('ipaddress'), '.');
 	}
 
+	public function getPermanentUrl() {
+		return getFullUrl('', 'mid', $this->getDataMid(), 'owner_id', $this->get('user_id'), 'data_srl', $this->get('data_srl'));
+	}
+
+	/**
+	 * Returns the document's mid in order to construct SEO friendly URLs
+	 * @return string
+	 */
+	function getDataMid()
+	{
+		return ModuleModel::getMidByModuleSrl($this->get('module_srl'));
+	}
+	
+	/**
+	 * Return author's profile image
+	 * @return string
+	 */
+	function getProfileImage()
+	{
+		if(!$this->isExists() || $this->get('member_srl') <= 0) return;
+		$profile_info = MemberModel::getProfileImage($this->get('member_srl'));
+		if(!$profile_info) return;
+
+		return $profile_info->src;
+	}
 	public function getHomepageUrl()
 	{
 		if(!$url = trim($this->get('homepage')))
@@ -274,6 +304,62 @@ class blueberryItem extends BaseObject
 		}
 		
 		return $cut_size ? escape(cut_str($this->get('content'), $cut_size, $tail)) : escape($this->get('content'));
+	}
+	
+	
+	public function getTimeConcentrationArray()
+	{
+		if(!$this->isExists())
+		{
+			return;
+		}
+		$time_concentration = null;
+		$time_concentration = unserialize($this->get('time_concentration'));
+		
+		if(!is_countable($time_concentration['time']) || !is_countable($time_concentration['concentration'])) return;
+		
+		$time_concentration['time'] = array_map(floatval, $time_concentration['time']);
+		$time_concentration['concentration'] = array_map(floatval, $time_concentration['concentration']);
+		
+		if (count($time_concentration['time']) !== count($time_concentration['concentration'])) return;
+		$new_time = array();
+		$new_conc = array();
+		$new_lnC = array();
+		$new_TC = array();
+		foreach ($time_concentration['concentration'] as $key=>$val) {
+			if(floatval($val) > 0) {
+				$new_time[] = $time_concentration['time'][$key];
+				$new_conc[] = $val;
+				$new_lnC[] = log($val);
+				$new_TC[] = array($time_concentration['time'][$key], $val);
+				
+			}
+		}
+		$time_concentration['time'] = $new_time;
+		$time_concentration['concentration'] = $new_conc;
+		$time_concentration['lnC'] = $new_lnC;
+		$time_concentration['time-concentration'] = $new_TC;
+		// match the count;
+		if (count($time_concentration['time']) !== count($time_concentration['concentration'])) return;
+		
+		
+		return $time_concentration;
+	}
+	
+	
+	public function getTimeUnit()
+	{
+		return $this->get('time_unit');
+	}
+	
+	public function getAmountUnit()
+	{
+		return $this->get('amount_unit');
+	}
+	
+	public function getVolumeUnit()
+	{
+		return $this->get('volume_unit');
 	}
 	
 	public function getVoted()

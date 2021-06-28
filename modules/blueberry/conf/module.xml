@@ -20,29 +20,29 @@
 	</grants>
 	<actions>
 		<action name="dispBlueberryContent" type="view" permission="view_data" standalone="false" index="true">
-			<route route=":$data_srl:int" priority="100" />
-			<route route=":$data_srl:int/page/$page:int" priority="100" />
-			<route route="+$group_id:word" priority="90" />
+			<route route="data:$data_srl:int@$owner_id:word" priority="90" />
+			<route route="page:$page:int/data:$data_srl:int@$owner_id:word" priority="100" />
+			<route route="*$group_id:word" priority="90" />
+			<route route="data:$data_srl:int@$owner_id:word*$group_id:word" priority="90" />
+			<route route="page:$page:int/data:$data_srl:int@$owner_id:word*$group_id:word" priority="90" />
 			<route route="@$owner_id:word" priority="90" />
-			<route route="@$owner_id:word/:$data_srl:int" priority="90" />
-			<route route="@$owner_id:word/page/$page:int" priority="90" />
-			<route route="@$owner_id:word/:$data_srl:int/page/$page:int" priority="90" />
+			<route route="page:$page:int@$owner_id:word" priority="90" />
+			<route route="page:$page:int*$group_id:word" priority="90" />
 			
 			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any" priority="60" />
-			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any/page/$page:int" priority="60" />
-			<route route="@$owner_id:word/category/$category_srl:int/search/$search_target:word/$search_keyword:any" priority="60" />
-			<route route="@$owner_id:word/category/$category_srl:int/search/$search_target:word/$search_keyword:any/page/$page:int" priority="60" />
+			<route route="category/$category_srl:int/search/$search_target:word/$search_keyword:any/page:$page:int" priority="60" />
+			<route route="category/$category_srl:int@$owner_id:word::search/$search_target:word/$search_keyword:any" priority="60" />
+			<route route="category/$category_srl:int/page:$page:int@$owner_id:word::search/$search_target:word/$search_keyword:any" priority="60" />
 			
 			<route route="search/$search_target:word/$search_keyword:any" priority="50" />
-			<route route="search/$search_target:word/$search_keyword:any/page/$page:int" priority="50" />
-			<route route="@$owner_id:word/search/$search_target:word/$search_keyword:any" priority="50" />
-			<route route="@$owner_id:word/search/$search_target:word/$search_keyword:any/page/$page:int" priority="50" />
+			<route route="search/$search_target:word/$search_keyword:any/page:$page:int" priority="50" />
+			<route route="@$owner_id:word::search/$search_target:word/$search_keyword:any" priority="50" />
+			<route route="@$owner_id:word::search/$search_target:word/$search_keyword:any/page:$page:int" priority="50" />
 			
 			<route route="category/$category_srl:int" priority="40" />
-			<route route="category/$category_srl:int/page/$page:int" priority="40" />
-			<route route="@$owner_id:word/category/$category_srl:int" priority="40" />
-			<route route="@$owner_id:word/category/$category_srl:int/page/$page:int" priority="40" />
-			<route route="page/$page:int" priority="10" />
+			<route route="category/$category_srl:int/page:$page:int" priority="40" />
+			<route route="category/$category_srl:int@$owner_id:word" priority="40" />
+			<route route="category/$category_srl:int/page:$page:int@$owner_id:word" priority="40" />
 			
 		</action>
 		<action name="dispBlueberryNCA" type="view" permission="add_data" standalone="false" meta-noindex="true">

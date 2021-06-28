@@ -1,6 +1,7 @@
 <table name="blueberry_invivo_data">
 	<column name="data_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" />
 	<column name="category_srl" type="number" size="11" default="0" notnull="notnull" index="idx_category_srl" />
+	<column name="module_srl" type="number" size="11" default="0" notnull="notnull" index="idx_category_srl" />
 	<column name="title" type="varchar" size="250" />
 	<column name="content" type="bigtext" />
 	<column name="time_concentration" type="bigtext" notnull="notnull" />

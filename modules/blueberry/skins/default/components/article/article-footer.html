@@ -4,11 +4,4 @@
   {@ // 추천 }
   <include target="article-vote/article-vote.html" />
 
-  {@ // 스크랩 }
-  <button class="app-icon-button app-icon-button-gray" cond="$is_logged" onclick="doCallModuleAction('member','procMemberScrapDocument',{$document_srl})" title="스크랩">
-    <ion-icon name="bookmark-outline"></ion-icon>
-  </button>
 </div>
-
-{@ // 본문 하단 서명 출력 }
-<include target="article-signature.html" />

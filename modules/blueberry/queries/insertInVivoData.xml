@@ -5,6 +5,7 @@
 	<columns>
 		<column name="data_srl" var="data_srl" filter="number" notnull="notnull" />
 		<column name="category_srl" var="category_srl" filter="number" default="0" />
+		<column name="module_srl" var="module_srl" filter="number" default="0" />
 		<column name="title" var="title" notnull="notnull" minlength="1" maxlength="250" />
 		<column name="content" var="content" />
 		<column name="time_concentration" var="time_concentration" notnull="notnull" />

@@ -55,7 +55,7 @@ class blueberryView extends blueberry
 		foreach(parent::$search_option as $opt) $search_option[$opt] = lang($opt);
 		Context::set('search_option', $search_option);
 		
-		$oData = blueberryModel::getData($data_srl);
+		$oData = blueberryModel::getData(intval(Context::get('data_srl')));
 		Context::set('oData', $oData);
 		
 		/**
@@ -63,6 +63,10 @@ class blueberryView extends blueberry
 		 **/
 		$this->dispBlueberryList();
 		
+		$oSecurity = new Security();
+		$oSecurity->encodeHTML('data_list.', 'data_list.childs.');
+		// setup the tmeplate file
+		$this->setTemplateFile('list');
 	}
 	
 
@@ -74,7 +78,11 @@ class blueberryView extends blueberry
 		// check the grant
 		if(!$this->grant->list)
 		{
-			Context::set('category_list', array());
+			Context::set('data_list', array());
+			Context::set('total_count', 0);
+			Context::set('total_page', 1);
+			Context::set('page', 1);
+			Context::set('page_navigation', new PageHandler(0,0,1,10));
 			return;
 		}
 		$logged_info = Context::get('logged_info');
@@ -100,16 +108,12 @@ class blueberryView extends blueberry
 		$args->member_srl = $owner_id;
 		Context::set('data_list', blueberryModel::getInVivoDataByMemberSrl($args, $columnList = array()));
 
-		$oSecurity = new Security();
-		$oSecurity->encodeHTML('category_list.', 'category_list.childs.');
-		// setup the tmeplate file
-		$this->setTemplateFile('list');
 	}
 	
 	
 	function dispBlueberryNCA()
 	{
-		$oData = blueberryModel::getData($data_srl);
+		$oData = blueberryModel::getData(intval(Context::get('data_srl')));
 		Context::set('oData', $oData);
 		
 		// setup the tmeplate file

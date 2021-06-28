@@ -88,7 +88,7 @@ class blueberryController extends blueberry
 		// sanitize variables
 		$text_inputs = ['title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'administration_route', 'dose_repeat', 'integration_method', 'extrapolation_method', 'password', 'user_id', 'user_name', 'nick_name', 'status', 'comment_status'];
 		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'time_min', 'time_max'];
-		$int_inputs = ['data_srl', 'category_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
+		$int_inputs = ['data_srl', 'category_srl', 'module_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
 		$unset_inputs = ['regdate', 'last_update', 'ipaddress', 'allow_trackback', 'notify_message'];
 		
 		foreach ($text_inputs as $key) {

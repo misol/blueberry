@@ -1,7 +1,7 @@
 <load target="default.scss" vars="$themeConfig->variables" />
 
 <div class="app-card">
-  <!--@if($data_list || $notice_list)-->
+  <!--@if($data_list && is_countable($data_list))-->
   <ul class="app-board-template-list">
     <block cond="$grant->manager">
       <li cond="$data_list || $notice_list">
@@ -19,7 +19,7 @@
         <label for="{$data->data_srl}" class="tw-m-0"></label>
       </div>
 
-      <a class="tw-flex-1"|cond="!$grant->manager" class="tw-flex-1 tw-pl-2"|cond="$grant->manager" href="{getUrl('data_srl',$data->data_srl, 'listStyle', $listStyle, 'cpage','')}">
+      <a class="tw-flex-1"|cond="!$grant->manager" class="tw-flex-1 tw-pl-2"|cond="$grant->manager" href="{$data->getPermanentUrl()}">
     
         <div class="tw-flex-1">
           <div class="app-list-title tw-flex-wrap">

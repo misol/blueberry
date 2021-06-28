@@ -1,9 +1,9 @@
-{@ $tag_list = $oDocument->get('tag_list') }
+{@ $tag_list = $oData->get('tag_list') }
 <div class="tw-pr-6" cond="count($tag_list)">
   <ul class="app-article-tags">
     <li loop="$i=0;$i<count($tag_list);$i++">
       {@ $tag = $tag_list[$i] }
-      <a href="{getUrl('search_target','tag','search_keyword',$tag,'document_srl','')}" class="tag" rel="tag">{htmlspecialchars($tag)}</a>
+      <a href="{getUrl('search_target','tag','search_keyword',$tag,'document_srl','')}" class="tag" rel="tag">{escape($tag)}</a>
       </li>
   </ul>
 </div>
