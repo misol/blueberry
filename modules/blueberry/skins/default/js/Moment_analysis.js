@@ -260,13 +260,13 @@ function getC0(time, lnC) {
 	var C0 = 0;
 	var dose_route = String($('#dose_route').val()).trim();
 	
-	if(dose_route == "EX" || dose_route == "IV_infusion"){
+	if(dose_route == "ExtVe" || dose_route == "IVeIf"){
 		if(existTau()) {
 			C0 = Math.exp(Math.min(lnC));
 		} else {
 			C0 = 0;
 		}
-	} else if (dose_route == "IV_bolus") {
+	} else if (dose_route == "IVeBo") {
 		time_slice = time.slice(0, 2);
 		lnC_slice = lnC.slice(0, 2);
 		

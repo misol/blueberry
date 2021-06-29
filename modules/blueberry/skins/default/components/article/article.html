@@ -16,17 +16,47 @@
 						{$module_info->article_top_ad}
 					</div>
 		
-					{escape($oData->getContent(false))}
+			<div class="app-widgetstyle-wrap tw-mb-6">
+				<div class="app-widgetstyle-card app-card">
+					<h2 class="app-widgetstyle-header">
+						{lang('blueberry.data_description_short')}
+					</h2>
+					<div class="app-clearfix">
+						<div class="app-widget-content-main tw-p-4">
+							<p>
+								{nl2br(escape($oData->getContent(false)), true)}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 			
-			<div class="app-widgetstyle-wrap">
+			<div class="app-widgetstyle-wrap tw-mb-6">
+				<div class="app-widgetstyle-card app-card">
+					<h2 class="app-widgetstyle-header">
+						{lang('blueberry.dosing_regimen')} &amp; {lang('blueberry.numerical_integration')}
+					</h2>
+					<div class="app-clearfix">
+						<div class="app-widget-content-main tw-p-4">
+							<ul class="tw-list-disc tw-mx-5">
+								<li class="tw-mb-2">{lang('blueberry.dose')}: {$oData->getDose()}</li>
+								<li class="tw-mb-2">{lang('blueberry.dosing_route')}: {lang('blueberry.'.$oData->getAdministrationRoute())} / <block cond="!$oData->isMultipleDose()">{lang('blueberry.single_dose')}</block><block cond="$oData->isMultipleDose()">{lang('blueberry.repeated_dose')}</block></li>
+								<li class="tw-mb-0">{lang('blueberry.interpolation_method')}: {lang('blueberry.'.$oData->getInterpolationMethod())}</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="app-widgetstyle-wrap tw-mb-6">
 				<div class="app-widgetstyle-card app-card">
 					<h2 class="app-widgetstyle-header">
 						{lang('blueberry.time_concentration_profile')}
 					</h2>
 					<div class="app-clearfix">
-						<div class="app-widget-content-main">
-							<ul class="app-widget-content app-widget-content-normal tw-w-full tw-text-center tw-leading-normal tw-border tw-table-auto">
-								<thead class="tw-border-collapse tw-border">
+						<div class="app-widget-content-main tw-flex tw-justify-center">
+							<table id="data-estimates" class="data-table tw-m-4 tw-border-collapse tw-table-auto tw-w-full">
+								<thead>
 									<th>Time ({$oData->getTimeUnit()})</th>
 									<th>Concentration ({$oData->getAmountUnit()}/{$oData->getVolumeUnit()})</th>
 								</thead>
@@ -36,12 +66,98 @@
 										<td>{$val[1]}</td>
 									</tr>
 								<tbody>
-							</ul>
+							</table>
 						</div>
 					</div>
 				</div>
 			</div>
-		
+			<div class="app-widgetstyle-wrap">
+				<div class="app-widgetstyle-card app-card">
+					<h2 class="app-widgetstyle-header">
+						{lang('blueberry.pharmacokinetic_parameters')}
+					</h2>
+					<div class="app-clearfix">
+						<div class="app-widget-content-main tw-flex tw-justify-center">
+							<table id="data-estimates" class="data-table tw-m-4 tw-border-collapse tw-table-auto tw-w-full">
+								<thead>
+									<th>Parameter</th>
+									<th>Value (Unit)</th>
+								</thead>
+								<tbody>
+									<tr cond="$oData->getC0()>0">
+										<td>C<sub>0</sub></td>
+										<td>{$oData->getC0()} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr>
+										<td>λ<sub>Z</sub></td>
+										<td>{$oData->getLambda()} {$oData->getTimeUnit()}<sup>-1</sup></td>
+									</tr>
+									<tr>
+										<td>t<sub>1/2, terminal</sub></td>
+										<td>{$oData->getTerminalHalfLife()} {$oData->getTimeUnit()}</td>
+									</tr>
+									<tr>
+										<td>Number of points to estimate λ<sub>Z</sub></td>
+										<td>{$oData->getTerminalPoints()}</td>
+									</tr>
+									<tr>
+										<td>R<sup>2</sup> (λ<sub>Z</sub>)</td>
+										<td>{$oData->getRSquare()}</td>
+									</tr>
+									<tr>
+										<td>Adjusted R<sup>2</sup> (λ<sub>Z</sub>)</td>
+										<td>{$oData->getAdjustedRSquare()}</td>
+									</tr>
+									<tr cond="$oData->isMultipleDose()">
+										<td>&tau;</td>
+										<td>{$oData->getTau()} {$oData->getTimeUnit()}</td>
+									</tr>
+									<tr cond="$oData->isMultipleDose()">
+										<td>Last dosing time</td>
+										<td>{$oData->getLastDosingTime()} {$oData->getTimeUnit()}</td>
+									</tr>
+									<tr cond="!$oData->isMultipleDose()">
+										<td>AUC</td>
+										<td>{$oData->getAUC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr>
+										<td>AUC<sub cond="!$oData->isMultipleDose()">last</sub><sub cond="$oData->isMultipleDose()">&tau;</sub></td>
+										<td>{$oData->getAUClast()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr cond="$oData->isMultipleDose()">
+										<td>AUC<sub cond="$oData->isMultipleDose()">&tau;-&infin;</sub></td>
+										<td>{$oData->getAUClast()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr cond="!$oData->isMultipleDose()">
+										<td>% Extrapolated<sub>AUC</sub></td>
+										<td>{$oData->getAUCExtPortionPercent()}%</td>
+									</tr>
+									<tr cond="!$oData->isMultipleDose()">
+										<td>AUMC</td>
+										<td>{$oData->getAUMC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr>
+										<td>AUMC<sub cond="!$oData->isMultipleDose()">last</sub><sub cond="$oData->isMultipleDose()">&tau;</sub></td>
+										<td>{$oData->getAUMClast()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr cond="!$oData->isMultipleDose()">
+										<td>% Extrapolated<sub>AUMC</sub></td>
+										<td>{$oData->getAUMCExtPortionPercent()}%</td>
+									</tr>
+									<tr>
+										<td>MRT</td>
+										<td>{$oData->getMRT()} {$oData->getTimeUnit()}</td>
+									</tr>
+									<tr>
+										<td>CL</td>
+										<td>{$oData->getCL()} {$oData->getVolumeUnit()}/{$oData->getTimeUnit()}</td>
+									</tr>
+								<tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 					<div class="tw-text-center tw-pt-6" cond="$module_info->article_bottom_ad">
 						{$module_info->article_bottom_ad}
 					</div>

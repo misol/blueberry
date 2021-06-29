@@ -35,6 +35,18 @@ class blueberry extends ModuleObject
 		'other' => 'OTHER',
 	);
 	
+	static public $available_routes = array(
+		'IVeBo' => 'iv_bolus',
+		'IVeIf'=> 'iv_infusion',
+		'ExtVe'=> 'extravenous'
+	);
+	
+	static public $available_interpolation = array(
+		'linear-trapezoidal' => 'linear_trapezoidal_method',
+		'logarithmic-trapezoidal' => 'log_trapezoidal_method',
+		'linear-trapezoidal-with-end-correction' => 'linear_trapezoidal_method_w_end_corr'
+	);
+	
 	static public $search_option = array('title_content','title','dose_dose_unit','dosing_route','user_name','nick_name','last_updater', 'email_address' , 'regdate', 'last_update','user_id','tag'); /// search option
 
 	static public $order_target = array('list_order', 'update_order', 'regdate', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id'); // 정렬 옵션

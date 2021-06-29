@@ -16,6 +16,7 @@
 		<column name="administration_route" var="administration_route" notnull="notnull" default="IVeBo" />
 		<column name="dose_repeat" var="dose_repeat" default="S" />
 		<column name="tau" var="tau" default="0" />
+		<column name="last_dosing" var="last_dosing" default="0" />
 		<column name="integration_method" var="integration_method" notnull="notnull" />
 		<column name="extrapolation_method" var="extrapolation_method" notnull="notnull" default="exponential" />
 		<column name="time_unit" var="time_unit" notnull="notnull" default="min" />

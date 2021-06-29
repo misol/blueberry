@@ -87,7 +87,7 @@ class blueberryController extends blueberry
 		$args = new stdClass;
 		// sanitize variables
 		$text_inputs = ['title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'administration_route', 'dose_repeat', 'integration_method', 'extrapolation_method', 'password', 'user_id', 'user_name', 'nick_name', 'status', 'comment_status'];
-		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'time_min', 'time_max'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max'];
 		$int_inputs = ['data_srl', 'category_srl', 'module_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
 		$unset_inputs = ['regdate', 'last_update', 'ipaddress', 'allow_trackback', 'notify_message'];
 		
@@ -126,6 +126,10 @@ class blueberryController extends blueberry
 		}
 		else {
 			$args->sampling_type = 'serial';
+		}
+		
+		if(!isset(blueberry::$available_routes[$args->administration_route])) {
+			$args->administration_route = 'IVeBo';
 		}
 		
 		if (!is_array($obj->TC_data['time']) || !is_array($obj->TC_data['concentration']) || !is_array($obj->TC_data['lnC']) || !is_array($obj->TC_data['time-concentration']))

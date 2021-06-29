@@ -105,9 +105,9 @@
 					
 					<div class="app-select tw-w-1/2 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
 						<select id="dose_route" onchange="updateTCtable( false );return false;" class="app-input tw-w-full">
-							<option value="IV_bolus">{lang('blueberry.iv_bolus')}</option>
-							<option value="IV_infusion">{lang('blueberry.iv_infusion')}</option>
-							<option value="EX">{lang('blueberry.extravenous')}</option>
+							<option value="IVeBo">{lang('blueberry.iv_bolus')}</option>
+							<option value="IVeIf">{lang('blueberry.iv_infusion')}</option>
+							<option value="ExtVe">{lang('blueberry.extravenous')}</option>
 						</select>
 					</div>
 					<div class="app-select tw-w-1/2 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
@@ -138,7 +138,7 @@
 				
 				<label for="integration_method" id="integration_method_box" class="select_box tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.interpolation_method')}</label>
 				<div class="app-select tw-flex tw-items-center sm:tw-block tw-mb-6">
-					<select id="integration_method" onchange="updateTCtable( false );return false;"  class="app-input tw-w-full sm:tw-w-full">
+					<select id="integration_method" onchange="updateTCtable( false );return false;" class="app-input tw-w-full sm:tw-w-full">
 						<option value="linear-trapezoidal">{lang('blueberry.linear_trapezoidal_method')}</option>
 						<option value="logarithmic-trapezoidal">{lang('blueberry.log_trapezoidal_method')}</option>
 						<option value="linear-trapezoidal-with-end-correction">{lang('blueberry.linear_trapezoidal_method_w_end_corr')}</option>

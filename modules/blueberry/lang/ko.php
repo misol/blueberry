@@ -10,6 +10,7 @@ $lang->cmd_manage_nca_data = '데이터 관리';
 $lang->dose_dose_unit = '투여 용량';
 $lang->dosing_route = '투여 경로';
 
+$lang->data_description_short = '데이터 설명';
 $lang->data_description = '데이터에 대한 간략한 설명을 적어주세요.';
 
 $lang->dosing_regimen = '투여 용량 및 경로';
