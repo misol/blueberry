@@ -484,7 +484,7 @@ class blueberryItem extends BaseObject
 	
 	public function getVss($precision = 3) {
 		$CL = $this->getCL(-1);
-		$MRT = $this->getMRT(-1)
+		$MRT = $this->getMRT(-1);
 		return $this->toPrecision($MRT * $CL, $precision);
 	}
 	
