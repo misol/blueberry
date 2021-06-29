@@ -71,43 +71,51 @@
 				<label class="isss input_box" id="dose_label" for="dose" class="tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.dose')}</label>
 				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
 					<input type="number" step="0.01" min="0.01" max="10000" id="dose" placeholder="0.5" onchange="updateTCtable( false );return false;"  class="app-input tw-w-2/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full" />
-					<select id="dose_unit" onchange="updateTCtable( false );return false;"  class="app-input tw-w-1/3 sm:tw-w-full">
-						<option value="pg">pg</option>
-						<option value="ng">ng</option>
-						<option value="ug">μg</option>
-						<option value="mg" selected="selected">mg</option>
-						<option value="g">g</option>
-						<option value="IU">IU</option>
-						<option value="pmol">pmol</option>
-						<option value="nmol">nmol</option>
-						<option value="umol">μmol</option>
-						<option value="mmol">mmol</option>
-						<option value="mol">mol</option>
-						<option value="pg/kg">pg/kg</option>
-						<option value="ng/kg">ng/kg</option>
-						<option value="ug/kg">μg/kg</option>
-						<option value="mg/kg">mg/kg</option>
-						<option value="g/kg">g/kg</option>
-						<option value="IU/kg">IU/kg</option>
-						<option value="pmol/kg">pmol/kg</option>
-						<option value="nmol/kg">nmol/kg</option>
-						<option value="umol/kg">μmol/kg</option>
-						<option value="mmol/kg">mmol/kg</option>
-						<option value="mol/kg">mol/kg</option>
-					</select>
+					
+					<div class="app-select tw-w-1/3 sm:tw-w-full">
+						<select id="dose_unit" onchange="updateTCtable( false );return false;"  class="app-input tw-w-full">
+							<option value="pg">pg</option>
+							<option value="ng">ng</option>
+							<option value="ug">μg</option>
+							<option value="mg" selected="selected">mg</option>
+							<option value="g">g</option>
+							<option value="IU">IU</option>
+							<option value="pmol">pmol</option>
+							<option value="nmol">nmol</option>
+							<option value="umol">μmol</option>
+							<option value="mmol">mmol</option>
+							<option value="mol">mol</option>
+							<option value="pg/kg">pg/kg</option>
+							<option value="ng/kg">ng/kg</option>
+							<option value="ug/kg">μg/kg</option>
+							<option value="mg/kg">mg/kg</option>
+							<option value="g/kg">g/kg</option>
+							<option value="IU/kg">IU/kg</option>
+							<option value="pmol/kg">pmol/kg</option>
+							<option value="nmol/kg">nmol/kg</option>
+							<option value="umol/kg">μmol/kg</option>
+							<option value="mmol/kg">mmol/kg</option>
+							<option value="mol/kg">mol/kg</option>
+						</select>
+					</div>
 				</div>
 				
 				<label class="isss input_box" id="doseing_route_label" for="dose_route" class="select_box tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.dosing_route')}</label>
 				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
-					<select id="dose_route" onchange="updateTCtable( false );return false;" class="app-input tw-w-1/2 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
-						<option value="IV_bolus">{lang('blueberry.iv_bolus')}</option>
-						<option value="IV_infusion">{lang('blueberry.iv_infusion')}</option>
-						<option value="EX">{lang('blueberry.extravenous')}</option>
-					</select>
-					<select id="dose_repeat" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/2 sm:tw-w-full">
-						<option value="single">{lang('blueberry.single_dose')}</option>
-						<!--//option value="multiple">{lang('blueberry.repeated_dose')}</option-->
-					</select>
+					
+					<div class="app-select tw-w-1/2 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<select id="dose_route" onchange="updateTCtable( false );return false;" class="app-input tw-w-full">
+							<option value="IV_bolus">{lang('blueberry.iv_bolus')}</option>
+							<option value="IV_infusion">{lang('blueberry.iv_infusion')}</option>
+							<option value="EX">{lang('blueberry.extravenous')}</option>
+						</select>
+					</div>
+					<div class="app-select tw-w-1/2 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<select id="dose_repeat" onchange="procUpdateSheet();return false;" class="app-input tw-w-full">
+							<option value="single">{lang('blueberry.single_dose')}</option>
+							<!--//option value="multiple">{lang('blueberry.repeated_dose')}</option-->
+						</select>
+					</div>
 				</div>
 				
 				<section id="multiple_dosing" class="tw-items-center tw-mb-6" >
@@ -129,7 +137,7 @@
 				<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.numerical_integration')}</h2>
 				
 				<label for="integration_method" id="integration_method_box" class="select_box tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.interpolation_method')}</label>
-				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
+				<div class="app-select tw-flex tw-items-center sm:tw-block tw-mb-6">
 					<select id="integration_method" onchange="updateTCtable( false );return false;"  class="app-input tw-w-full sm:tw-w-full">
 						<option value="linear-trapezoidal">{lang('blueberry.linear_trapezoidal_method')}</option>
 						<option value="logarithmic-trapezoidal">{lang('blueberry.log_trapezoidal_method')}</option>
@@ -151,35 +159,42 @@
 				<h2 class="tw-block tw-mb-3 tw-text-xl tw-font-bold tw-leading-6 tw-text-gray-900">{lang('blueberry.in_vivo_observation_data')}</h2>
 				<label for="time_unit" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="Unit_label">{lang('blueberry.in_vivo_units')}</label>
 				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
-					<select id="time_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
-						<option value="s">{lang('common.unit_sec')}</option>
-						<option value="min" selected="selected">{lang('common.unit_min')}</option>
-						<option value="h">{lang('common.unit_hour')}</option>
-						<option value="d">{lang('common.unit_day')}</option>
-						<option value="week">{lang('blueberry.unit_week_letter')}</option>
-					</select>
 					
-					<select id="amount_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
-						<option value="pg">pg</option>
-						<option value="ng" selected="selected">ng</option>
-						<option value="ug">μg</option>
-						<option value="mg">mg</option>
-						<option value="g">g</option>
-						<option value="IU">IU</option>
-						<option value="pmol">pmol</option>
-						<option value="nmol">nmol</option>
-						<option value="umol">μmol</option>
-						<option value="mmol">mmol</option>
-						<option value="mol">mol</option>
-					</select>
+					<div class="app-select tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<select id="time_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-full">
+							<option value="s">{lang('common.unit_sec')}</option>
+							<option value="min" selected="selected">{lang('common.unit_min')}</option>
+							<option value="h">{lang('common.unit_hour')}</option>
+							<option value="d">{lang('common.unit_day')}</option>
+							<option value="week">{lang('blueberry.unit_week_letter')}</option>
+						</select>
+					</div>
 					
-					<select id="volume_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-1/3 sm:tw-w-full">
-						<option value="pL">pL</option>
-						<option value="nL">nL</option>
-						<option value="uL">μL</option>
-						<option value="mL" selected="selected">mL</option>
-						<option value="L">L</option>
-					</select>
+					<div class="app-select tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<select id="amount_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-full">
+							<option value="pg">pg</option>
+							<option value="ng" selected="selected">ng</option>
+							<option value="ug">μg</option>
+							<option value="mg">mg</option>
+							<option value="g">g</option>
+							<option value="IU">IU</option>
+							<option value="pmol">pmol</option>
+							<option value="nmol">nmol</option>
+							<option value="umol">μmol</option>
+							<option value="mmol">mmol</option>
+							<option value="mol">mol</option>
+						</select>
+					</div>
+					
+					<div class="app-select tw-w-1/3 tw-mr-1 sm:tw-m-0 sm:tw-w-full">
+						<select id="volume_unit" onchange="procUpdateSheet();return false;" class="app-input tw-w-full">
+							<option value="pL">pL</option>
+							<option value="nL">nL</option>
+							<option value="uL">μL</option>
+							<option value="mL" selected="selected">mL</option>
+							<option value="L">L</option>
+						</select>
+					</div>
 				</div>
 				
 				<section class="control-group">

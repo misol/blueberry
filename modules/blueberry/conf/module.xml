@@ -47,7 +47,7 @@
 		</action>
 		<action name="dispBlueberryNCA" type="view" permission="add_data" standalone="false" meta-noindex="true">
 			<route route="nca" />
-			<route route="nca/data:$data_srl@$owner_id:word" />
+			<route route="nca/data:$data_srl:int@$owner_id:word" />
 		</action>
 		<action name="dispBlueberryDelete" type="view" permission="add_data" standalone="false" meta-noindex="true" route=":$data_srl/delete" />
 		

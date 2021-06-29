@@ -214,4 +214,94 @@ class blueberryController extends blueberry
 		return $output;
 
 	}
+	
+	
+	/**
+	 * Update read counts of the document
+	 * @param documentItem $oDocument
+	 * @return bool|void
+	 */
+	function updateReadedCount(&$oData)
+	{
+		// Pass if Crawler access
+		if (\Rhymix\Framework\UA::isRobot())
+		{
+			return false;
+		}
+		
+		// Get the view count option, and use the default if the value is empty or invalid.
+		$valid_options = array(
+			'all' => true,
+			'some' => true,
+			'once' => true,
+			'none' => true,
+		);
+		
+		$config = DocumentModel::getDocumentConfig();
+		if (!$config->view_count_option || !isset($valid_options[$config->view_count_option]))
+		{
+			$config->view_count_option = 'once';
+		}
+
+		// If not counting, return now.
+		if ($config->view_count_option == 'none')
+		{
+			return false;
+		}
+		
+		// Get document and user information.
+		$data_srl = $oData->getDataSrl();
+		$member_srl = $oData->get('member_srl');
+		$logged_info = Context::get('logged_info');
+		
+		// Option 'some': only count once per session.
+		if ($config->view_count_option != 'all' && $_SESSION['readed_data'][$data_srl])
+		{
+			return false;
+		}
+
+		// Option 'once': check member_srl and IP address.
+		if ($config->view_count_option == 'once')
+		{
+			// Pass if the author's IP address is as same as visitor's.
+			if($oDocument->get('ipaddress') == \RX_CLIENT_IP)
+			{
+				if (Context::getSessionStatus())
+				{
+					$_SESSION['readed_data'][$data_srl] = true;
+				}
+				return false;
+			}
+			
+			// Pass if the author's member_srl is the same as the visitor's.
+			if($member_srl && $logged_info->member_srl && $logged_info->member_srl == $member_srl)
+			{
+				$_SESSION['readed_data'][$data_srl] = true;
+				return false;
+			}
+		}
+
+		// Call a trigger when the read count is updated (before)
+		$trigger_output = ModuleHandler::triggerCall('blueberry.updateReadedCount', 'before', $oDocument);
+		if(!$trigger_output->toBool()) return $trigger_output;
+		
+		// Update read counts
+		$oDB = DB::getInstance();
+		$oDB->begin();
+		$args = new stdClass;
+		$args->data_srl = $data_srl;
+		executeQuery('blueberry.updateReadedCount', $args);
+
+		// Call a trigger when the read count is updated (after)
+		ModuleHandler::triggerCall('blueberry.updateReadedCount', 'after', $oDocument);
+		$oDB->commit();
+
+		// Register session
+		if(!isset($_SESSION['readed_data'][$data_srl]) && Context::getSessionStatus()) 
+		{
+			$_SESSION['readed_data'][$data_srl] = true;
+		}
+
+		return TRUE;
+	}
 }

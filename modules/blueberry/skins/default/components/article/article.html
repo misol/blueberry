@@ -1,81 +1,91 @@
 <div class="app-article-wrap" style="max-width: {$mi->max_width}">
-  <load target="article.scss" vars="$themeConfig->variables" />
-    <load target="article-content.scss" vars="$themeConfig->variables" />
-    
-    {@ // 본문 플로팅 메뉴 }
-    <include target="article-floating-menu/article-floating-menu.html" />
-    
-    <div class="app-card app-board-section">
-      {@ // 본문 상단 }
-      <include target="article-head.html" />
-    
-      <div class="app-board-container app-article-container">
-        {@ // 본문 }
-        <div class="app-article-content app-clearfix">
-          <div class="tw-text-center tw-mb-6" cond="$module_info->article_top_ad">
-            {$module_info->article_top_ad}
-          </div>
-    
-          {escape($oData->getContent(false))}
-		  
-		  <table class="tw-border-collapse tw-w-full tw-text-center tw-leading-normal tw-border tw-table-auto">
-			<thead class="tw-border-collapse tw-border">
-				<th>Time ({$oData->getTimeUnit()})</th>
-				<th>Concentration ({$oData->getAmountUnit()}/{$oData->getVolumeUnit()})</th>
-			</thead>
-			<tbody>
-				<tr loop="$oData->getTimeConcentrationArray()['time-concentration']=>$key,$val">
-					<td>{$val[0]}</td>
-					<td>{$val[1]}</td>
-				</tr>
-			<tbody>
-		  </table>
-    
-          <div class="tw-text-center tw-pt-6" cond="$module_info->article_bottom_ad">
-            {$module_info->article_bottom_ad}
-          </div>
-          
-          <div class="tw-flex tw-pt-8">
-            <include target="article-tag.html" />
-          </div>
-        </div>
-    
-        {@ // article Footer }
-        <include target="article-footer.html" />
-      </div>
-    
-    
-      <!-- 툴바 -->
-      <div class="app-article-toolbar">
-        <div class="app-board-container">
-          <a class="app-link" href="{getUrl('', 'mid', $mid)}">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-            </svg>
-            <span>{$lang->cmd_list}으로</span>
-          </a>
-          
-          <div class="tw-flex-1"></div>
-          
-          {@ // 수정, 삭제 }
-          <div cond="$oData->isEditable()" class="tw-ml-2 tw-mr-2 tw-text-sm">
-            <a href="{getUrl('act','dispBlueberryNCA','data_srl',$oData->getDataSrl(),'owner_id',$oData->getUserID())}" class="app-link tw-mr-2">
-              {$lang->cmd_modify}
-            </a>
-            
-            <a class="app-link tw-mr-2 tw-text-sm" onclick="onClickDataDelete()">
-              {$lang->cmd_delete}
-            </a>
-          </div>
-      
-          <a class="app-link tw-text-sm document_{$oDocument->document_srl}" href="#popup_menu_area" title="{lang('document.cmd_document_do')}..." onclick="return false">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    
+	<load target="article.scss" vars="$themeConfig->variables" />
+		<load target="article-content.scss" vars="$themeConfig->variables" />
+		
+		{@ // 본문 플로팅 메뉴 }
+		<include target="article-floating-menu/article-floating-menu.html" />
+		
+		<div class="app-card app-board-section">
+			{@ // 본문 상단 }
+			<include target="article-head.html" />
+		
+			<div class="app-board-container app-article-container">
+				{@ // 본문 }
+				<div class="app-article-content app-clearfix">
+					<div class="tw-text-center tw-mb-6" cond="$module_info->article_top_ad">
+						{$module_info->article_top_ad}
+					</div>
+		
+					{escape($oData->getContent(false))}
+			
+			<div class="app-widgetstyle-wrap">
+				<div class="app-widgetstyle-card app-card">
+					<h2 class="app-widgetstyle-header">
+						{lang('blueberry.time_concentration_profile')}
+					</h2>
+					<div class="app-clearfix">
+						<div class="app-widget-content-main">
+							<ul class="app-widget-content app-widget-content-normal tw-w-full tw-text-center tw-leading-normal tw-border tw-table-auto">
+								<thead class="tw-border-collapse tw-border">
+									<th>Time ({$oData->getTimeUnit()})</th>
+									<th>Concentration ({$oData->getAmountUnit()}/{$oData->getVolumeUnit()})</th>
+								</thead>
+								<tbody>
+									<tr loop="$oData->getTimeConcentrationArray()['time-concentration']=>$key,$val">
+										<td>{$val[0]}</td>
+										<td>{$val[1]}</td>
+									</tr>
+								<tbody>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+					<div class="tw-text-center tw-pt-6" cond="$module_info->article_bottom_ad">
+						{$module_info->article_bottom_ad}
+					</div>
+					
+					<div class="tw-flex tw-pt-8">
+						<include target="article-tag.html" />
+					</div>
+				</div>
+		
+				{@ // article Footer }
+				<include target="article-footer.html" />
+			</div>
+		
+		
+			<!-- 툴바 -->
+			<div class="app-article-toolbar">
+				<div class="app-board-container">
+					<a class="app-link" href="{getUrl('', 'mid', $mid)}">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+						</svg>
+						<span>{$lang->cmd_list}...</span>
+					</a>
+					
+					<div class="tw-flex-1"></div>
+					
+					{@ // 수정, 삭제 }
+					<div cond="$oData->isEditable()" class="tw-ml-2 tw-mr-2 tw-text-sm">
+						<a href="{getUrl('act','dispBlueberryNCA','data_srl',$oData->data_srl)}" class="app-link tw-mr-2">
+							{$lang->cmd_modify}
+						</a>
+						
+						<a class="app-link tw-mr-2 tw-text-sm" onclick="onClickDataDelete()">
+							{$lang->cmd_delete}
+						</a>
+					</div>
+			
+					<a class="app-link tw-text-sm document_{$oDocument->document_srl}" href="#popup_menu_area" title="{lang('document.cmd_document_do')}..." onclick="return false">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+						</svg>
+					</a>
+				</div>
+			</div>
+		</div>
+		
 </div>

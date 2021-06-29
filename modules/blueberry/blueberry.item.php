@@ -124,7 +124,7 @@ class blueberryItem extends BaseObject
 		{
 			return $this->setGrant();
 		}
-		if ($this->get('member_srl') && abs($this->get('member_srl')) == $logged_info->member_srl)
+		if ($this->getMemberSrl() && $this->getMemberSrl() == $logged_info->member_srl)
 		{
 			return $this->setGrant();
 		}
@@ -482,6 +482,19 @@ class blueberryItem extends BaseObject
 			return $statusList[$oBlueberry->getDefaultStatus()];
 		}
 	}
+	/**
+	 * Update readed count
+	 * @return void
+	 */
+	function updateReadedCount()
+	{
+		if(blueberryController::updateReadedCount($this))
+		{
+			$readed_count = $this->get('readed_count');
+			$this->add('readed_count', $readed_count+1);
+		}
+	}
+
 
 }
 

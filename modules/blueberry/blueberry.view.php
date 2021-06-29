@@ -56,6 +56,22 @@ class blueberryView extends blueberry
 		Context::set('search_option', $search_option);
 		
 		$oData = blueberryModel::getData(intval(Context::get('data_srl')));
+		if($oData->isExists()) {
+			// update the document view count (if the document is not secret)
+			if($oData->isAccessible())
+			{
+				$oData->updateReadedCount();
+			}
+			// disappear the document if it is secret
+			else
+			{
+				$oData->add('content',lang('thisissecret'));
+			}
+		}
+		else {
+			$oData = blueberryModel::getData(0);
+		}
+
 		Context::set('oData', $oData);
 		
 		/**
@@ -96,13 +112,18 @@ class blueberryView extends blueberry
 			Context::set('owner_id', $logged_info->user_id);
 		}
 		$owner_id = strval(Context::get('owner_id'));
+		if(!$owner_id) {
+			$owner_id = $logged_info->user_id;
+		}
+		$owner_id = strval(Context::get('owner_id'));
 		
 		if(!$owner_id || $owner_id !== $logged_info->user_id) {
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
-		$ownder_info = memberModel::getMemberInfoByUserID($owner_id);
+
+		$owner_info = memberModel::getMemberInfoByUserID($owner_id);
 		$args = new stdClass();
-		$args->member_srl = $ownder_info->member_srl;
+		$args->member_srl = $owner_info->member_srl;
 		Context::set('data_list', blueberryModel::getInVivoDataByMemberSrl($args, $columnList = array()));
 
 	}
