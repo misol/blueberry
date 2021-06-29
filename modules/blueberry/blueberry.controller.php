@@ -133,11 +133,11 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
-		$obj->TC_data['time'] = array_map(floatval, $obj->TC_data['time']);
-		$obj->TC_data['concentration'] = array_map(floatval, $obj->TC_data['concentration']);
-		$obj->TC_data['lnC'] = array_map(floatval, $obj->TC_data['lnC']);
+		$obj->TC_data['time'] = array_map( "floatval", $obj->TC_data['time']);
+		$obj->TC_data['concentration'] = array_map( "floatval", $obj->TC_data['concentration']);
+		$obj->TC_data['lnC'] = array_map( "floatval", $obj->TC_data['lnC']);
 		foreach ($obj->TC_data['time-concentration'] as $key => $val) {
-			$obj->TC_data['time-concentration'][$key] = array_map(floatval, $val);
+			$obj->TC_data['time-concentration'][$key] = array_map( "floatval", $val);
 		}
 		$args->time_concentration = serialize($obj->TC_data);
 		
@@ -264,7 +264,7 @@ class blueberryController extends blueberry
 		if ($config->view_count_option == 'once')
 		{
 			// Pass if the author's IP address is as same as visitor's.
-			if($oDocument->get('ipaddress') == \RX_CLIENT_IP)
+			if($oData->get('ipaddress') == \RX_CLIENT_IP)
 			{
 				if (Context::getSessionStatus())
 				{

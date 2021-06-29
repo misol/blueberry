@@ -321,8 +321,8 @@ class blueberryItem extends BaseObject
 		
 		if(!is_countable($time_concentration['time']) || !is_countable($time_concentration['concentration'])) return;
 		
-		$time_concentration['time'] = array_map(floatval, $time_concentration['time']);
-		$time_concentration['concentration'] = array_map(floatval, $time_concentration['concentration']);
+		$time_concentration['time'] = array_map( "floatval", $time_concentration['time']);
+		$time_concentration['concentration'] = array_map( "floatval", $time_concentration['concentration']);
 		
 		if (count($time_concentration['time']) !== count($time_concentration['concentration'])) return;
 		$new_time = array();

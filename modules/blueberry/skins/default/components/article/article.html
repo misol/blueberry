@@ -70,7 +70,7 @@
 					
 					{@ // 수정, 삭제 }
 					<div cond="$oData->isEditable()" class="tw-ml-2 tw-mr-2 tw-text-sm">
-						<a href="{getUrl('act','dispBlueberryNCA','data_srl',$oData->data_srl)}" class="app-link tw-mr-2">
+						<a href="{getUrl('act','dispBlueberryNCA','data_srl',$oData->getDataSrl())}" class="app-link tw-mr-2">
 							{$lang->cmd_modify}
 						</a>
 						

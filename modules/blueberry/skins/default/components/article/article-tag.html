@@ -1,5 +1,5 @@
 {@ $tag_list = $oData->get('tag_list') }
-<div class="tw-pr-6" cond="count($tag_list)">
+<div class="tw-pr-6" cond="is_countable($tag_list)">
   <ul class="app-article-tags">
     <li loop="$i=0;$i<count($tag_list);$i++">
       {@ $tag = $tag_list[$i] }
