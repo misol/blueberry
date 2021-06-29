@@ -284,6 +284,7 @@ class blueberryItem extends BaseObject
 		$dose = floatval($this->get('dose'));
 		$dose_unit = strval($this->get('dose_unit'));
 		$dose = $this->unitConversion($dose, "amount", $dose_unit, $this->getAmountUnit());
+		return $dose;
 	}
 	
 	
@@ -470,7 +471,7 @@ class blueberryItem extends BaseObject
 		return $this->toPrecision($this->getAUCArray()['Extrapolation_portion'] * 100, $precision);
 	}
 	
-	public function getCL() {
+	public function getCL($precision = 3) {
 		$dose = $this->getUnitMatchedDose();
 		if($this->isMultipleDose()) {
 			$AUC = $this->getAUClast(-1);
@@ -479,6 +480,14 @@ class blueberryItem extends BaseObject
 		}
 		return $this->toPrecision($dose / $AUC, $precision);
 	}
+	
+	
+	public function getVss($precision = 3) {
+		$CL = $this->getCL(-1);
+		$MRT = $this->getMRT(-1)
+		return $this->toPrecision($MRT * $CL, $precision);
+	}
+	
 	
 	private function getAUMCArray() {
 		if(!$this->isExists()) return;
@@ -590,9 +599,6 @@ class blueberryItem extends BaseObject
 		
 		return $this->toPrecision($AUMC/$AUC, $precision);
 		
-	}
-	
-	public function getCL() {
 	}
 	
 	public function isMultipleDose() {
@@ -983,8 +989,8 @@ class blueberryItem extends BaseObject
 		if (!in_array($unit_type, $unit_types)) {
 			return;
 		}
-		$org_unit = preg_replace(array('/^g/', '/^L/', '/^mol/', '/^IU/'), array('1g', '1L', '1mol', '1IU'), $org_unit);
-		$target_unit = preg_replace(array('/^g/', '/^L/', '/^mol/', '/^IU/'), array('1g', '1L', '1mol', '1IU'), $target_unit);
+		$org_unit = preg_replace(array("/^g/", "/^L/", "/^mol/", "/^IU/"), array("1g", "1L", "1mol", "1IU"), $org_unit);
+		$target_unit = preg_replace(array("/^g/", "/^L/", "/^mol/", "/^IU/"), array("1g", "1L", "1mol", "1IU"), $target_unit);
 		
 		$SI_prefixes = array(
 			'Y'=> 1e24,
