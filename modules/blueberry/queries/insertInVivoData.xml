@@ -14,6 +14,7 @@
 		<column name="dose" var="dose" notnull="notnull" />
 		<column name="dose_unit" var="dose_unit" notnull="notnull" default="mg" />
 		<column name="administration_route" var="administration_route" notnull="notnull" default="IVeBo" />
+		<column name="duration_of_infusion" var="duration_of_infusion" default="0" />
 		<column name="dose_repeat" var="dose_repeat" default="S" />
 		<column name="tau" var="tau" default="0" />
 		<column name="last_dosing" var="last_dosing" default="0" />

@@ -57,9 +57,11 @@ class blueberryController extends blueberry
 				$obj->{$key} = floatval($obj->{$key});
 			}
 		}
-		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getUrl('', 'mid', strval($obj->mid), 'act', 'dispBlueberryContent');
+		
+		$output = self::insertBlueberryInVivoData($obj);
+		$returnUrl = getNotEncodedUrl('', 'act', 'dispBlueberryContent', 'mid', Context::get('mid'), 'owner_id', $output->get('owner_id'), 'data_srl', $output->get('data_srl'));
 		$this->setRedirectUrl($returnUrl);
-		return self::insertBlueberryInVivoData($obj);
+		return $output;
 	}
 	
 	/**
@@ -87,8 +89,9 @@ class blueberryController extends blueberry
 		$args = new stdClass;
 		// sanitize variables
 		$text_inputs = ['title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'administration_route', 'dose_repeat', 'integration_method', 'extrapolation_method', 'password', 'user_id', 'user_name', 'nick_name', 'status', 'comment_status'];
-		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion'];
 		$int_inputs = ['data_srl', 'category_srl', 'module_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
+		$positive_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion'];
 		$unset_inputs = ['regdate', 'last_update', 'ipaddress', 'allow_trackback', 'notify_message'];
 		
 		foreach ($text_inputs as $key) {
@@ -102,6 +105,14 @@ class blueberryController extends blueberry
 			if(isset($obj->{$key})) {
 			
 				$args->{$key} = floatval($obj->{$key});
+			}
+		}
+		
+		foreach ($positive_inputs as $key) {
+			if(isset($obj->{$key})) {
+				if(floatval($obj->{$key}) < 0) {
+					$args->{$key} = 0;
+				}
 			}
 		}
 		
@@ -126,6 +137,14 @@ class blueberryController extends blueberry
 		}
 		else {
 			$args->sampling_type = 'serial';
+		}
+		if(isset($obj->dose_repeat)) {
+			if (in_array($obj->dose_repeat, array('single', 'multiple'))) {
+				$args->dose_repeat = strtoupper(substr($obj->dose_repeat, 0, 1));
+			}
+		}
+		else {
+			$args->dose_repeat = 'S';
 		}
 		
 		if(!isset(blueberry::$available_routes[$args->administration_route])) {
@@ -212,9 +231,10 @@ class blueberryController extends blueberry
 		$oDB->commit();
 
 		// return
-		$output->add('data_srl',$args->data_srl);
-		$output->add('title',$args->title);
-
+		$output->add('data_srl', $args->data_srl);
+		$output->add('owner_id', $args->user_id);
+		$output->add('title', $args->title);
+		
 		return $output;
 
 	}

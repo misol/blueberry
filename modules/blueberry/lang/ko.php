@@ -18,6 +18,7 @@ $lang->dose = '투여량';
 $lang->iv_bolus = '정맥 급속 주입 (IV bolus)';
 $lang->iv_infusion = '정맥 지속 주입 (IV infusion)';
 $lang->extravenous = '혈관 외 경로 (extravascular)';
+$lang->duration_of_infusion = '주입 시간';
 
 $lang->single_dose = '단회 투여';
 $lang->repeated_dose = '반복 투여';

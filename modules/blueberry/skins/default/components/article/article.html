@@ -26,7 +26,7 @@
 							<div class="app-clearfix">
 								<div class="app-widget-content-main tw-p-4">
 									<p>
-										{nl2br(escape($oData->getContent(false)), true)}
+										{nl2br($oData->getContent(false), true)}
 									</p>
 								</div>
 							</div>
@@ -43,6 +43,15 @@
 									<ul class="tw-list-disc tw-mx-5">
 										<li class="tw-mb-2">{lang('blueberry.dose')}: {$oData->getDose(true, -1)}</li>
 										<li class="tw-mb-2">{lang('blueberry.dosing_route')}: {lang('blueberry.'.$oData->getAdministrationRoute())} / <block cond="!$oData->isMultipleDose()">{lang('blueberry.single_dose')}</block><block cond="$oData->isMultipleDose()">{lang('blueberry.repeated_dose')}</block></li>
+										<li class="tw-mb-2" cond="$oData->getAdministrationRoute() == 'iv_infusion'">
+											{lang('blueberry.duration_of_infusion')}: {$oData->getLengthofInfusion(-1)} {$oData->getTimeUnit()}
+										</li>
+										<li class="tw-mb-2" cond="$oData->isMultipleDose()">
+											&tau;: {$oData->getTau()} {$oData->getTimeUnit()}
+										</li>
+										<li class="tw-mb-2" cond="$oData->isMultipleDose()">
+											{lang('blueberry.time_of_last_dose')}: {$oData->getLastDosingTime()} {$oData->getTimeUnit()}
+										</li>
 										<li class="tw-mb-0">{lang('blueberry.interpolation_method')}: {lang('blueberry.'.$oData->getInterpolationMethod())}</li>
 									</ul>
 								</div>
@@ -88,11 +97,15 @@
 										<tbody>
 											<tr cond="$oData->getC0()>0">
 												<td>C<sub>0</sub></td>
-												<td>{$oData->getC0(-1)} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+												<td>{$oData->getC0()} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
 											</tr>
 											<tr cond="$oData->getAdministrationRoute() == 'extravenous'">
 												<td>C<sub>max</sub></td>
 												<td>{$oData->getCmax(-1)} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+											</tr>
+											<tr cond="$oData->getAdministrationRoute() == 'extravenous'">
+												<td>T<sub>max</sub></td>
+												<td>{$oData->getTmax(-1)} {$oData->getTimeUnit()}</td>
 											</tr>
 											<tr>
 												<td>λ<sub>Z</sub></td>
@@ -114,53 +127,69 @@
 												<td>Adjusted R<sup>2</sup> (λ<sub>Z</sub>)</td>
 												<td>{$oData->getAdjustedRSquare()}</td>
 											</tr>
-											<tr cond="$oData->isMultipleDose()">
-												<td>&tau;</td>
-												<td>{$oData->getTau()} {$oData->getTimeUnit()}</td>
-											</tr>
-											<tr cond="$oData->isMultipleDose()">
-												<td>Last dosing time</td>
-												<td>{$oData->getLastDosingTime()} {$oData->getTimeUnit()}</td>
-											</tr>
-											<tr cond="!$oData->isMultipleDose()">
+											<tr>
 												<td>AUC</td>
 												<td>{$oData->getAUC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
 											</tr>
 											<tr>
-												<td>AUC<sub cond="!$oData->isMultipleDose()">last</sub><sub cond="$oData->isMultipleDose()">&tau;</sub></td>
+												<td>AUC<sub>last</sub></td>
 												<td>{$oData->getAUClast()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
-												<td>AUC<sub cond="$oData->isMultipleDose()">&tau;-&infin;</sub></td>
-												<td>{$oData->getAUClast()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td>AUC<sub>&tau;</sub></td>
+												<td>{$oData->getAUCtau()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
 											</tr>
-											<tr cond="!$oData->isMultipleDose()">
+											<tr cond="$oData->isMultipleDose()">
+												<td>AUC<sub cond="$oData->isMultipleDose()">&tau;-&infin;</sub></td>
+												<td>{$oData->getAUCtauinf()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+											</tr>
+											<tr>
 												<td>% Extrapolated<sub>AUC</sub></td>
 												<td>{$oData->getAUCExtPortionPercent()}%</td>
+											</tr>
+											<tr cond="$oData->isMultipleDose()">
+												<td>C<sub>SS, avg</sub></td>
+												<td>{$oData->getCss()} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
 											</tr>
 											<tr cond="!$oData->isMultipleDose()">
 												<td>AUMC</td>
 												<td>{$oData->getAUMC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
 											</tr>
+											<tr cond="$oData->isMultipleDose()">
+												<td>AUMC<sub>&tau;</sub></td>
+												<td>{$oData->getAUMCtau()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+											</tr>
 											<tr>
-												<td>AUMC<sub cond="!$oData->isMultipleDose()">last</sub><sub cond="$oData->isMultipleDose()">&tau;</sub></td>
+												<td>AUMC<sub>last</sub></td>
 												<td>{$oData->getAUMClast()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
 											</tr>
 											<tr cond="!$oData->isMultipleDose()">
 												<td>% Extrapolated<sub>AUMC</sub></td>
 												<td>{$oData->getAUMCExtPortionPercent()}%</td>
 											</tr>
+											<tr cond="!$oData->isMultipleDose()">
+												<td>MRT<sub>last</sub></td>
+												<td>{$oData->getMRTlast()} {$oData->getTimeUnit()}</td>
+											</tr>
 											<tr>
 												<td>MRT</td>
 												<td>{$oData->getMRT()} {$oData->getTimeUnit()}</td>
 											</tr>
 											<tr>
-												<td>CL</td>
+												<td>CL<sub cond="$oData->isMultipleDose()">SS</sub><block cond="$oData->getAdministrationRoute() == 'extravenous'">/F</block></td>
 												<td>{$oData->getCL()} {$oData->getVolumeUnit()}/{$oData->getTimeUnit()}</td>
 											</tr>
-											<tr>
-												<td>V<sub>SS</></td>
+											<tr cond="$oData->getAdministrationRoute() !== 'extravenous'">
+												<td>V<sub>SS</sub></td>
 												<td>{$oData->getVss()} {$oData->getVolumeUnit()}</td>
+											</tr>
+											<tr>
+												<td>V<sub>Z</sub></td>
+												<td>{$oData->getVz()} {$oData->getVolumeUnit()}</td>
+											</tr>
+											<tr cond="$oData->isMultipleDose()">
+												<td>Accumulation Index</td>
+												<td>{$oData->getAccumulationIndex()}</td>
 											</tr>
 										<tbody>
 									</table>

@@ -967,13 +967,22 @@ function procUpdateSheet() {
 	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
 	var volume_unit = String($('#volume_unit').val()).trim().replace("uL", "μL");
 	
+	
+	var dose_route = String($('#dose_route').val()).trim();
 	var dose_repeat = String($('#dose_repeat').val()).trim();
+	
+	if (dose_route == "IVeIf") {
+		$("#iv_infusion").show(300);
+	} else {
+		$("#iv_infusion").hide(300);
+	}
 	
 	if (dose_repeat == "multiple") {
 		$("#multiple_dosing").show(300);
 	} else {
 		$("#multiple_dosing").hide(300);
 	}
+
 
 	TCtable.setHeader(0, 'Time (' + String(time_unit) + ')');
 	TCtable.setHeader(1, 'Concentration (' + String(amount_unit) + '/' + String(volume_unit) + ')');
@@ -1010,6 +1019,7 @@ function saveData () {
 		'dose': Number($('#dose').val()),
 		'dose_unit': String($('#dose_unit').val()).trim(),
 		'administration_route': String($('#dose_route').val()).trim(),
+		'duration_of_infusion': Number($('#duration_of_infusion').val()),
 		'dose_repeat': String($('#dose_repeat').val()).trim(),
 		
 		'last_dosing': Number($('#last_dosing_time').val()),
@@ -1019,7 +1029,7 @@ function saveData () {
 	};
 	
 	var response_tags = new Array('error','message','results');
-	exec_xml('blueberry', 'procBlueberryInsertData', params, function(a,b) { alert(a.message); window.location.href = a.redirect_url; return; }, response_tags);
+	exec_xml('blueberry', 'procBlueberryInsertData', params, function(a,b) { window.location.href = a.redirect_url; return; }, response_tags);
 	
 }
 
