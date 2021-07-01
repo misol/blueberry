@@ -39,7 +39,7 @@
 					<div class="app-clearfix">
 						<div class="app-widget-content-main tw-p-4">
 							<ul class="tw-list-disc tw-mx-5">
-								<li class="tw-mb-2">{lang('blueberry.dose')}: {$oData->getDose()}</li>
+								<li class="tw-mb-2">{lang('blueberry.dose')}: {$oData->getDose(true, -1)}</li>
 								<li class="tw-mb-2">{lang('blueberry.dosing_route')}: {lang('blueberry.'.$oData->getAdministrationRoute())} / <block cond="!$oData->isMultipleDose()">{lang('blueberry.single_dose')}</block><block cond="$oData->isMultipleDose()">{lang('blueberry.repeated_dose')}</block></li>
 								<li class="tw-mb-0">{lang('blueberry.interpolation_method')}: {lang('blueberry.'.$oData->getInterpolationMethod())}</li>
 							</ul>
@@ -86,7 +86,11 @@
 								<tbody>
 									<tr cond="$oData->getC0()>0">
 										<td>C<sub>0</sub></td>
-										<td>{$oData->getC0()} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+										<td>{$oData->getC0(-1)} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+									</tr>
+									<tr cond="$oData->getAdministrationRoute() == 'extravenous'">
+										<td>C<sub>max</sub></td>
+										<td>{$oData->getCmax(-1)} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
 									</tr>
 									<tr>
 										<td>λ<sub>Z</sub></td>

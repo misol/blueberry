@@ -32,7 +32,7 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exceptions\SecurityViolation;
 		}
 		
-		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method'];
+		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method', 'administration_route'];
 		$float_inputs = ['dose', 'last_dosing_time', 'tau'];
 		
 		// setup variables

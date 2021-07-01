@@ -610,41 +610,50 @@ function drawPlot(time, concentrations, lambda) {
 	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
 	var volume_unit = String($('#volume_unit').val()).trim().replace("uL", "μL");
 	
-	
 	var layout = {
 		xaxis: {
 			title: 'Time (' + time_unit + ')',
 			rangemode: 'nonnegative',
 			ticks: 'outside',
+			range: [0, 1.2*(Math.max(...time))],
 			showticklabels: true,
 			showline: true,
-			showgrid: false
+			showgrid: false,
+			linecolor: (getColorScheme() === 'light')?'#000' : '#fff',
+			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
 		},
 		yaxis: {
 			title: 'Concentration (' + amount_unit + '/' + volume_unit + ')',
 			ticks: 'outside',
 			showticklabels: true,
 			type: 'log',
-			autorange: true,
-			exponentformat: 'e',
+			range: [Math.floor(Math.log10(Math.min(...concentrations))), Math.ceil(Math.log10(Math.max(...concentrations)))],
+			autorange: false,
+			exponentformat: 'power',
 			showexponent: 'all',
 			showline: true,
-			showgrid: false
+			showgrid: false,
+			linecolor: (getColorScheme() === 'light')?'#000' : '#fff',
+			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
 		},
-		
+		plot_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
+		paper_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		font: {
-			family: ' TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif',
 			size: 14,
-			color: '#000'
+			color: (getColorScheme() === 'light')?'#000' : '#fff',
 		}
 	};
 	
 	
 	var settings = {
+		/*
 		toImageButtonOptions: {
 			filename: 'moment_analysis',
 			format: 'svg'
-		}
+		},
+		modeBarButtonsToRemove: ['pan2d','select2d','lasso2d','resetScale2d','zoomOut2d'],*/
+		responsive: true,
+		displayModeBar: false
 	};
 	
 	
@@ -653,7 +662,12 @@ function drawPlot(time, concentrations, lambda) {
 		x: time,
 		y: concentrations,
 		mode: 'markers',
-		type: 'scatter'
+		type: 'scatter',
+		cliponaxis: false,
+		marker: {
+			color: (getColorScheme() === 'light')?'#000' : '#fff',
+			size: 10,
+		}
 	};
 	
 	var lambda_times = time.slice(lambda.terminal_points * -1);
@@ -677,11 +691,16 @@ function drawPlot(time, concentrations, lambda) {
 		name: 'Predicted',
 		x: ex_times,
 		y: ex_conc,
-		mode: 'lines'
+		mode: 'lines',
+		cliponaxis: false,
+		line: {
+			color: '#9c27b0',
+			width: 2
+		}
 	};
 	
 	var data = [TC, lambda_line];
-	Plotly.newPlot('data-plot', data, layout, {responsive: true});
+	Plotly.newPlot('data-plot', data, layout, settings);
 	/*
 	var time_unit = String($('#time_unit').val()).trim();
 	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
@@ -983,10 +1002,10 @@ function saveData () {
 		
 		'dose': Number($('#dose').val()),
 		'dose_unit': String($('#dose_unit').val()).trim(),
-		'dosing_route': String($('#dose_route').val()).trim(),
+		'administration_route': String($('#dose_route').val()).trim(),
 		'dose_repeat': String($('#dose_repeat').val()).trim(),
 		
-		'last_dosing_time': Number($('#last_dosing_time').val()),
+		'last_dosing': Number($('#last_dosing_time').val()),
 		'tau': Number($('#tau').val()),
 		'integration_method': String($('#integration_method').val()).trim(),
 		'TC_data': data_array

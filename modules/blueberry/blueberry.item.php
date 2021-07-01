@@ -241,7 +241,7 @@ class blueberryItem extends BaseObject
 		$number = floatval($number);
 		$precision = intval($precision);
 		if ($number == 0) return 0;
-		if ($precision < 0) return $number;
+		if ($precision <= 0) return $number;
 		$exponent = floor(log10(abs($number)) + 1);
 		$significand =
 			round(
@@ -251,10 +251,22 @@ class blueberryItem extends BaseObject
 			/ pow(10, $precision);
 		$results = strval($significand * pow(10, $exponent));
 		if(strlen(str_replace('.', '' ,$results)) < $precision) {
+			$diff_len = $precision - strlen(str_replace('.', '' ,$results));
 			if(strpos($results, '.')) {
-				$results .= '0';
+				$i = 0;
+				while ($i < $diff_len) {
+					$results .= '0';
+					$i++;
+				}
 			} else {
 				$results .= '.0';
+				if($diff_len > 1) {
+					$i = 1;
+					while ($i < $diff_len) {
+						$results .= '0';
+						$i++;
+					}
+				}
 			}
 		}
 		return $results;
@@ -265,7 +277,7 @@ class blueberryItem extends BaseObject
 	 * @param bool include_unit
 	 * @return string | float
 	 */
-	public function getDose($include_unit = true, $precision = 3)
+	public function getDose($include_unit = true, $precision = 4)
 	{
 		if(!$this->isExists()) return;
 		$dose = floatval($this->get('dose'));
@@ -288,7 +300,7 @@ class blueberryItem extends BaseObject
 	}
 	
 	
-	public function getC0($precision = 3) {
+	public function getC0($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		if($this->C0_cache !== null) {
@@ -299,7 +311,6 @@ class blueberryItem extends BaseObject
 		
 		$C0 = 0;
 		$dose_route = $this->getAdministrationRoute();
-		
 		if(in_array($dose_route, array('extravenous', 'iv_infusion'))) {
 			if($this->isMultipleDose()) {
 				$tau_time = [];
@@ -338,15 +349,15 @@ class blueberryItem extends BaseObject
 			$conc_slice = array_slice($time_concentration['concentration'], 0, 2);
 			$lnC_slice = array_slice($time_concentration['lnC'], 0, 2);
 			if($time_slice[0] === 0) {
-				if($lnC_slice[0] != 'NA') {
+				if($lnC_slice[0] !== 'NA') {
 					$C0 = $lnC_slice[0];
 				} else {
 					$C0 = 0;
 				}
 			} else {
-				if(in_array('NA', $lnC_slice)) {
-					$C0 = ($lnC_slice[0] == 'NA')? $lnC_slice[1]:$lnC_slice[0];
-					if($C0 == 'NA') {
+				if($lnC_slice[0] === 'NA' || $lnC_slice[1] === 'NA') {
+					$C0 = ($lnC_slice[0] === 'NA')? $lnC_slice[1]:$lnC_slice[0];
+					if($C0 === 'NA') {
 						$C0 = 0;
 						foreach ($time_concentration['lnC'] as $lnC_item) {
 							if ($lnC_item != "NA" && $C0 == 0) {
@@ -443,35 +454,35 @@ class blueberryItem extends BaseObject
 		return $results;
 	}
 	
-	public function getAUC($precision = 3) {
+	public function getAUC($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUCArray()['AUC'], $precision);
 	}
 	
-	public function getAUClast($precision = 3) {
+	public function getAUClast($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUCArray()['AUClast'], $precision);
 	}
 	
-	public function getAUClastinf($precision = 3) {
+	public function getAUClastinf($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUCArray()['AUClastinf'], $precision);
 	}
-	public function getAUCExtPortion($precision = 3) {
+	public function getAUCExtPortion($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUCArray()['Extrapolation_portion'], $precision);
 	}
-	public function getAUCExtPortionPercent($precision = 3) {
+	public function getAUCExtPortionPercent($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUCArray()['Extrapolation_portion'] * 100, $precision);
 	}
 	
-	public function getCL($precision = 3) {
+	public function getCL($precision = 4) {
 		$dose = $this->getUnitMatchedDose();
 		if($this->isMultipleDose()) {
 			$AUC = $this->getAUClast(-1);
@@ -482,12 +493,44 @@ class blueberryItem extends BaseObject
 	}
 	
 	
-	public function getVss($precision = 3) {
+	public function getVss($precision = 4) {
 		$CL = $this->getCL(-1);
 		$MRT = $this->getMRT(-1);
 		return $this->toPrecision($MRT * $CL, $precision);
 	}
 	
+	
+	public function getCmax($precision = 4) {
+		if(!$this->isExists()) return;
+		
+		static $results = null;
+		if ($results !== null) return $results;
+		
+		$sorted_T_C = $this->getTimeConcentrationArray()['time-concentration'];
+		
+		
+		if($this->isMultipleDose()) {
+			$tau_time_conc = array();
+			$i = 0;
+			foreach ($sorted_T_C as $val) {
+				if($this->getLastDosingTime(-1) < $val[0] && ($this->getLastDosingTime(-1) + $this->getTau(-1)) >= $val[0]) {
+					$tau_time_conc[] = array($val[0] - $this->getLastDosingTime(-1), $val[1]);
+				}
+				$i++;
+			}
+			$sorted_T_C = $tau_time_conc;
+		}
+		
+		$conc = 0;
+		foreach ($sorted_T_C as $val) {
+			if($conc < $val[1]) {
+				$conc = $val[1];
+			}
+		}
+		$results = $conc;
+		
+		return $this->toPrecision($results, $precision);
+	}
 	
 	private function getAUMCArray() {
 		if(!$this->isExists()) return;
@@ -563,28 +606,28 @@ class blueberryItem extends BaseObject
 	}
 	
 	
-	public function getAUMC($precision = 3) {
+	public function getAUMC($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUMCArray()['AUMC'], $precision);
 	}
-	public function getAUMClast($precision = 3) {
+	public function getAUMClast($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUMCArray()['AUMClast'], $precision);
 	}
-	public function getAUMCExtPortion($precision = 3) {
+	public function getAUMCExtPortion($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUMCArray()['Extrapolation_portion'], $precision);
 	}
-	public function getAUMCExtPortionPercent($precision = 3) {
+	public function getAUMCExtPortionPercent($precision = 4) {
 		if(!$this->isExists()) return;
 		
 		return $this->toPrecision($this->getAUMCArray()['Extrapolation_portion'] * 100, $precision);
 	}
 	
-	public function getMRT($precision = 3) {
+	public function getMRT($precision = 4) {
 		$AUC = 0;
 		$AUMC = 0;
 		
@@ -633,7 +676,7 @@ class blueberryItem extends BaseObject
 	 * @param bool include_unit
 	 * @return string | float
 	 */
-	public function getLastDosingTime($precision = 3)
+	public function getLastDosingTime($precision = 4)
 	{
 		if(!$this->isExists()) return;
 		$last_dosing = floatval($this->get('last_dosing'));
@@ -797,7 +840,7 @@ class blueberryItem extends BaseObject
 		return $this->time_concentration_cache;
 	}
 	
-	public function getTau($precision = 3) {
+	public function getTau($precision = 4) {
 		return $this->toPrecision($this->get('tau'), $precision);
 	}
 	
@@ -1125,21 +1168,21 @@ class blueberryItem extends BaseObject
 		return $results;
 	}
 	
-	public function getLambda($precision = 3) {
+	public function getLambda($precision = 4) {
 		return -1 * $this->toPrecision($this->getLambdaArray()['lambda_Z'], $precision);
 	}
 	
 	public function getTerminalPoints() {
 		return $this->getLambdaArray()['terminal_points'];
 	}
-	public function getAdjustedRSquare($precision = 3) {
+	public function getAdjustedRSquare($precision = 4) {
 		return $this->toPrecision($this->getLambdaArray()['adj_r2'], $precision);
 	}
-	public function getRSquare($precision = 3) {
+	public function getRSquare($precision = 4) {
 		return $this->toPrecision($this->getLambdaArray()['r2'], $precision);
 	}
-	public function getTerminalHalfLife($precision = 3) {
-		return -1 * $this->toPrecision(log(2)/$this->getLambda(-1), $precision);
+	public function getTerminalHalfLife($precision = 4) {
+		return $this->toPrecision(log(2)/$this->getLambda(-1), $precision);
 	}
 
 }
