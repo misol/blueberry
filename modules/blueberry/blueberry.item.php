@@ -851,12 +851,12 @@ class blueberryItem extends BaseObject
 	
 	public function getAmountUnit()
 	{
-		return $this->get('amount_unit');
+		return str_replace('ug','μg', $this->get('amount_unit'));
 	}
 	
 	public function getVolumeUnit()
 	{
-		return $this->get('volume_unit');
+		return str_replace('uL','μL', $this->get('volume_unit'));
 	}
 	
 	public function getVoted()
@@ -1130,7 +1130,7 @@ class blueberryItem extends BaseObject
 		return array($dfdt_2, $dfdt_3);
 	}
 	
-	private function getLambdaArray() {
+	public function getLambdaArray() {
 		$time_conc = $this->getTimeConcentrationArray();
 		static $results = null;
 		

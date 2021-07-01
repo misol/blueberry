@@ -636,6 +636,13 @@ function drawPlot(time, concentrations, lambda) {
 			linecolor: (getColorScheme() === 'light')?'#000' : '#fff',
 			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
 		},
+		
+		margin: {
+			l: 80,
+			r: 80,
+			b: 80,
+			t: 35
+		},
 		plot_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		paper_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		font: {

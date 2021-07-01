@@ -3,12 +3,13 @@
  * @ brief: a javascript file for NCA View
 */
 console.log('Blueberry NCA Module Copyright (C) 2021 Min-Soo Kim at Seoul National University.');
+function loadData (time_concentrations, lambda, time_unit, amount_unit, volume_unit) {
+	$(document).ready(function() { drawPlot( time_concentrations, lambda, time_unit, amount_unit, volume_unit) });
+}
+function drawPlot(time_concentrations, lambda, time_unit, amount_unit, volume_unit) {
+	var time = time_concentrations['time'];
+	var concentrations = time_concentrations['concentration'];
 
-function drawPlot(time, concentrations, lambda) {
-
-	var time_unit = String($('#time_unit').val()).trim();
-	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
-	var volume_unit = String($('#volume_unit').val()).trim().replace("uL", "μL");
 	
 	console.log([...Array(Math.ceil(Math.log10(Math.max(...concentrations))) - Math.floor(Math.log10(Math.min(...concentrations))) + 1).keys()]);
 	var layout = {
@@ -37,6 +38,12 @@ function drawPlot(time, concentrations, lambda) {
 			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
 		},
 		
+		margin: {
+			l: 80,
+			r: 80,
+			b: 80,
+			t: 35
+		},
 		plot_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		paper_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		font: {
