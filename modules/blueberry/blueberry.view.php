@@ -122,14 +122,13 @@ class blueberryView extends blueberry
 			throw new Rhymix\Framework\Exceptions\NotPermitted('msg_not_permitted');
 		}
 		
-		if(!strval(Context::get('owner_id'))) {
-			Context::set('owner_id', $logged_info->user_id);
-		}
 		$owner_id = strval(Context::get('owner_id'));
 		if(!$owner_id) {
 			$owner_id = $logged_info->user_id;
 		}
-		$owner_id = strval(Context::get('owner_id'));
+		if(!strval(Context::get('owner_id'))) {
+			Context::set('owner_id', $logged_info->user_id);
+		}
 		
 		if(!$owner_id || $owner_id !== $logged_info->user_id) {
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
