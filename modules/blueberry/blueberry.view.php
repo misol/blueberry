@@ -8,7 +8,7 @@
  **/
 class blueberryView extends blueberry
 {
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 	}
@@ -17,8 +17,11 @@ class blueberryView extends blueberry
 	 * @brief initialization
 	 * blueberry module can be used in either normal mode or admin mode.
 	 **/
-	function init()
+	public function init()
 	{
+		$this->list_count = $this->module_info->list_count ?? 20;
+		$this->search_list_count = $this->module_info->search_list_count ?? 20;
+		$this->page_count = $this->module_info->page_count ?? 10;
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('data_srl', 'comment_srl', 'vid', 'mid', 'page', 'category', 'search_target', 'search_keyword', 'sort_index', 'order_type', 'trackback_srl');
 		
@@ -34,7 +37,7 @@ class blueberryView extends blueberry
 	/**
 	 * @brief display blueberry contents
 	 **/
-	function dispBlueberryContent()
+	public function dispBlueberryContent()
 	{
 		/**
 		 * check the access grant (all the grant has been set by the module object)
@@ -61,6 +64,17 @@ class blueberryView extends blueberry
 			if($oData->isAccessible())
 			{
 				$oData->updateReadedCount();
+				Context::setCanonicalURL($oData->getPermanentUrl());
+				
+				$seo_title = config('seo.document_title') ?: '$SITE_TITLE - $DOCUMENT_TITLE';
+				$seo_title = Context::replaceUserLang($seo_title);
+				Context::setBrowserTitle($seo_title, array(
+					'site_title' => Context::getSiteTitle(),
+					'site_subtitle' => Context::getSiteSubtitle(),
+					'subpage_title' => $this->module_info->browser_title,
+					'document_title' => $oData->getTitle(),
+					'page' => Context::get('page') ?: 1,
+				));
 			}
 			// disappear the document if it is secret
 			else
@@ -89,7 +103,7 @@ class blueberryView extends blueberry
 	/**
 	 * @brief display the category list
 	 **/
-	function dispBlueberryList()
+	public function dispBlueberryList()
 	{
 		// check the grant
 		if(!$this->grant->list)
@@ -124,17 +138,51 @@ class blueberryView extends blueberry
 		$owner_info = memberModel::getMemberInfoByUserID($owner_id);
 		$args = new stdClass();
 		$args->member_srl = $owner_info->member_srl;
-		Context::set('data_list', blueberryModel::getInVivoDataByMemberSrl($args, $columnList = array()));
+		$args->page = intval(Context::get('page')) ?: null;
+		$args->list_count = $this->list_count;
+		$args->page_count = $this->page_count;
+		
+		// setup the sort index and order index
+		$args->sort_index = Context::get('sort_index');
+		$args->order_type = Context::get('order_type');
+		if(!in_array($args->sort_index, $this->order_target))
+		{
+			$args->sort_index = $this->module_info->order_target?$this->module_info->order_target:'list_order';
+		}
+		if(!in_array($args->order_type, array('asc','desc')))
+		{
+			$args->order_type = $this->module_info->order_type?$this->module_info->order_type:'asc';
+		}
+
+		// setup the list count to be serach list count, if the category or search keyword has been set
+		if($args->category_srl ?? null || $args->search_keyword ?? null)
+		{
+			$args->list_count = $this->search_list_count;
+		}
+		
+		$output = blueberryModel::getInVivoDataByMemberSrl($args, $columnList = array());
+		Context::set('data_list', $output->data);
+		Context::set('total_count', $output->total_count);
+		Context::set('total_page', $output->total_page);
+		Context::set('page', $output->page);
+		Context::set('page_navigation', $output->page_navigation);
 
 	}
 	
 	
-	function dispBlueberryNCA()
+	public function dispBlueberryNCA()
 	{
+		// check grant
+		if(!$this->grant->add_data)
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
 		$oData = blueberryModel::getData(intval(Context::get('data_srl')));
 		Context::set('oData', $oData);
 		
 		// setup the tmeplate file
 		$this->setTemplateFile('nca');
 	}
+	
+
 }

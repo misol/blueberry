@@ -1,0 +1,8 @@
+<query id="deleteDataReadedLog" action="delete">
+	<tables>
+		<table name="blueberry_data_readed_log" />
+	</tables>
+	<conditions>
+		<condition operation="in" column="data_srl" var="data_srl" filter="number" notnull="notnull" />
+	</conditions>
+</query>

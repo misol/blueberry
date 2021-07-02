@@ -98,7 +98,7 @@ class blueberryModel extends module
 		// Call trigger (after)
 		// This trigger can be used to modify search results
 		ModuleHandler::triggerCall('blueberry.getInVivoDataByMemberSrl', 'after', $output);
-		return $output->data;
+		return $output;
 	}
 	
 	/**

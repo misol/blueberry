@@ -1,4 +1,4 @@
-<div class="app-board-section app-board-section-padding tw-flex tw-justify-center tw-items-center tw-flex-wrap" cond="$document_list || $notice_list">
+<div class="app-board-section app-board-section-padding tw-flex tw-justify-center tw-items-center tw-flex-wrap" cond="$data_list">
   {@
     $prev_page = max($page-1, 1);
     $next_page = min($page+1, $page_navigation->last_page);
@@ -6,16 +6,16 @@
 
   <div cond="$page !== $prev_page" class="tw-text-gray-700 tw-text-sm tw-font-bold tw-mr-5">{$page}</div>
 
-  <a cond="$page !== $prev_page" href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division)}" class="app-button app-button-xs tw-mr-3">
+  <a cond="$page !== $prev_page" href="{getUrl('page','','data_srl','','division',$division,'last_division',$last_division)}" class="app-button app-button-xs tw-mr-3">
     처음
   </a>
 
-  <a cond="$page !== $prev_page" href="{getUrl('page', $prev_page, 'document_srl','','division',$division,'last_division',$last_division)}" class="app-button app-button-xs tw-mr-2">
+  <a cond="$page !== $prev_page" href="{getUrl('page', $prev_page, 'data_srl','','division',$division,'last_division',$last_division)}" class="app-button app-button-xs tw-mr-2">
     <ion-icon name="chevron-back-outline" class="tw-text-base"></ion-icon>
     <span class="tw-ml-2">이전</span>
   </a>
 
-  <a cond="$page !== $next_page" href="{getUrl('page', $next_page, 'document_srl','','division',$division,'last_division',$last_division)}" class="app-button app-button-xs">
+  <a cond="$page !== $next_page" href="{getUrl('page', $next_page, 'data_srl','','division',$division,'last_division',$last_division)}" class="app-button app-button-xs">
     <span class="tw-mr-2">다음</span>
     <ion-icon name="chevron-forward-outline" class="tw-text-base"></ion-icon>
   </a>

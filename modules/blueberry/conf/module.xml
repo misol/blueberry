@@ -6,8 +6,8 @@
 			<title xml:lang="en">View list</title>
 		</grant>
 		<grant name="add_data" default="member">
-			<title xml:lang="ko">데이터 추가</title>
-			<title xml:lang="en">Add data</title>
+			<title xml:lang="ko">데이터 추가/삭제</title>
+			<title xml:lang="en">Add/delete data</title>
 		</grant>
 		<grant name="view_data" default="member">
 			<title xml:lang="ko">데이터 보기</title>
@@ -50,7 +50,8 @@
 			<route route="nca@$owner_id:word" />
 			<route route="nca/data:$data_srl:int@$owner_id:word" />
 		</action>
-		<action name="dispBlueberryDelete" type="view" permission="add_data" standalone="false" meta-noindex="true" route=":$data_srl/delete" />
+		
+		<action name="procBlueberryDeleteData" type="controller" permission="add_data" standalone="false" meta-noindex="true" />
 		
 		<action name="procBlueberryInsertData" type="controller" permission="add_data" standalone="false" meta-noindex="true" />
 		

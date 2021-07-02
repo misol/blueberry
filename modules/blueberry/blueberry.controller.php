@@ -18,9 +18,7 @@ class blueberryController extends blueberry
 	/**
 	 * @brief insert data
 	 **/
-	public function procBlueberryInsertData()
-	{
-		
+	public function procBlueberryInsertData() {
 		// check grant
 		if(!$this->grant->add_data)
 		{
@@ -67,10 +65,15 @@ class blueberryController extends blueberry
 	 * @param object $obj
 	 * @return object
 	 */
-	public function insertBlueberryInVivoData($obj) {
+	private function insertBlueberryInVivoData($obj) {
 		if(!checkCSRF())
 		{
 			throw new Rhymix\Framework\Exceptions\SecurityViolation;
+		}
+		// check grant
+		if(!$this->grant->add_data)
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
 		}
 		
 		// Return error if content is too large.
@@ -216,17 +219,202 @@ class blueberryController extends blueberry
 		$output->add('title',$args->title);
 
 		return $output;
-
 	}
 	
+
+	/**
+	 * @brief delete the document
+	 **/
+	public function procBlueberryDeleteData() {
+		if(!checkCSRF())
+		{
+			throw new Rhymix\Framework\Exceptions\SecurityViolation;
+		}
+		// check grant
+		if(!$this->grant->add_data)
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		
+		// get the document_srl
+		$data_srl = intval(Context::get('data_srl'));
+
+		// if the document is not existed
+		if(!$data_srl)
+		{
+			throw new Rhymix\Framework\Exceptions\TargetNotFound;
+		}
+
+		$oData = blueberryModel::getData($data_srl);
+		if (!$oData || !$oData->isExists())
+		{
+			throw new Rhymix\Framework\Exceptions\TargetNotFound;
+		}
+		if (!$oData->isGranted())
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		
+		if(strval(Context::get('owner_id')) !== $oData->getUserID()) {
+			throw new Rhymix\Framework\Exceptions\TargetNotFound;
+		}
+		
+		$logged_info = Context::get('logged_info');
+		if($oData->getMemberSrl() !== $logged_info->member_srl && $logged_info->is_admin !== 'Y') {
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		
+		// generate document module controller object
+		/*
+		if($this->module_info->trash_use == 'Y')
+		{
+			$output = $this->moveDataToTrash($oData);
+			if(!$output->toBool())
+			{
+				return $output;
+			}
+		}
+		else
+		{
+			*/
+			// delete the document
+			$output = $this->deleteData($oData);
+			if(!$output->toBool())
+			{
+				return $output;
+			}
+			/*
+		}
+		*/
+
+		// alert an message
+		$this->setRedirectUrl(getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '', 'page', Context::get('page'), 'owner_id', '', 'data_srl', ''));
+		$this->add('mid', Context::get('mid'));
+		$this->add('page', Context::get('page'));
+		$this->setMessage('success_deleted');
+	}
+	
+	
+	/**
+	 * Deleting Data
+	 * @param blueberryItem $oData
+	 * @return object
+	 */
+	private function deleteData($oData)
+	{
+		if(!checkCSRF())
+		{
+			throw new Rhymix\Framework\Exceptions\SecurityViolation;
+		}
+		// check grant
+		if(!$this->grant->add_data)
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		if(!Context::get('is_logged')) {
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		
+		// Call a trigger (before)
+		$trigger_obj = new stdClass();
+		$trigger_obj->data_srl = $oData->getDataSrl();
+		$output = ModuleHandler::triggerCall('blueberry.deleteData', 'before', $trigger_obj);
+		if(!$output->toBool()) return $output;
+
+		// begin transaction
+		$oDB = &DB::getInstance();
+		$oDB->begin();
+
+		$oData = blueberryModel::getData($trigger_obj->data_srl);
+		if (!$oData || !$oData->isExists())
+		{
+			throw new Rhymix\Framework\Exceptions\TargetNotFound;
+		}
+		if (!$oData->isGranted())
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		
+
+		$logged_info = Context::get('logged_info');
+		$member_info = MemberModel::getMemberInfo($oData->getMemberSrl());
+		if($member_info->is_admin === 'Y' && $logged_info->is_admin !== 'Y')
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+
+		//if empty trash, document already deleted, therefore document not delete
+		$args = new stdClass();
+		$args->data_srl = $oData->getDataSrl();
+		// Delete the document
+		$output = executeQuery('blueberry.deleteData', $args);
+		if(!$output->toBool())
+		{
+			$oDB->rollback();
+			return $output;
+		}
+		
+		// Update category information if the category_srl exists.
+		//if($oDocument->get('category_srl')) $this->updateCategoryCount($oDocument->get('module_srl'),$oDocument->get('category_srl'));
+		// Delete a declared list
+		//executeQuery('document.deleteDeclared', $args);
+		// Delete extra variable
+		//$this->deleteDocumentExtraVars($oDocument->get('module_srl'), $oDocument->document_srl);
+
+		// Call a trigger (after)
+		//$trigger_obj = $oDocument->getObjectVars();
+		//$trigger_obj->isEmptyTrash = $isEmptyTrash ? true : false;
+		ModuleHandler::triggerCall('blueberry.deleteData', 'after', $trigger_obj);
+		
+		// declared document, log delete
+		$this->_deleteDataReadedLog($args);
+		$this->_deleteDataVotedLog($args);
+
+		//remove from cache
+		self::clearDataCache($document_srl);
+		
+		// commit
+		$oDB->commit();
+
+		return $output;
+	}
+	
+	/**
+	 * Delete readed log
+	 * @param string $dataSrls (ex: 1, 2,56, 88)
+	 * @return void
+	 */
+	private function _deleteDataReadedLog($dataSrls)
+	{
+		executeQuery('blueberry.deleteDataReadedLog', $dataSrls);
+	}
+	
+	/**
+	 * Delete readed log
+	 * @param string $dataSrls (ex: 1, 2,56, 88)
+	 * @return void
+	 */
+	private function _deleteDataVotedLog($dataSrls)
+	{
+		executeQuery('blueberry.deleteDataVotedLog', $dataSrls);
+	}
+	/**
+	 * Clear document cache
+	 */
+	private static function clearDataCache($data_srl)
+	{
+		Rhymix\Framework\Cache::delete('blueberry_item:' . getNumberingPath($data_srl) . $data_srl);
+		unset($_SESSION['data_accessible'][$data_srl]);
+		unset($_SESSION['data_management'][$data_srl]);
+		unset($_SESSION['voted_data'][$data_srl]);
+	}
 	
 	/**
 	 * Update read counts of the document
 	 * @param documentItem $oDocument
 	 * @return bool|void
 	 */
-	function updateReadedCount(&$oData)
-	{
+	public function updateReadedCount(&$oData) {
 		// Pass if Crawler access
 		if (\Rhymix\Framework\UA::isRobot())
 		{

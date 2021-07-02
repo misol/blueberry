@@ -223,7 +223,7 @@
 							{$lang->cmd_modify}
 						</a>
 						
-						<a class="app-link tw-mr-2 tw-text-sm" onclick="onClickDataDelete()">
+						<a class="app-link tw-mr-2 tw-text-sm" onclick="onDeleteData('{escape($oData->getUserID())}', {intval($oData->getDataSrl())});return false;">
 							{$lang->cmd_delete}
 						</a>
 					</div>

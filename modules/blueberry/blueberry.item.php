@@ -132,18 +132,12 @@ class blueberryItem extends BaseObject
 			return $this->setGrant();
 		}
 		
-		$grant = ModuleModel::getGrant(ModuleModel::getModuleInfoByModuleSrl($this->get('module_srl')), $logged_info);
-		if ($grant->manager)
-		{
-			return $this->setGrant();
-		}
-		
 		return $this->grant_cache = false;
 	}
 	
 	private function setGrant()
 	{
-		$this->grant_cache = true;
+		return $this->grant_cache = true;
 	}
 	
 	public function isAccessible()

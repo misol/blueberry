@@ -75,7 +75,7 @@ class blueberry extends ModuleObject
 		$oModuleController = getController('module');
 
 		// install triggers
-		foreach ($this->trigger_list as $trigger) {
+		foreach (self::$trigger_list as $trigger) {
 			$oModuleController->insertTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
 		}
 
@@ -94,7 +94,7 @@ class blueberry extends ModuleObject
 		if(!$oModuleModel->getModuleInfoByMid('blueberry')) return true;
 
 		// test triggers
-		foreach ($this->trigger_list as $trigger) {
+		foreach (self::$trigger_list as $trigger) {
 			if(!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) return true;
 		}
 
@@ -126,7 +126,7 @@ class blueberry extends ModuleObject
 		}
 		
 		// update triggers
-		foreach ($this->trigger_list as $trigger) {
+		foreach (self::$trigger_list as $trigger) {
 			if(!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) {
 				$oModuleController->insertTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
 			}

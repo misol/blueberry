@@ -17,6 +17,7 @@ function drawPlot(time_concentrations, lambda, time_unit, amount_unit, volume_un
 			title: 'Time (' + time_unit + ')',
 			rangemode: 'nonnegative',
 			ticks: 'outside',
+			range: [0, 1.2*(Math.max(...time))],
 			showticklabels: true,
 			showline: true,
 			showgrid: false,
@@ -109,4 +110,30 @@ function drawPlot(time_concentrations, lambda, time_unit, amount_unit, volume_un
 	
 	var data = [TC, lambda_line];
 	Plotly.newPlot('data-plot', data, layout, settings);
+}
+
+function onDeleteData(owner_id, data_srl) {
+	$.ajax({
+		url: request_uri+'index.php?mid=' + current_mid,
+		type: 'POST',
+		data: {
+			module: 'blueberry',
+			act: 'procBlueberryDeleteData',
+			owner_id: String(owner_id).trim(),
+			data_srl: Number(data_srl)
+		},
+		dataType: 'json',
+		contentType: 'application/json'
+	})
+	.done(function (data) {
+		if(!data.redirect_url) return console.log(data);
+		
+		window.location.href = data.redirect_url;
+		return;
+	})
+	.fail(function (xhr) {
+		// (error)
+		console.log(xhr.responseText);
+	});
+
 }
