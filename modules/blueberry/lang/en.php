@@ -19,6 +19,7 @@ $lang->dose = 'Dose';
 $lang->iv_bolus = 'IV bolus';
 $lang->iv_infusion = 'Continuous IV infusion';
 $lang->extravenous = 'Extravascular';
+$lang->duration_of_infusion = 'The length of infusion';
 
 $lang->single_dose = 'Single dose';
 $lang->repeated_dose = 'Repeated dose';

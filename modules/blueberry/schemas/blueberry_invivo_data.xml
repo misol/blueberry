@@ -6,13 +6,14 @@
 	<column name="content" type="bigtext" />
 	<column name="time_concentration" type="bigtext" notnull="notnull" />
 	<column name="compound_name" type="varchar" size="1000" />
-	<column name="molecular_weight" type="float" size="11" />
-	<column name="dose" type="float" size="11" />
+	<column name="molecular_weight" type="float" default="0" />
+	<column name="dose" type="float" />
 	<column name="dose_unit" type="varchar" size="60" default="mg" />
 	<column name="administration_route" type="char" size="5" default="IVeBo" />
+	<column name="duration_of_infusion" type="float" default="0" />
 	<column name="dose_repeat" type="char" size="1" default="S" />
-	<column name="tau" type="float" size="11" default="0" />
-	<column name="last_dosing" type="float" size="11" default="0" />
+	<column name="tau" type="float" default="0" />
+	<column name="last_dosing" type="float" default="0" />
 	<column name="integration_method" type="varchar" size="60" />
 	<column name="extrapolation_method" type="varchar" size="60" />
 	<column name="time_unit" type="varchar" size="60" default="min" />

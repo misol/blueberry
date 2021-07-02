@@ -54,7 +54,7 @@ table.data-table {
 	height: 70px;
 	animation: loader-spin 3s ease-in-out infinite;
 }
-#multiple_dosing {
+#multiple_dosing, #iv_infusion {
 	display: none;
 }
 #loader_layer {
