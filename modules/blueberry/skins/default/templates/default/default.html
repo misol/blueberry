@@ -19,7 +19,7 @@
         <label for="data_{$data->getDataSrl()}" class="tw-m-0"></label>
       </div>
 
-      <a class="tw-flex-1"|cond="!$grant->manager" class="tw-flex-1 tw-pl-2"|cond="$grant->manager" href="{$data->getPermanentUrl()}">
+      <a class="tw-flex-1"|cond="!$grant->manager" class="tw-flex-1 tw-pl-2"|cond="$grant->manager" href="{getUrl('data_srl',$data->getDataSrl(),'owner_id', $data->getUserID())}">
     
         <div class="tw-flex-1">
           <div class="app-list-title tw-flex-wrap">
