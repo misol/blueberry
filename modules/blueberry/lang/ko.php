@@ -36,13 +36,68 @@ $lang->in_vivo_observation_data = '관찰값';
 $lang->in_vivo_units = '단위';
 $lang->unit_week_letter = '주';
 $lang->time_concentration_profile = '시간-농도 표';
+$lang->blueberry_time_units = array(
+	"s" => '초',
+	"min" => '분',
+	"h" => '시',
+	"d" => '일',
+	"week" => '주'
+);
+$lang->blueberry_amount_units = array(
+	"pg" => "pg",
+	"ng" => "ng",
+	"ug" => "μg",
+	"mg" => "mg",
+	"g" => "g",
+	"IU" => "IU",
+	"pmol" => "pmol",
+	"nmol" => "nmol",
+	"umol" => "μmol",
+	"mmol" => "mmol",
+	"mol" => "mol",
+);
+$lang->blueberry_volume_units = array(
+	"pL" => "pL",
+	"nL" => "nL",
+	"uL" => "μL",
+	"mL" => "mL",
+	"L" => "L",
+);
+$lang->blueberry_dose_units = array(
+	"pg" => "pg",
+	"ng" => "ng",
+	"ug" => "μg",
+	"mg" => "mg",
+	"g" => "g",
+	"IU" => "IU",
+	"pmol" => "pmol",
+	"nmol" => "nmol",
+	"umol" => "μmol",
+	"mmol" => "mmol",
+	"mol" => "mol",
+	"pg/kg" => "pg/kg",
+	"ng/kg" => "ng/kg",
+	"ug/kg" => "μg/kg",
+	"mg/kg" => "mg/kg",
+	"g/kg" => "g/kg",
+	"IU/kg" => "IU/kg",
+	"pmol/kg" => "pmol/kg",
+	"nmol/kg" => "nmol/kg",
+	"umol/kg" => "μmol/kg",
+	"mmol/kg" => "mmol/kg",
+	"mol/kg" => "mol/kg",
+);
+$lang->blueberry_dose_route_options = array(
+	"IVeBo" => "iv_bolus",
+	"IVeIf" => "iv_infusion",
+	"ExtVe" => "extravenous",
+);
+
 
 $lang->cmd_trim_table = '표 정리하기';
-
 
 $lang->analysed_results = '결과';
 $lang->pharmacokinetic_parameters = '약동학 파라미터';
 $lang->in_vivo_time_conc_plot = '시간-농도 도표';
-
 
 $lang->reference_list = '참고문헌';

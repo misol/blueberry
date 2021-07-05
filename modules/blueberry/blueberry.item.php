@@ -281,7 +281,7 @@ class blueberryItem extends BaseObject
 	{
 		if(!$this->isExists()) return;
 		$dose = floatval($this->get('dose'));
-		$dose_unit = strval($this->get('dose_unit'));
+		$dose_unit = $this->getDoseUnit();
 		
 		if ($include_unit) {
 			return sprintf("%s %s", $this->toPrecision($dose, intval($precision)), $dose_unit);
@@ -291,10 +291,26 @@ class blueberryItem extends BaseObject
 		
 		return;
 	}
-	
+
+	/**
+	 * Return dose
+	 * @param bool include_unit
+	 * @return string | float
+	 */
+	public function getDoseUnit($str_replace = true)
+	{
+		if(!$this->isExists()) return;
+		
+		if ($str_replace === false) return strval($this->get('dose_unit'));
+		
+		return str_replace('ug','μg', strval($this->get('dose_unit')));
+	}
+
 	private function getUnitMatchedDose() {
-		$dose = floatval($this->get('dose'));
-		$dose_unit = strval($this->get('dose_unit'));
+		if(!$this->isExists()) return;
+		
+		$dose = $this->getDose(false, -1);
+		$dose_unit = $this->getDoseUnit();
 		$dose = $this->unitConversion($dose, "amount", $dose_unit, $this->getAmountUnit());
 		return $dose;
 	}
@@ -963,13 +979,25 @@ class blueberryItem extends BaseObject
 		return $this->get('time_unit');
 	}
 	
-	public function getAmountUnit()
+	public function getAmountUnit($str_replace = true)
 	{
+		if(!$this->isExists())
+		{
+			return;
+		}
+		
+		if ($str_replace === false) return $this->get('amount_unit');
 		return str_replace('ug','μg', $this->get('amount_unit'));
 	}
 	
-	public function getVolumeUnit()
+	public function getVolumeUnit($str_replace = true)
 	{
+		if(!$this->isExists())
+		{
+			return;
+		}
+		
+		if ($str_replace === false) return $this->get('volume_unit');
 		return str_replace('uL','μL', $this->get('volume_unit'));
 	}
 	
