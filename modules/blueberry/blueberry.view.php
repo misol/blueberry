@@ -183,5 +183,18 @@ class blueberryView extends blueberry
 		$this->setTemplateFile('nca');
 	}
 	
+	public function dispBlueberryDeleteNCA()
+	{
+		// check grant
+		if(!$this->grant->add_data)
+		{
+			throw new Rhymix\Framework\Exceptions\NotPermitted;
+		}
+		$oData = blueberryModel::getData(intval(Context::get('data_srl')));
+		Context::set('oData', $oData);
+		
+		// setup the tmeplate file
+		$this->setTemplateFile('delete_form');
+	}
 
 }

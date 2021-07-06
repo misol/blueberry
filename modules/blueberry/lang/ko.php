@@ -4,6 +4,7 @@ $lang->no_data = '저장된 데이터가 없습니다.';
 $lang->no_data_description = '첫 데이터를 생성해보세요.';
 $lang->blueberry_mydata = '%s님의 Blueberry 데이터';
 
+$lang->blueberry_data = 'Blueberry 데이터';
 $lang->cmd_new_nca = '새로운 데이터 추가';
 $lang->cmd_manage_nca_data = '데이터 관리';
 
@@ -101,3 +102,5 @@ $lang->pharmacokinetic_parameters = '약동학 파라미터';
 $lang->in_vivo_time_conc_plot = '시간-농도 도표';
 
 $lang->reference_list = '참고문헌';
+$lang->blueberry_delete_data = '데이터 삭제';
+$lang->blueberry_confirm_delete_data = '이 데이터를 삭제하시겠습니까?';

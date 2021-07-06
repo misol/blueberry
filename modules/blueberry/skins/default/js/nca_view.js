@@ -10,8 +10,6 @@ function drawPlot(time_concentrations, lambda, time_unit, amount_unit, volume_un
 	var time = time_concentrations['time'];
 	var concentrations = time_concentrations['concentration'];
 
-	
-	console.log([...Array(Math.ceil(Math.log10(Math.max(...concentrations))) - Math.floor(Math.log10(Math.min(...concentrations))) + 1).keys()]);
 	var layout = {
 		xaxis: {
 			title: 'Time (' + time_unit + ')',
@@ -38,29 +36,29 @@ function drawPlot(time_concentrations, lambda, time_unit, amount_unit, volume_un
 			linecolor: (getColorScheme() === 'light')?'#000' : '#fff',
 			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
 		},
-		
+		autosize: true,
 		margin: {
-			l: 80,
-			r: 80,
-			b: 80,
-			t: 35
+			t: 25,
+			r: 20,
+			b: 75,
+			l: 75,
 		},
 		plot_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		paper_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
 		font: {
 			size: 14,
 			color: (getColorScheme() === 'light')?'#000' : '#fff',
+		},
+		showlegend: true,
+		legend: {
+			x: 1,
+			xanchor: 'right',
+			y: 1
 		}
 	};
 	
 	
 	var settings = {
-		/*
-		toImageButtonOptions: {
-			filename: 'moment_analysis',
-			format: 'svg'
-		},
-		modeBarButtonsToRemove: ['pan2d','select2d','lasso2d','resetScale2d','zoomOut2d'],*/
 		responsive: true,
 		displayModeBar: false
 	};

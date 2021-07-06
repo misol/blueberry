@@ -1,17 +1,38 @@
 <include target="_config.html" />
 <include target="components/base/_header.html" />
 
-<form action="./" method="get" onsubmit="return procFilter(this, delete_document)" class="ed text-center">
-	<input type="hidden" name="mid" value="{$mid}" />
-	<input type="hidden" name="page" value="{$page}" />
-  <input type="hidden" name="document_srl" value="{$document_srl}" />
-  
-  <h3>{sprintf($lang->comfirm_act_msg,$lang->document,$lang->cmd_delete,$lang->msg_rul)}</h3>
-  
-	<div class="ed text-center">
-		<input type="submit" class="ed button button-primary button-rounded" value="{$lang->cmd_delete}" />
-		<button type="button" class="ed button button-default button-rounded" onclick="history.back()">{$lang->cmd_cancel}</button>
+<div class="app-article-wrap" style="max-width: {$mi->max_width}" cond="$oData->isExists()">
+	<div class="app-card app-board-section">
+					<div class="app-widgetstyle-wrap tw-mb-6">
+						<div class="app-widgetstyle-card app-card">
+							<h2 class="app-widgetstyle-header">
+								{lang('blueberry.blueberry_delete_data')}
+							</h2>
+							<div class="app-clearfix">
+								<div class="app-widget-content-main tw-p-4">
+									<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/blueberry/skins'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+										<p>{$XE_VALIDATOR_MESSAGE}</p>
+									</div>
+									<form action="./" method="post" class="tw-w-full">
+										<input type="hidden" name="mid" value="{$mid}" />
+										<input type="hidden" name="page" value="{$page}" />
+										<input type="hidden" name="module" value="blueberry" />
+										<input type="hidden" name="act" value="procBlueberryDeleteData" />
+										<input type="hidden" name="xe_validator_id" value="modules/blueberry/skins" />
+										<input type="hidden" name="owner_id" value="{$oData->getUserID()}" />
+										<input type="hidden" name="data_srl" value="{$oData->getDataSrl()}" />
+										
+										<h3 class="tw-mb-6 tw-text-lg">{lang('blueberry.blueberry_confirm_delete_data')}</h3>
+										
+										<div class="tw-flex ">
+											<button type="button" class="tw-w-1/2 app-button tw-mr-1" onclick="history.back()">{$lang->cmd_cancel}</button>
+											<input type="submit" class="tw-w-1/2 app-button primary tw-ml-1" value="{$lang->cmd_delete}" />
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
 	</div>
-</form>
-
+</div>
 <include target="components/base/_footer.html" />

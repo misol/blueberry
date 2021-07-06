@@ -65,8 +65,8 @@
 								{lang('blueberry.time_concentration_profile')}
 							</h2>
 							<div class="app-clearfix">
-								<div class="app-widget-content-main tw-flex tw-justify-center">
-									<table id="data-estimates" class="data-table tw-m-4 tw-border-collapse tw-table-auto tw-w-full">
+								<div class="app-widget-content-main tw-justify-center tw-p-4">
+									<table id="data-estimates" class="data-table tw-border-collapse tw-table-auto tw-w-full">
 										<thead>
 											<th>Time ({$oData->getTimeUnit()})</th>
 											<th>Concentration ({$oData->getAmountUnit()}/{$oData->getVolumeUnit()})</th>
@@ -88,8 +88,8 @@
 								{lang('blueberry.pharmacokinetic_parameters')}
 							</h2>
 							<div class="app-clearfix">
-								<div class="app-widget-content-main tw-flex tw-justify-center">
-									<table id="data-estimates" class="data-table tw-m-4 tw-border-collapse tw-table-auto tw-w-full">
+								<div class="app-widget-content-main tw-justify-center tw-p-4">
+									<table id="data-estimates" class="data-table tw-border-collapse tw-table-auto tw-w-full">
 										<thead>
 											<th>Parameter</th>
 											<th>Value (Unit)</th>
@@ -206,7 +206,7 @@
 							</h2>
 							<div class="app-clearfix">
 								<div class="app-widget-content-main tw-flex tw-justify-center">
-								<div id="data-plot" class="pagebreak">
+								<div id="data-plot" class="pagebreak tw-w-full">
 								</div>
 								
 								<script>
@@ -252,7 +252,7 @@
 							{$lang->cmd_modify}
 						</a>
 						
-						<a class="app-link tw-mr-2 tw-text-sm" onclick="onDeleteData('{escape($oData->getUserID())}', {intval($oData->getDataSrl())});return false;">
+						<a class="app-link tw-mr-2 tw-text-sm" href="{getUrl('data_srl',$oData->getDataSrl(),'owner_id',$oData->getUserID(),'act','dispBlueberryDeleteNCA')}">
 							{$lang->cmd_delete}
 						</a>
 					</div>

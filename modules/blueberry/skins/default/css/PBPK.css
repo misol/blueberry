@@ -13,7 +13,7 @@ table.data-table {
 	padding: 10px;
 	text-align: center;
 	border: 0px;
-	border-bottom: 1px solid #BDBDBD;
+	border-bottom: 1px dotted #ddd;
 }
 
 .data-table th, .data-table tr:hover {
