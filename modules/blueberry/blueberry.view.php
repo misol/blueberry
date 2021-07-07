@@ -29,6 +29,7 @@ class blueberryView extends blueberry
 		$templatePath = sprintf('%sskins/%s', $this->module_path, $this->module_info->skin ?: 'default');
 		$this->setTemplatePath($templatePath);
 		
+		Context::set('blueberry_module_info', ModuleModel::getModuleInfoXml('blueberry'));
 		Context::loadLang('./modules/document/lang');
 		Context::loadLang('./modules/comment/lang');
 	}
