@@ -420,7 +420,7 @@ class blueberryItem extends BaseObject
 		static $results = null;
 		if ($results !== null) return $results;
 		
-		$lambda_z = abs($this->getLambda(-1));
+		$lambda_z = $this->getLambda(-1);
 		$integration_method = $this->getInterpolationMethod();
 		$sorted_T_C = $this->getTimeConcentrationArray()['time-concentration'];
 		$C0 = $this->getC0(-1);
@@ -479,9 +479,14 @@ class blueberryItem extends BaseObject
 		
 		$conc_last = $conc_this;
 		
-		$AUCinf += $AUC + $conc_last/$lambda_z;
+		if($lambda_z !== null) {
+			$AUCinf += $AUC + $conc_last/$lambda_z;
+			$Extrapolation_portion = ($conc_last/$lambda_z)/$AUCinf;
+		} else {
+			$AUCinf = null;
+			$Extrapolation_portion = null;
+		}
 		
-		$Extrapolation_portion = ($conc_last/$lambda_z)/$AUCinf;
 		
 		$results = array("AUC"=> $AUCinf, "AUClast"=> $AUC, "AUCtauinf" => $AUCinf - $AUCtau, "AUCtau" => $AUCtau, "Extrapolation_portion"=> $Extrapolation_portion);
 		return $results;
@@ -490,12 +495,18 @@ class blueberryItem extends BaseObject
 	public function getAUC($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUCArray()['AUC'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUCArray()['AUC'], $precision);
 	}
 	
 	public function getAUClast($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUCArray()['AUClast'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUCArray()['AUClast'], $precision);
 	}
 	
@@ -503,22 +514,33 @@ class blueberryItem extends BaseObject
 		if(!$this->isExists()) return;
 		if(!$this->isMultipleDose()) return;
 		
+		if($this->getAUCArray()['AUCtau'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUCArray()['AUCtau'], $precision);
 	}
 	
 	public function getAUCtauinf($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUCArray()['AUCtauinf'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUCArray()['AUCtauinf'], $precision);
 	}
 	public function getAUCExtPortion($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUCArray()['Extrapolation_portion'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUCArray()['Extrapolation_portion'], $precision);
 	}
 	public function getAUCExtPortionPercent($precision = 4) {
 		if(!$this->isExists()) return;
-		
+		if($this->getAUCArray()['Extrapolation_portion'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUCArray()['Extrapolation_portion'] * 100, $precision);
 	}
 	
@@ -529,6 +551,9 @@ class blueberryItem extends BaseObject
 		} else {
 			$AUC = $this->getAUC(-1);
 		}
+		if(!$AUC || !$dose) {
+			return null;
+		}
 		return $this->toPrecision($dose / $AUC, $precision);
 	}
 	
@@ -536,6 +561,9 @@ class blueberryItem extends BaseObject
 	public function getVss($precision = 4) {
 		$CL = $this->getCL(-1);
 		$MRT = $this->getMRT(-1);
+		if($CL === null || $MRT === null) {
+			return null;
+		}
 		return $this->toPrecision($MRT * $CL, $precision);
 	}
 	
@@ -547,6 +575,10 @@ class blueberryItem extends BaseObject
 			$AUC = $this->getAUC(-1);
 		}
 		$lambda = $this->getLambda();
+		
+		if(!$dose || !$AUC || !$lambda) {
+			return null;
+		}
 		
 		return $this->toPrecision($dose / ($lambda * $AUC), $precision);
 	}
@@ -620,7 +652,7 @@ class blueberryItem extends BaseObject
 		static $results = null;
 		if ($results !== null) return $results;
 		
-		$lambda_z = abs($this->getLambda(-1));
+		$lambda_z = $this->getLambda(-1);
 		$integration_method = $this->getInterpolationMethod();
 		$sorted_T_C = $this->getTimeConcentrationArray()['time-concentration'];
 		$C0 = $this->getC0(-1);
@@ -682,9 +714,16 @@ class blueberryItem extends BaseObject
 		$time_last = $time_this;
 		$conc_last = $conc_this;
 		
-		$AUMCinf = $AUMC + $conc_last / pow($lambda_z, 2) + $time_last * $conc_last / $lambda_z;
 		
-		$Extrapolation_portion = ($AUMCinf - $AUMC) / $AUMCinf;
+		
+		if($lambda_z !== null) {
+			$AUMCinf = $AUMC + $conc_last / pow($lambda_z, 2) + $time_last * $conc_last / $lambda_z;
+			$Extrapolation_portion = ($AUMCinf - $AUMC) / $AUMCinf;
+		} else {
+			$AUMCinf = null;
+			$Extrapolation_portion = null;
+		}
+		
 		
 		$results = array("AUMC"=> $AUMCinf, "AUMClast"=> $AUMC, "AUMCtau" => $AUMCtau, "Extrapolation_portion"=> $Extrapolation_portion);
 		return $results;
@@ -694,28 +733,43 @@ class blueberryItem extends BaseObject
 	public function getAUMC($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUMCArray()['AUMC'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUMCArray()['AUMC'], $precision);
 	}
 	public function getAUMClast($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUMCArray()['AUMClast'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUMCArray()['AUMClast'], $precision);
 	}
 	public function getAUMCtau($precision = 4) {
 		if(!$this->isExists()) return;
 		if(!$this->isMultipleDose()) return;
 		
+		if($this->getAUMCArray()['AUMCtau'] === null) {
+			return null;
+		}
 		
 		return $this->toPrecision($this->getAUMCArray()['AUMCtau'], $precision);
 	}
 	public function getAUMCExtPortion($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUMCArray()['Extrapolation_portion'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUMCArray()['Extrapolation_portion'], $precision);
 	}
 	public function getAUMCExtPortionPercent($precision = 4) {
 		if(!$this->isExists()) return;
 		
+		if($this->getAUMCArray()['Extrapolation_portion'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getAUMCArray()['Extrapolation_portion'] * 100, $precision);
 	}
 	
@@ -725,6 +779,10 @@ class blueberryItem extends BaseObject
 		
 		$lambda = $this->getLambda(-1);
 		$tau = $this->getTau(-1);
+		
+		if(!$lambda || !$tau) {
+			return null;
+		}
 		return $this->toPrecision(1/(1-exp(-1*$lambda*$tau)), $precision);
 	}
 	
@@ -748,7 +806,9 @@ class blueberryItem extends BaseObject
 			
 		}
 		
-		if($AUC === 0) return;
+		if(!$AUC || !$AUMC) {
+			return null;
+		}
 		
 		return $this->toPrecision($AUMC/$AUC - $duration/2, $precision);
 		
@@ -765,7 +825,9 @@ class blueberryItem extends BaseObject
 			$duration = $this->getLengthofInfusion(-1);
 		}
 		
-		if($AUClast === 0) return;
+		if(!$AUClast || !$AUMClast) {
+			return null;
+		}
 		
 		return $this->toPrecision($AUMClast/$AUClast - $duration/2, $precision);
 		
@@ -1314,11 +1376,11 @@ class blueberryItem extends BaseObject
 			return $results;
 		}
 		
-		$r2 = 0;
-		$adj_r2 = 0;
-		$lambdaZ = 0;
-		$intercept = 0;
-		$slice_i = 0;
+		$r2 = null;
+		$adj_r2 = null;
+		$lambdaZ = null;
+		$intercept = null;
+		$slice_i = null;
 		$n = count($time_conc['time']);
 		$i = 0;
 		while ($i < $n) {
@@ -1345,19 +1407,34 @@ class blueberryItem extends BaseObject
 	}
 	
 	public function getLambda($precision = 4) {
+		if($this->getLambdaArray()['lambda_Z'] === null) {
+			return null;
+		}
 		return -1 * $this->toPrecision($this->getLambdaArray()['lambda_Z'], $precision);
 	}
 	
 	public function getTerminalPoints() {
+		if($this->getLambdaArray()['lambda_Z'] === null) {
+			return null;
+		}
 		return $this->getLambdaArray()['terminal_points'];
 	}
 	public function getAdjustedRSquare($precision = 4) {
+		if($this->getLambdaArray()['lambda_Z'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getLambdaArray()['adj_r2'], $precision);
 	}
 	public function getRSquare($precision = 4) {
+		if($this->getLambdaArray()['lambda_Z'] === null) {
+			return null;
+		}
 		return $this->toPrecision($this->getLambdaArray()['r2'], $precision);
 	}
 	public function getTerminalHalfLife($precision = 4) {
+		if($this->getLambdaArray()['lambda_Z'] === null) {
+			return null;
+		}
 		return $this->toPrecision(log(2)/$this->getLambda(-1), $precision);
 	}
 

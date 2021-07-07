@@ -112,27 +112,33 @@
 											</tr>
 											<tr>
 												<td>λ<sub>Z</sub></td>
-												<td>{$oData->getLambda()} {$oData->getTimeUnit()}<sup>-1</sup></td>
+												<td cond="$oData->getLambda() !== null">{$oData->getLambda()} {$oData->getTimeUnit()}<sup>-1</sup></td>
+												<td cond="$oData->getLambda()=== null">N/A</td>
 											</tr>
 											<tr>
 												<td>t<sub>1/2, terminal</sub></td>
-												<td>{$oData->getTerminalHalfLife()} {$oData->getTimeUnit()}</td>
+												<td cond="$oData->getTerminalHalfLife()">{$oData->getTerminalHalfLife()} {$oData->getTimeUnit()}</td>
+												<td cond="!$oData->getTerminalHalfLife()">N/A</td>
 											</tr>
 											<tr>
 												<td>Number of points to estimate λ<sub>Z</sub></td>
-												<td>{$oData->getTerminalPoints()}</td>
+												<td cond="$oData->getTerminalPoints()">{$oData->getTerminalPoints()}</td>
+												<td cond="!$oData->getTerminalPoints()">N/A</td>
 											</tr>
 											<tr>
 												<td>R<sup>2</sup> (λ<sub>Z</sub>)</td>
-												<td>{$oData->getRSquare()}</td>
+												<td cond="$oData->getRSquare()">{$oData->getRSquare()}</td>
+												<td cond="!$oData->getRSquare()">N/A</td>
 											</tr>
 											<tr>
 												<td>Adjusted R<sup>2</sup> (λ<sub>Z</sub>)</td>
-												<td>{$oData->getAdjustedRSquare()}</td>
+												<td cond="$oData->getAdjustedRSquare()">{$oData->getAdjustedRSquare()}</td>
+												<td cond="!$oData->getAdjustedRSquare()">N/A</td>
 											</tr>
 											<tr>
 												<td>AUC</td>
-												<td>{$oData->getAUC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUC() !== null">{$oData->getAUC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUC() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>AUC<sub>last</sub></td>
@@ -148,7 +154,8 @@
 											</tr>
 											<tr>
 												<td>% Extrapolated<sub>AUC</sub></td>
-												<td>{$oData->getAUCExtPortionPercent()}%</td>
+												<td cond="$oData->getAUCExtPortionPercent() !== null">{$oData->getAUCExtPortionPercent()}&#x25;</td>
+												<td cond="$oData->getAUCExtPortionPercent() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>C<sub>SS, avg</sub></td>
@@ -156,11 +163,13 @@
 											</tr>
 											<tr cond="!$oData->isMultipleDose()">
 												<td>AUMC</td>
-												<td>{$oData->getAUMC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUMC() !== null">{$oData->getAUMC()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUMC() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>AUMC<sub>&tau;</sub></td>
-												<td>{$oData->getAUMCtau()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUMCtau() !== null">{$oData->getAUMCtau()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}<sup>2</sup>/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUMCtau() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>AUMC<sub>last</sub></td>
@@ -168,27 +177,33 @@
 											</tr>
 											<tr cond="!$oData->isMultipleDose()">
 												<td>% Extrapolated<sub>AUMC</sub></td>
-												<td>{$oData->getAUMCExtPortionPercent()}%</td>
+												<td cond="$oData->getAUMCExtPortionPercent() !== null">{$oData->getAUMCExtPortionPercent()}&#x25;</td>
+												<td cond="$oData->getAUMCExtPortionPercent() === null">N/A</td>
 											</tr>
 											<tr cond="!$oData->isMultipleDose()">
 												<td>MRT<sub>last</sub></td>
-												<td>{$oData->getMRTlast()} {$oData->getTimeUnit()}</td>
+												<td cond="$oData->getMRTlast() !== null">{$oData->getMRTlast()} {$oData->getTimeUnit()}</td>
+												<td cond="$oData->getMRTlast() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>MRT</td>
-												<td>{$oData->getMRT()} {$oData->getTimeUnit()}</td>
+												<td cond="$oData->getMRT() !== null">{$oData->getMRT()} {$oData->getTimeUnit()}</td>
+												<td cond="$oData->getMRT() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>CL<sub cond="$oData->isMultipleDose()">SS</sub><block cond="$oData->getAdministrationRoute() == 'extravenous'">/F</block></td>
-												<td>{$oData->getCL()} {$oData->getVolumeUnit()}/{$oData->getTimeUnit()}</td>
+												<td cond="$oData->getCL() !== null">{$oData->getCL()} {$oData->getVolumeUnit()}/{$oData->getTimeUnit()}</td>
+												<td cond="$oData->getCL() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->getAdministrationRoute() !== 'extravenous'">
 												<td>V<sub>SS</sub></td>
-												<td>{$oData->getVss()} {$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getVss() !== null">{$oData->getVss()} {$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getVss() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>V<sub>Z</sub></td>
-												<td>{$oData->getVz()} {$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getVz() !== null">{$oData->getVz()} {$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getVz() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>Accumulation Index</td>
