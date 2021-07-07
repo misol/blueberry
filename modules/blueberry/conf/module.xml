@@ -57,6 +57,7 @@
 		<action name="procBlueberryDeleteData" type="controller" permission="add_data" standalone="false" meta-noindex="true" />
 		
 		<action name="procBlueberryInsertData" type="controller" permission="add_data" standalone="false" meta-noindex="true" />
+		<action name="procBlueberryUpdateData" type="controller" permission="add_data" standalone="false" meta-noindex="true" />
 		
 	</actions>
 

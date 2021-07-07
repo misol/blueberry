@@ -31,7 +31,7 @@ class blueberryController extends blueberry
 		}
 		
 		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method', 'administration_route'];
-		$float_inputs = ['dose', 'last_dosing_time', 'tau'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'molecular_weight'];
 		
 		// setup variables
 		$obj = Context::getRequestVars();
@@ -78,7 +78,7 @@ class blueberryController extends blueberry
 		}
 		
 		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method', 'administration_route'];
-		$float_inputs = ['dose', 'last_dosing_time', 'tau'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'molecular_weight'];
 		$required_inputs = ['data_srl'];
 		
 		// setup variables
@@ -141,7 +141,7 @@ class blueberryController extends blueberry
 		$args = new stdClass;
 		// sanitize variables
 		$text_inputs = ['title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'administration_route', 'dose_repeat', 'integration_method', 'extrapolation_method', 'password', 'user_id', 'user_name', 'nick_name', 'status', 'comment_status'];
-		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion', 'molecular_weight'];
 		$int_inputs = ['data_srl', 'category_srl', 'module_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
 		$positive_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion'];
 		$unset_inputs = ['regdate', 'last_update', 'ipaddress', 'allow_trackback', 'notify_message'];
@@ -337,7 +337,7 @@ class blueberryController extends blueberry
 		$args = new stdClass;
 		// sanitize variables
 		$text_inputs = ['title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'administration_route', 'dose_repeat', 'integration_method', 'extrapolation_method', 'password', 'user_id', 'user_name', 'nick_name', 'status', 'comment_status'];
-		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion'];
+		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion', 'molecular_weight'];
 		$int_inputs = ['data_srl', 'category_srl', 'module_srl', 'group_count', 'repeat_count', 'member_srl', 'regdate', 'last_update', 'list_order', 'update_order'];
 		$positive_inputs = ['dose', 'last_dosing_time', 'tau', 'last_dosing', 'time_min', 'time_max', 'duration_of_infusion'];
 		$unset_inputs = ['regdate', 'last_update', 'ipaddress', 'allow_trackback', 'notify_message'];

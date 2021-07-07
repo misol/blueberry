@@ -136,381 +136,6 @@ function unset(name) {
 	return delete __variables[name];
 }
 
-/*
- * @ brief: Check the input value can be a part of number
-*/
-function isNumber(str) {
-	str = String(str).trim();
-	if (str == '' || isNaN(str)) {
-		return false;
-	}
-	return true;
-}
-
-/*
- * @ brief: Return the parameters of an optimized line with least square method.
-*/
-function linearRegression(y, x) {
-	var lr = {};
-	var n = y.length;
-	var sum_x = sum_y = sum_xy = sum_xx = sum_yy = 0;
-
-	if ( y.length < 1 ) {
-		return;
-	}
-	if ( y.length != x.length ) {
-		alert ("X and Y should have the same length.");
-		return;
-	}
-
-	for (var i = 0; i < y.length; i++) {
-
-		sum_x += x[i];
-		sum_y += y[i];
-		sum_xy += (x[i]*y[i]);
-		sum_xx += (x[i]*x[i]);
-		sum_yy += (y[i]*y[i]);
-	} 
-
-	lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
-	lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
-	lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
-	if(n > 2) {
-		lr['adjusted_r2'] = 1-((1-(lr['r2']))*(n-1)/(n-2));
-	}
-
-	return lr;
-}
-
-/*
- * @ brief: Return an HTML code which would be adequate to present input data.
-*/
-function getVertiTableHtml(header, data, caption) {
-	if( typeof header.row !== "undefined" ) {
-		row_header = header.row
-	}
-	if( typeof header.column !== "undefined" ) {
-		column_header = header.column
-	}
-	
-	
-	if ( row_header.length !== data.length ) {
-		return;
-	}
-	
-	var html = '<table>';
-	
-	if ( String(caption) != '') {
-		html += '<caption>' + String(caption) + '</caption>';
-	}
-	
-	if (typeof column_header !== "undefined") {
-		if (column_header.length > 1) {
-			html += '<thead><tr>';
-			
-			column_header.forEach(function(element) {
-				html += '<th>' + element + '</th>';
-			});
-			
-			html += '</tr></thead>';
-		}
-	}
-	i = 0;
-	row_header.forEach(function(element) {
-		
-		html += '<tr>';
-		html += '<th>' + element + '</th>';
-		
-		data[i].forEach(function(cell) {
-			html += '<td>' + cell + '</td>';
-		});
-		
-		html += '</tr>';
-		
-		i++;
-	});
-	
-	html += '</table>';
-	
-	return html
-}
-
-function isMultipleDose() {
-	if (String($('#dose_repeat').val()).trim() == "multiple") {
-		return true
-	}
-	else {
-		return false
-	}
-}
-
-function existTau() {
-	if (String($('#dose_repeat').val()).trim() == "multiple") {
-		if ((String($('#tau').val()).trim() != "") && (Number($('#tau').val()) > 0)) {
-			return true
-		}
-	}
-	return false
-}
-
-function getC0(time, lnC) {
-	if (time.length != lnC.length) {
-		return;
-	}
-	var C0 = 0;
-	var dose_route = String($('#dose_route').val()).trim();
-	
-	if(dose_route == "ExtVe" || dose_route == "IVeIf"){
-		if(existTau()) {
-			C0 = Math.exp(Math.min(lnC));
-		} else {
-			C0 = 0;
-		}
-	} else if (dose_route == "IVeBo") {
-		time_slice = time.slice(0, 2);
-		lnC_slice = lnC.slice(0, 2);
-		
-		if(time_slice[0] == 0) {
-			if(lnC_slice[0] != 'NA') {
-				C0 = Math.exp(lnC_slice[0]);
-			} else {
-				C0 = 0;
-			}
-		} else {
-			if (lnC_slice.includes('NA')) {
-				C0 = (lnC_slice[0] == 'NA')? lnC_slice[1]:lnC_slice[0];
-				if( C0 == 'NA' ) {
-					C0 = 0;
-					lnC.forEach(function(lnC_item) {
-							if (lnC_item != "NA" && C0 == 0) {
-								C0 = Math.exp(lnC_item);
-							}
-						}
-					);
-				} else {
-					C0 = Math.exp(C0);
-				}
-			} else {
-				param = linearRegression(lnC_slice, time_slice);
-				
-				adj_r2 = param['adjusted_r2'];
-				lambdaZ = param['slope'];
-				intercept = param['intercept'];
-				
-				if (lambdaZ > 0) {
-					C0 = Math.exp(lnC_slice[0]);
-				} else {
-					C0 = Math.exp(intercept);
-				}
-			}
-		}
-	}
-	
-	return {"C0": C0};
-	
-	/*
-	var adj_r2 = 0;
-	var lambdaZ = 0;
-	var intercept = 0;
-	var slice_i = 0;
-	var n = time.length;
-	var i = 0;
-	while (i < n) {
-		time_slice = time.slice(0, i);
-		lnC_slice = lnC.slice(0, i);
-		
-		if (time_slice.length > 2) {
-			param = linearRegression(lnC_slice, time_slice);
-			
-			if (adj_r2 < param['adjusted_r2']) {
-				
-				adj_r2 = param['adjusted_r2'];
-				lambdaZ = param['slope'];
-				intercept = param['intercept'];
-				slice_i = i;
-			}
-			
-		}
-		i += 1;
-	}
-	return {"lnC0": intercept, "C0": Math.exp(intercept), "reg_points": time.slice(slice_i).length};
-	*/
-}
-
-function getLambda(time, lnC) {
-	if (time.length != lnC.length) {
-		return;
-	}
-	
-	var r2 = 0;
-	var adj_r2 = 0;
-	var lambdaZ = 0;
-	var intercept = 0;
-	var slice_i = 0;
-	var n = time.length;
-	var i = 0;
-	while (i < n) {
-		var time_slice = time.slice(i);
-		var lnC_slice = lnC.slice(i);
-		
-		if (time_slice.length > 2) {
-			var param = linearRegression(lnC_slice, time_slice);
-			
-			if (adj_r2 < param['adjusted_r2'] && param['slope'] < 0) {
-				r2 = param['r2'];
-				adj_r2 = param['adjusted_r2'];
-				lambdaZ = param['slope'];
-				intercept = param['intercept'];
-				slice_i = i;
-			}
-			
-		}
-		i += 1;
-	}
-	return {"lambda_Z": lambdaZ, "intercept": intercept, "terminal_points": time.slice(slice_i).length, "adj_r2": adj_r2, "r2": r2};
-}
-
-function getExpFirstDeri_center(time, concentrations) {
-	var sorted_T_C = sortTimeConcentration(time, concentrations)['time-concentration'];
-	
-	t1 = sorted_T_C[0][0];
-	t2 = sorted_T_C[1][0];
-	t3 = sorted_T_C[2][0];
-	t4 = sorted_T_C[3][0];
-	
-	C1 = sorted_T_C[0][1];
-	C2 = sorted_T_C[1][1];
-	C3 = sorted_T_C[2][1];
-	C4 = sorted_T_C[3][1];
-	
-	dfdt_center1 = (C2 - C1) / (t2 - t1);
-	dfdt_center2 = (C4 - C3) / (t4 - t3);
-	
-	t_center1 = (t1 + t2) / 2;
-	t_center2 = (t3 + t4) / 2;
-	
-	dfdt_2 = ((dfdt_center1) * ( t_center2 - t2 ) + (dfdt_center2) * ( t2 - t_center1 ) ) / ( t_center2 - t_center1 );
-	dfdt_3 = ((dfdt_center1) * ( t_center2 - t3 ) + (dfdt_center2) * ( t3 - t_center1 ) ) / ( t_center2 - t_center1 );
-	
-	return [dfdt_2, dfdt_3];
-}
-
-function getAUC(time, concentrations, C0, lambda_z) {
-	lambda_z = Math.abs(lambda_z);
-	
-	var integration_method = String($('#integration_method').val()).trim();
-	var integration_methods = ["linear-trapezoidal", "logarithmic-trapezoidal", "linear-trapezoidal-with-end-correction"];
-	if (!integration_methods.includes(integration_method)) {
-		integration_method = "linear-trapezoidal";
-	}
-	
-	var sorted_T_C = sortTimeConcentration(time, concentrations)['time-concentration'];
-	
-	
-	if (sorted_T_C[0][0] != 0) {
-		sorted_T_C = [[0, C0]].concat(sorted_T_C);
-	}
-	
-	var i = 0;
-	var AUC = AUCinf = 0;
-	var time_before = time_this = conc_before = conc_this = 0;
-	
-	sorted_T_C.forEach(function(time_conc) {
-		if (i != 0) {
-			time_before = Number(sorted_T_C[i-1][0]);
-			time_this = Number(sorted_T_C[i][0]);
-			
-			conc_before = Number(sorted_T_C[i-1][1]);
-			conc_this = Number(sorted_T_C[i][1]);
-			
-			if (integration_method == "logarithmic-trapezoidal" && (conc_this !== 0 && conc_before !== 0) && conc_this != conc_before) {
-				AUC += (time_this - time_before) * (conc_this - conc_before) / ( Math.log(conc_this / conc_before) );
-			} else {
-				AUC += (time_this - time_before) * (conc_this + conc_before) / 2;
-				if (integration_method == "linear-trapezoidal-with-end-correction" && i != 1 && i < (sorted_T_C.length - 1)) {
-					time_before_before = Number(sorted_T_C[i-2][0]);
-					time_after = Number(sorted_T_C[i+1][0]);
-					
-					conc_before_before = Number(sorted_T_C[i-2][1]);
-					conc_after = Number(sorted_T_C[i+1][1]);
-					
-					dfdt = getExpFirstDeri_center([time_before_before, time_before, time_this, time_after], [conc_before_before, conc_before, conc_this, conc_after]);
-
-					AUC -=  (dfdt[1] - dfdt[0]) * Math.pow((time_this - time_before), 2) / 12;
-				}
-			}
-		}
-		i++;
-	});
-	conc_last = conc_this;
-	
-	AUCinf += AUC + conc_last/lambda_z;
-	
-	Extrapolation_portion = (conc_last/lambda_z)/AUCinf;
-	
-	return {"AUC": AUCinf, "AUClast": AUC, "Extrapolation_portion": Extrapolation_portion};
-}
-
-function getAUMC(time, concentrations, lambda_z) {
-	lambda_z = Math.abs(lambda_z);
-	var integration_method = String($('#integration_method').val()).trim();
-	var integration_methods = ["linear-trapezoidal", "logarithmic-trapezoidal", "linear-trapezoidal-with-end-correction"];
-	if (!integration_methods.includes(integration_method)) {
-		integration_method = "linear-trapezoidal";
-	}
-	
-	var sorted_T_C = sortTimeConcentration(time, concentrations)['time-concentration'];
-	
-	
-	if (sorted_T_C[0][0] != 0) {
-		sorted_T_C = [[0, 0]].concat(sorted_T_C);
-	}
-	
-	var i = 0;
-	var AUMC = AUMCinf = 0;
-	var time_before = time_this = conc_before = conc_this = 0;
-	
-	sorted_T_C.forEach(function(time_conc) {
-		if (i != 0) {
-			time_before = Number(sorted_T_C[i-1][0]);
-			time_this = Number(sorted_T_C[i][0]);
-			
-			conc_before = Number(sorted_T_C[i-1][1]);
-			conc_this = Number(sorted_T_C[i][1]);
-			
-			if (integration_method == "logarithmic-trapezoidal" && (conc_this !== 0 && conc_before !== 0) && conc_this != conc_before && Math.log(conc_this / conc_before) !== 0) {
-				AUMC += (((time_this - time_before) / (Math.log(conc_this / conc_before))) * (time_this * conc_this - time_before * conc_before)) - (Math.pow((time_this - time_before) / (Math.log(conc_this / conc_before)), 2) * (conc_this - conc_before))
-			} else {
-				AUMC += (time_this - time_before) * (time_this * conc_this + time_before * conc_before) / 2;
-				
-				
-				if (integration_method == "linear-trapezoidal-with-end-correction" && i != 1 && i < (sorted_T_C.length - 1)) {
-					time_before_before = Number(sorted_T_C[i-2][0]);
-					time_after = Number(sorted_T_C[i+1][0]);
-					
-					conc_before_before = Number(sorted_T_C[i-2][1]);
-					conc_after = Number(sorted_T_C[i+1][1]);
-					
-					dfdt = getExpFirstDeri_center([time_before_before, time_before, time_this, time_after], [time_before_before * conc_before_before, time_before * conc_before, time_this * conc_this, time_after * conc_after]);
-					
-					AUMC -=  (dfdt[1] - dfdt[0]) * Math.pow((time_this - time_before), 2) / 12;
-				}
-				
-			}
-		}
-		i++;
-	});
-	
-	time_last = time_this;
-	conc_last = conc_this;
-	
-	AUMCinf = AUMC + conc_last / Math.pow(lambda_z, 2) + time_last * conc_last / lambda_z;
-	
-	Extrapolation_portion = (AUMCinf - AUMC) / AUMCinf;
-	
-	return {"AUMC": AUMCinf, "AUMClast": AUMC, "Extrapolation_portion": Extrapolation_portion};
-	
-}
 
 function unitConversion(value, unit_type, org_unit, target_unit) {
 	var unit_types = ['amount', 'time', '1/time', 'volume', 'concentration'];
@@ -600,215 +225,7 @@ function sortTimeConcentration(time, concentrations) {
 	return {"time": sorted_time, "concentration": sorted_concentrations, "lnC": sorted_lnC, "time-concentration":sorted_T_C}
 }
 
-function printResults( results ) {
-	
-}
 
-function drawPlot(time, concentrations, lambda) {
-
-	var time_unit = String($('#time_unit').val()).trim();
-	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
-	var volume_unit = String($('#volume_unit').val()).trim().replace("uL", "μL");
-	
-	var layout = {
-		xaxis: {
-			title: 'Time (' + time_unit + ')',
-			rangemode: 'nonnegative',
-			ticks: 'outside',
-			range: [0, 1.2*(Math.max(...time))],
-			showticklabels: true,
-			showline: true,
-			showgrid: false,
-			linecolor: (getColorScheme() === 'light')?'#000' : '#fff',
-			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
-		},
-		yaxis: {
-			title: 'Concentration (' + amount_unit + '/' + volume_unit + ')',
-			ticks: 'outside',
-			showticklabels: true,
-			type: 'log',
-			range: [Math.floor(Math.log10(Math.min(...concentrations))), Math.ceil(Math.log10(Math.max(...concentrations)))],
-			autorange: false,
-			exponentformat: 'power',
-			showexponent: 'all',
-			showline: true,
-			showgrid: false,
-			linecolor: (getColorScheme() === 'light')?'#000' : '#fff',
-			tickcolor: (getColorScheme() === 'light')?'#000' : '#fff',
-		},
-		
-		margin: {
-			l: 80,
-			r: 80,
-			b: 80,
-			t: 35
-		},
-		plot_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
-		paper_bgcolor: (getColorScheme() === 'light')? "rgba(255,255,255,0)":"rgba(0,0,0,0)",
-		font: {
-			size: 14,
-			color: (getColorScheme() === 'light')?'#000' : '#fff',
-		}
-	};
-	
-	
-	var settings = {
-		/*
-		toImageButtonOptions: {
-			filename: 'moment_analysis',
-			format: 'svg'
-		},
-		modeBarButtonsToRemove: ['pan2d','select2d','lasso2d','resetScale2d','zoomOut2d'],*/
-		responsive: true,
-		displayModeBar: false
-	};
-	
-	
-	var TC = {
-		name: 'Observed',
-		x: time,
-		y: concentrations,
-		mode: 'markers',
-		type: 'scatter',
-		cliponaxis: false,
-		marker: {
-			color: (getColorScheme() === 'light')?'#000' : '#fff',
-			size: 10,
-		}
-	};
-	
-	var lambda_times = time.slice(lambda.terminal_points * -1);
-	var n = (Math.max(window.screen.availWidth, window.screen.availHeight)*20);
-	var h = (lambda_times[lambda_times.length-1] - lambda_times[0])/n;
-	
-	var ex_times = [];
-	var ex_conc = [];
-	
-	var i = 0;
-	while (i < n) {
-		var lamda_t = lambda_times[0] + h * i;
-		var lamda_c = Math.exp(lambda.intercept) * Math.exp(lambda.lambda_Z * lamda_t);
-		ex_times.push(lamda_t);
-		ex_conc.push(lamda_c);
-		
-		i++;
-	}
-	
-	var lambda_line = {
-		name: 'Predicted',
-		x: ex_times,
-		y: ex_conc,
-		mode: 'lines',
-		cliponaxis: false,
-		line: {
-			color: '#9c27b0',
-			width: 2
-		}
-	};
-	
-	var data = [TC, lambda_line];
-	Plotly.newPlot('data-plot', data, layout, settings);
-	/*
-	var time_unit = String($('#time_unit').val()).trim();
-	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
-	var volume_unit = String($('#volume_unit').val()).trim().replace("uL", "μL");
-	
-	Chart.defaults.global.defaultFontColor = '#000';
-	Chart.defaults.global.defaultFontFamily = 'TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif';
-	Chart.defaults.global.defaultFontStyle = 14;
-	var options = {
-		scales: {
-			xAxes: [{
-				display: true,
-				type: 'linear',
-				position: 'bottom',
-				min: 0,
-				gridLines: {
-					drawOnChartArea: false,
-				}
-			}],
-			yAxes: [{
-				display: true,
-				type: 'logarithmic',
-				position: 'left',
-				gridLines: {
-					drawOnChartArea: false,
-				}
-			}]
-		},
-		
-		animation: {
-			duration: 0 // general animation time
-		},
-		hover: {
-			animationDuration: 0 // duration of animations when hovering an item
-		},
-		responsiveAnimationDuration: 0, // animation duration after a resize
-		
-		legend: {
-			position: 'top',
-		},
-		title: {
-			display: true,
-			text: 'Time-Concentration'
-		}
-	};
-	
-	console.log(time);
-	
-	var TC = {
-		label: 'Observed',
-		data: []
-	};
-	
-	time_lenth = time.length;
-	for (var i = 0; i < time_lenth; i++) {
-		TC.data.push({
-			x: time[i],
-			y: concentrations[i]
-		});
-	}
-	
-	console.log(TC);
-	var lambda_times = time.slice(lambda.terminal_points * -1);
-	var n = (Math.max(window.screen.availWidth, window.screen.availHeight)*20);
-	var h = (lambda_times[lambda_times.length-1] - lambda_times[0])/n;
-	
-	var lambda_line = {
-		label: 'Predicted',
-		data: [],
-		type: 'line',
-		options: {
-			pointRadius: 0,
-			borderColor: '#FFA500',
-			fill: false,
-			lineTension: 0
-		}
-	}
-	var i = 0;
-	while (i < n) {
-		var lamda_t = lambda_times[0] + h * i;
-		var lamda_c = Math.exp(lambda.intercept) * Math.exp(lambda.lambda_Z * lamda_t);
-		lambda_line.data.push({
-			x: lamda_t,
-			y: lamda_c
-		});
-		
-		i++;
-	}
-	
-	console.log(lambda_line);
-	var ctx = document.getElementById('data-plot').getContext('2d');
-	TCPlot = new Chart(ctx, {
-		type: 'scatter',
-		data: {
-			datasets: [TC, lambda_line]
-		},
-		options: options
-	});
-	
-	*/
-}
 
 function trimTCdata (raw_data) {
 	
@@ -861,6 +278,12 @@ function updateTCtable( is_arrange ) {
 		dose_unit = dose_unit.substr(0, dose_unit.indexOf('/'));
 	}
 	
+	if (dose_unit.indexOf('mol')>=0 || amount_unit.indexOf('mol')>=0) {
+		$("#molecular_weight_section").show(300);
+	} else {
+		$("#molecular_weight_section").hide(300);
+	}
+	
 	dose = unitConversion (dose, "amount", dose_unit, amount_unit);
 	if (dose == 'Unit not matched.' ) {
 		$('#system_message').html(' Unit of dosing and measurement should be matched. e.g., IU to IU, mol to mol, and gram to gram. ');
@@ -885,51 +308,6 @@ function updateTCtable( is_arrange ) {
 		/* 정리된 입력값 보여주기 */
 		TCtable.setData(get('time-concentration'));
 	}
-	
-	/* 계산값 생성 */
-	
-	var C0 = getC0(get('time'), get('lnC'))['C0'];
-	var lambda_Z = getLambda(get('time'), get('lnC'));
-	var t_half = Math.log(2) / lambda_Z.lambda_Z * -1;
-	
-	var AUC = getAUC(get('time'), get('concentration'), C0, lambda_Z.lambda_Z);
-	var AUMC = getAUMC(get('time'), get('concentration'), lambda_Z.lambda_Z);
-	var MRT = AUMC.AUMC/AUC.AUC;
-	
-	var CL = dose / AUC.AUC;
-	var Vss = MRT * CL;
-	
-	/* 정리된 계산값 보여주기 */
-	
-	drawPlot(get('time'), get('concentration'), lambda_Z);
-	
-	
-	$("#data-estimates").html(
-		getVertiTableHtml(
-			{
-				'column': ['Parameter', 'Unit', 'Value'],
-				'row': ['C<sub>0</sub>', 'λ<sub>Z</sub>', 'Number of points to estimate λ<sub>Z</sub>', 'R<sup>2</sup> (λ<sub>Z</sub>)', 'Adjusted R<sup>2</sup> (λ<sub>Z</sub>)', 't<sub>1/2</sub> (ln(2)/λ<sub>Z</sub>)', 'AUC', 'AUC<sub>last</sub>', '&#37; Extrapolated AUC', 'AUMC', 'AUMC<sub>last</sub>', '&#37; Extrapolated AUMC', 'MRT', 'CL', 'V<sub>SS</sub>']
-				},
-			[
-				[amount_unit + '&frasl;' + volume_unit,											float_to_sig(C0, 4)									], 
-				['&frasl;' + time_unit, 														float_to_sig(lambda_Z.lambda_Z * -1, 4)				],
-				['', 																			float_to_sig(lambda_Z.terminal_points, 1)			],
-				['', 																			float_to_sig(lambda_Z.r2, 4)						],
-				['', 																			float_to_sig(lambda_Z.adj_r2, 4)					],
-				[time_unit,																		float_to_sig(t_half, 4)								],
-				[amount_unit + '&sdot;' + time_unit + '&frasl;' + volume_unit,					float_to_sig(AUC.AUC, 4)							],
-				[amount_unit + '&sdot;' + time_unit + '&frasl;' + volume_unit,					float_to_sig(AUC.AUClast, 4)						],
-				['&#37;',																		float_to_sig(AUC.Extrapolation_portion * 100, 4)	],
-				[amount_unit + '&sdot;' + time_unit + '<sup>2</sup>' + '&frasl;' + volume_unit,	float_to_sig(AUMC.AUMC, 4)							],
-				[amount_unit + '&sdot;' + time_unit + '<sup>2</sup>' + '&frasl;' + volume_unit,	float_to_sig(AUMC.AUMClast, 4)						],
-				['&#37;',																		float_to_sig(AUMC.Extrapolation_portion * 100, 4)	],
-				[time_unit,																		float_to_sig(MRT, 4)								],
-				[volume_unit + '&frasl;' + time_unit + ((kg_normalized)? '&frasl;kg' : ''),		float_to_sig(CL, 4)									],
-				[volume_unit + ((kg_normalized)? '&frasl;kg' : ''),								float_to_sig(Vss, 4)								],
-			],
-			'Estimates'
-			));
-	
 }
 
 function linspace(start, stop, step) {
@@ -1004,6 +382,20 @@ function saveData () {
 		alert('Time-concentration table have no data.');
 		return;
 	}
+	var dose_unit = String($('#dose_unit').val()).trim();
+	var amount_unit = String($('#amount_unit').val()).trim();
+	var molecular_weight = Number($('#molecular_weight').val());
+	var dose = Number($('#dose').val());
+	
+	if ((dose_unit.indexOf('mol')>=0 || amount_unit.indexOf('mol')>=0) && !molecular_weight) {
+		alert('Molecular weight is required.');
+		return;
+	}
+	
+	if (!dose) {
+		alert('Dose is required.');
+		return;
+	}
 	
 	var params = {
 		'mid': String($('input[name=mid]').val()).trim(),
@@ -1017,6 +409,7 @@ function saveData () {
 		'volume_unit': String($('#volume_unit').val()).trim(),
 		
 		'dose': Number($('#dose').val()),
+		'molecular_weight': Number($('#molecular_weight').val()),
 		'dose_unit': String($('#dose_unit').val()).trim(),
 		'administration_route': String($('#dose_route').val()).trim(),
 		'duration_of_infusion': Number($('#duration_of_infusion').val()),
@@ -1029,7 +422,7 @@ function saveData () {
 	};
 	
 	var response_tags = new Array('error','message','results');
-	exec_xml('blueberry', 'procBlueberryInsertData', params, function(a,b) { window.location.href = a.redirect_url; return; }, response_tags);
+	exec_xml('blueberry', (params['data_srl'])?'procBlueberryUpdateData':'procBlueberryInsertData', params, function(a,b) { window.location.href = a.redirect_url; return; }, response_tags);
 	
 }
 

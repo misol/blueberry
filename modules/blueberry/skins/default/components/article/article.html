@@ -42,6 +42,9 @@
 								<div class="app-widget-content-main tw-p-4">
 									<ul class="tw-list-disc tw-mx-5">
 										<li class="tw-mb-2">{lang('blueberry.dose')}: {$oData->getDose(true, -1)}</li>
+										<li class="tw-mb-2" cond="$oData->getMolecularWeight()>0">
+											{lang('blueberry.molecular_weight')}: {$oData->getMolecularWeight()} g/mol
+										</li>
 										<li class="tw-mb-2">{lang('blueberry.dosing_route')}: {lang('blueberry.'.$oData->getAdministrationRoute())} / <block cond="!$oData->isMultipleDose()">{lang('blueberry.single_dose')}</block><block cond="$oData->isMultipleDose()">{lang('blueberry.repeated_dose')}</block></li>
 										<li class="tw-mb-2" cond="$oData->getAdministrationRoute() == 'iv_infusion'">
 											{lang('blueberry.duration_of_infusion')}: {$oData->getLengthofInfusion(-1)} {$oData->getTimeUnit()}

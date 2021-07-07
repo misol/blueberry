@@ -2,10 +2,10 @@
 $lang->last_updater = 'Latest editor';
 $lang->no_data = 'There is no saved data.';
 $lang->no_data_description = 'Let\'s analyse your data.';
-$lang->blueberry_mydata = '%s&apos;s Blueberry data';
+$lang->blueberry_mydata = '%s&apos;s Blueberry';
 
 $lang->blueberry_data = 'Blueberry data';
-$lang->cmd_new_nca = 'Add new data';
+$lang->cmd_new_nca = 'Add data';
 $lang->cmd_manage_nca_data = 'Manage data';
 
 $lang->dose_dose_unit = 'Dose';
@@ -104,3 +104,7 @@ $lang->in_vivo_time_conc_plot = 'Time-concentration plot';
 $lang->reference_list = 'References';
 $lang->blueberry_delete_data = 'Delete data';
 $lang->blueberry_confirm_delete_data = 'Are you sure you want to delete this data?';
+
+$lang->cmd_to_the_top = 'To the top';
+
+$lang->molecular_weight = 'Molecular weight';

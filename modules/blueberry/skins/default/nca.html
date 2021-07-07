@@ -78,6 +78,24 @@
 					</div>
 				</div>
 				
+				<div id="molecular_weight_section" class="app-widgetstyle-wrap tw-mb-6">
+					<div class="app-widgetstyle-card app-card">
+						<h2 class="app-widgetstyle-header">
+							{lang('blueberry.molecular_weight')}
+						</h2>
+						<div class="app-clearfix">
+							<div class="app-widget-content-main tw-flex tw-justify-center">
+								<div class="tw-w-full tw-m-4">
+									<label for="molecular_weight" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="last_dosing_time_box">{lang('blueberry.molecular_weight')} <sub>(g/mol)</sub></label>
+									<div class="tw-items-center">
+										<input type="number" id="molecular_weight" step="0.01" min="0" placeholder="0" class="app-input tw-w-full sm:tw-w-full" value=""|cond="$oData->isExists()" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
 				<label class="isss input_box" id="doseing_route_label" for="dose_route" class="select_box tw-block tw-text-blck tw-font-bold tw-mb-1">{lang('blueberry.dosing_route')}</label>
 				<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
 					
@@ -202,7 +220,7 @@
 		</form>
 	</div>
 </div>
-<div class="app-card">
+<div class="app-card" style="display:none;">
 	<div class="app-board-section app-board-section-padding">
 	
 		<section class="control-group tw-block">

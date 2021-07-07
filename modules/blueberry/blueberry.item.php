@@ -306,6 +306,15 @@ class blueberryItem extends BaseObject
 		return str_replace('ug','μg', strval($this->get('dose_unit')));
 	}
 
+	public function getMolecularWeight() {
+		if(!$this->isExists()) return;
+		if(floatval($this->get('molecular_weight')) > 0) {
+			return floatval($this->get('molecular_weight'));
+		}
+		return false;
+	}
+	
+	
 	private function getUnitMatchedDose() {
 		if(!$this->isExists()) return;
 		
@@ -1236,7 +1245,19 @@ class blueberryItem extends BaseObject
 			}
 		} elseif ($unit_type == 'amount' || $unit_type == 'volume') {
 			if( substr($org_unit, -1) !== substr($target_unit, -1) ){
-				throw new Rhymix\Framework\Exception('Unit conversion: unit not matched.<br>'.substr($org_unit, -1).' to '.substr($target_unit, -1));
+				if( (substr($org_unit, -3) === 'mol' || substr($target_unit, -3) === 'mol') && $this->getMolecularWeight() ) {
+					if(substr($org_unit, -3) === 'mol') {
+						$value = $value * $this->getMolecularWeight();
+						$org_unit = substr($org_unit, 0, -3) . 'g';
+					} elseif (substr($target_unit, -3) === 'mol' && substr($org_unit, -1) === 'g') {
+						$value = $value / $this->getMolecularWeight();
+						$org_unit = substr($org_unit, 0, -1) . 'mol';
+					} else {
+						throw new Rhymix\Framework\Exception('Unit conversion: unit not matched.<br>'.strval($org_unit).' to '.strval($target_unit));
+					}
+				} else {
+					throw new Rhymix\Framework\Exception('Unit conversion: unit not matched.<br>'.strval($org_unit).' to '.strval($target_unit));
+				}
 			}
 			if (isset($SI_prefixes[substr($org_unit, 0, 1)]) && isset($SI_prefixes[substr($target_unit, 0, 1)])) {
 				return $value * ($SI_prefixes[substr($org_unit, 0, 1)]/$SI_prefixes[substr($target_unit, 0, 1)]);
