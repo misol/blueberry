@@ -137,9 +137,6 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exception('msg_content_too_long');
 		}
 		
-		// begin transaction
-		$oDB = DB::getInstance();
-		$oDB->begin();
 		
 		$args = new stdClass;
 		// sanitize variables
@@ -211,6 +208,11 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
+		if (!count($obj->TC_data['time']) || !count($obj->TC_data['concentration']) || !count($obj->TC_data['lnC']) || !count($obj->TC_data['time-concentration']))
+		{
+			throw new Rhymix\Framework\Exceptions\InvalidRequest;
+		}
+		
 		$obj->TC_data['time'] = array_map( "floatval", $obj->TC_data['time']);
 		$obj->TC_data['concentration'] = array_map( "floatval", $obj->TC_data['concentration']);
 		$obj->TC_data['lnC'] = array_map( "floatval", $obj->TC_data['lnC']);
@@ -233,6 +235,15 @@ class blueberryController extends blueberry
 		$args->update_order = $args->list_order = $args->data_srl * -1;
 		
 		$logged_info = Context::get('logged_info');
+		
+		if($args->homepage)
+		{
+			$obj->homepage = escape($obj->homepage);
+			if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+			{
+				$obj->homepage = 'http://'.$obj->homepage;
+			}
+		}
 		
 		if(Context::get('is_logged'))
 		{
@@ -271,6 +282,11 @@ class blueberryController extends blueberry
 		}
 		
 		unset($obj);
+		
+		// begin transaction
+		$oDB = DB::getInstance();
+		$oDB->begin();
+		
 		// Insert data into the DB
 		$output = executeQuery('blueberry.insertInVivoData', $args);
 		if(!$output->toBool())
@@ -317,9 +333,6 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exception('msg_content_too_long');
 		}
 		
-		// begin transaction
-		$oDB = DB::getInstance();
-		$oDB->begin();
 		
 		$args = new stdClass;
 		// sanitize variables
@@ -399,6 +412,11 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
+		if (!count($obj->TC_data['time']) || !count($obj->TC_data['concentration']) || !count($obj->TC_data['lnC']) || !count($obj->TC_data['time-concentration']))
+		{
+			throw new Rhymix\Framework\Exceptions\InvalidRequest;
+		}
+		
 		$obj->TC_data['time'] = array_map( "floatval", $obj->TC_data['time']);
 		$obj->TC_data['concentration'] = array_map( "floatval", $obj->TC_data['concentration']);
 		$obj->TC_data['lnC'] = array_map( "floatval", $obj->TC_data['lnC']);
@@ -410,29 +428,16 @@ class blueberryController extends blueberry
 		// Register it if no given document_srl exists
 		if(!$obj->data_srl)
 		{
-			$args->data_srl = getNextSequence();
-		}
-		else {
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
 		// Initiate records.
-		$args->readed_count = 0;
-		$args->update_order = $args->list_order = $args->data_srl * -1;
+		$args->list_order = $args->data_srl * -1;
+		
+		// Change the update order
+		$args->update_order = getNextSequence() * -1;
 		
 		$logged_info = Context::get('logged_info');
-		
-		if(Context::get('is_logged'))
-		{
-			$args->last_updater = $args->member_srl = $logged_info->member_srl;
-
-			// user_id, user_name and nick_name already encoded
-			$args->user_id = htmlspecialchars_decode($logged_info->user_id);
-			$args->user_name = htmlspecialchars_decode($logged_info->user_name);
-			$args->nick_name = htmlspecialchars_decode($logged_info->nick_name);
-			$args->email_address = $logged_info->email_address;
-			$args->homepage = $logged_info->homepage;
-		}
 		
 		if($args->title == '')
 		{
@@ -458,9 +463,47 @@ class blueberryController extends blueberry
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
+		
 		unset($obj);
+		// get original data
+		$oData = blueberryModel::getData($args->data_srl);
+		if(!$oData->isExists()) {
+			throw new Rhymix\Framework\Exceptions\TargetNotFound;
+		}
+		
+		if(Context::get('is_logged'))
+		{
+			$args->last_updater = $logged_info->member_srl;
+
+			// user_id, user_name and nick_name already encoded
+			$args->user_id = htmlspecialchars_decode($logged_info->user_id);
+			$args->user_name = htmlspecialchars_decode($logged_info->user_name);
+			$args->nick_name = htmlspecialchars_decode($logged_info->nick_name);
+			$args->email_address = $logged_info->email_address;
+			$args->homepage = $logged_info->homepage;
+		}
+		
+		// user_id, user_name and nick_name already encoded
+		$args->member_srl = $oData->getMemberSrl();
+		
+		if($args->homepage) {
+			$obj->homepage = escape($obj->homepage);
+			if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+			{
+				$obj->homepage = 'http://'.$obj->homepage;
+			}
+		} else {
+			$args->homepage = $oData->getHomepageUrl();
+		}
+		
+		// set count
+		$args->readed_count = $oData->getReadedCount();
+		
+		// begin transaction
+		$oDB = DB::getInstance();
+		$oDB->begin();
 		// Insert data into the DB
-		$output = executeQuery('blueberry.insertInVivoData', $args);
+		$output = executeQuery('blueberry.updateInVivoData', $args);
 		if(!$output->toBool())
 		{
 			$oDB->rollback();
@@ -468,7 +511,7 @@ class blueberryController extends blueberry
 		}
 		
 		
-		ModuleHandler::triggerCall('blueberry.insertInVivoData', 'after', $args);
+		ModuleHandler::triggerCall('blueberry.updateInVivoData', 'after', $args);
 
 		// commit
 		$oDB->commit();

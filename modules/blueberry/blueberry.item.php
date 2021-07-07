@@ -865,6 +865,10 @@ class blueberryItem extends BaseObject
 		return escape($this->get('user_id'), false);
 	}
 
+	public function getUserEmailAddress()
+	{
+		return escape($this->get('email_address'), false);
+	}
 	public function getUserName()
 	{
 		return escape($this->get('user_name'), false);
@@ -1117,6 +1121,15 @@ class blueberryItem extends BaseObject
 		{
 			return $statusList[$oBlueberry->getDefaultStatus()];
 		}
+	}
+	
+	/**
+	 * get readed count
+	 * @return void
+	 */
+	public function getReadedCount()
+	{
+		return $this->get('readed_count');
 	}
 	/**
 	 * Update readed count
