@@ -346,7 +346,7 @@ class blueberryItem extends BaseObject
 						$tau_conc[] = $val[1];
 					}
 				}
-				if(($tau_time[0] - 0) < 0.000001) {
+				if(abs($tau_time[0] - 0) < 0.000001) {
 					$C0 = $tau_conc[0];
 				} else {
 					$C0 = min($tau_conc);
@@ -378,7 +378,7 @@ class blueberryItem extends BaseObject
 			$conc_slice = array_slice($time_concentration['concentration'], 0, 2);
 			$lnC_slice = array_slice($time_concentration['lnC'], 0, 2);
 			
-			if(($time_slice[0] - 0) < 0.000001) {
+			if(abs($time_slice[0] - 0) < 0.000001) {
 				if($lnC_slice[0] !== 'NA') {
 					$C0 = $conc_slice[0];
 				} else {
@@ -470,7 +470,7 @@ class blueberryItem extends BaseObject
 						
 						$dfdt = $this->getExpFirstDeri_center(array($time_before_before, $time_before, $time_this, $time_after), array($conc_before_before, $conc_before, $conc_this, $conc_after));
 
-						$AUC -=  ($dfdt[1] - $dfdt[0]) * pow(($time_this - $time_before), 2) / 12;
+						$AUC +=  ($dfdt[0] - $dfdt[1]) * pow(($time_before - $time_this), 2) / 12;
 					}
 				}
 			}
@@ -704,7 +704,7 @@ class blueberryItem extends BaseObject
 						
 						$dfdt = $this->getExpFirstDeri_center(array($time_before_before, $time_before, $time_this, $time_after), array($time_before_before * $conc_before_before, $time_before * $conc_before, $time_this * $conc_this, $time_after * $conc_after));
 						
-						$AUMC -=  ($dfdt[1] - $dfdt[0]) * pow(($time_this - $time_before), 2) / 12;
+						$AUMC +=  ($dfdt[0] - $dfdt[1]) * pow(($time_before - $time_this), 2) / 12;
 					}
 				}
 			}
@@ -1343,27 +1343,27 @@ class blueberryItem extends BaseObject
 	 * @ brief: Return the first derivatives for the end correction of AUC calculation.
 	*/
 
-	private function getExpFirstDeri_center() {
-		$time_conc = $this->getTimeConcentrationArray()['time-concentration'];
+	private function getExpFirstDeri_center($time_arr, $conc_arr) {
+		$t1 = $time_arr[0];
+		$t2 = $time_arr[1];
+		$t3 = $time_arr[2];
+		$t4 = $time_arr[3];
 		
-		$t1 = $time_conc[0][0];
-		$t2 = $time_conc[1][0];
-		$t3 = $time_conc[2][0];
-		$t4 = $time_conc[3][0];
-		
-		$C1 = $time_conc[0][1];
-		$C2 = $time_conc[1][1];
-		$C3 = $time_conc[2][1];
-		$C4 = $time_conc[3][1];
+		$C1 = $conc_arr[0];
+		$C2 = $conc_arr[1];
+		$C3 = $conc_arr[2];
+		$C4 = $conc_arr[3];
 		
 		$dfdt_center1 = ($C2 - $C1) / ($t2 - $t1);
-		$dfdt_center2 = ($C4 - $C3) / ($t4 - $t3);
+		$dfdt_center2 = ($C3 - $C2) / ($t3 - $t2);
+		$dfdt_center3 = ($C4 - $C3) / ($t4 - $t3);
 		
 		$t_center1 = ($t1 + $t2) / 2;
-		$t_center2 = ($t3 + $t4) / 2;
+		$t_center2 = ($t2 + $t3) / 2;
+		$t_center3 = ($t3 + $t4) / 2;
 		
-		$dfdt_2 = (($dfdt_center1) * ( $t_center2 - $t2 ) + ($dfdt_center2) * ( $t2 - $t_center1 ) ) / ( $t_center2 - $t_center1 );
-		$dfdt_3 = (($dfdt_center1) * ( $t_center2 - $t3 ) + ($dfdt_center2) * ( $t3 - $t_center1 ) ) / ( $t_center2 - $t_center1 );
+		$dfdt_2 = (($dfdt_center1) * ( $t2 - $t_center1 ) + ($dfdt_center2) * ( $t_center2 - $t2 ) ) / ( $t_center2 - $t_center1 );
+		$dfdt_3 = (($dfdt_center2) * ( $t3 - $t_center2 ) + ($dfdt_center3) * ( $t_center3 - $t3 ) ) / ( $t_center3 - $t_center2 );
 		
 		return array($dfdt_2, $dfdt_3);
 	}
