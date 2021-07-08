@@ -201,7 +201,7 @@
 												<td cond="$oData->getVss() === null">N/A</td>
 											</tr>
 											<tr>
-												<td>V<sub>Z</sub></td>
+												<td>V<sub>Z</sub><block cond="$oData->getAdministrationRoute() == 'extravenous'">/F</block></td>
 												<td cond="$oData->getVz() !== null">{$oData->getVz()} {$oData->getVolumeUnit()}</td>
 												<td cond="$oData->getVz() === null">N/A</td>
 											</tr>

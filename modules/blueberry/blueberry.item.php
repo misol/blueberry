@@ -1398,10 +1398,10 @@ class blueberryItem extends BaseObject
 				if( $this->getTmax(-1) > $time_slice[0] ) {
 					$i++;
 					continue;
-				}/* elseif( abs($this->getTmax(-1) - $time_slice[0]) < 0.000001 && $this->getAdministrationRoute() !== "iv_bolus" ) {
+				} elseif( abs($this->getTmax(-1) - $time_slice[0]) < 0.000001 && $this->getAdministrationRoute() !== "iv_bolus" ) {
 					$i++;
 					continue;
-				}*/
+				}
 			}
 			
 			if (count($time_slice) > 2) {
