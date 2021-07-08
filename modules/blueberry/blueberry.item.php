@@ -1387,6 +1387,23 @@ class blueberryItem extends BaseObject
 			$time_slice = array_slice($time_conc['time'], $i);
 			$lnC_slice = array_slice($time_conc['lnC'], $i);
 			
+			if( $this->getLengthofInfusion(-1) !== null) {
+				if( $this->getLengthofInfusion(-1) > $time_slice[0] ) {
+					$i++;
+					continue;
+				}
+			}
+			
+			if( $this->getTmax(-1) !== null) {
+				if( $this->getTmax(-1) > $time_slice[0] ) {
+					$i++;
+					continue;
+				}/* elseif( abs($this->getTmax(-1) - $time_slice[0]) < 0.000001 && $this->getAdministrationRoute() !== "iv_bolus" ) {
+					$i++;
+					continue;
+				}*/
+			}
+			
 			if (count($time_slice) > 2) {
 				$param = $this->linearRegression($lnC_slice, $time_slice);
 				
