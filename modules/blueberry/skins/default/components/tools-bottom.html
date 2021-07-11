@@ -1,44 +1,78 @@
-<div cond="$grant->manager" class="app-board-container--only-mobile tw-flex tw-items-center tw-pt-4 tw-pb-5">  
-  
-  <a class="app-link" href="{getUrl('','module','blueberry','act','dispBlueberryManageData')}" onclick="popopen(this.href,'manageData'); return false;">
-    <ion-icon name="checkmark-done-outline" class="tw-mr-2"></ion-icon>
-    {lang('blueberry.cmd_manage_nca_data')}
-  </a>
+<load target="../js/blueberry_search.js" type="body" />
+<load target="../css/blueberry_search.css" type="body" />
 
-  <div class="tw-flex-1"></div>
+<div cond="$grant->manager" class="app-board-container--only-mobile tw-flex tw-items-center tw-pt-4 tw-pb-5">
+	
+	<a class="app-link" href="{getUrl('','module','blueberry','act','dispBlueberryManageData')}" onclick="popopen(this.href,'manageData'); return false;">
+		<ion-icon name="checkmark-done-outline" class="tw-mr-2"></ion-icon>
+		{lang('blueberry.cmd_manage_nca_data')}
+	</a>
 
-  {@ // 검색 }
-  <a class="app-icon-button" onclick="toggleDialog('app-board-search')">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-  </a>
+	<div class="tw-flex-1"></div>
 
-  <div id="app-board-search" class="app-dialog">
-    <div class="app-dialog-container">
-      <div class="app-dialog-box">
-        <div class="app-dialog-header">
-          <h3>{$lang->cmd_search}</h3>
-        </div>
-        
-        <form class="app-dialog-body" action="{getUrl()}" method="get" onsubmit="return procFilter(this, search)" no-error-return-url="true">
-          <input type="hidden" name="vid" value="{$vid}" />
-          <input type="hidden" name="mid" value="{$mid}" />
-          <input type="hidden" name="category" value="{$category}" />
-      
-          <div class="app-select app-expand tw-mb-3">
-            <select name="search_target" placeholder="{lang('common.search_target')}">
-              <option loop="$search_option=>$key,$val" value="{$key}" selected="selected"|cond="$search_target==$key">{$val}</option>
-            </select>
-          </div>
+	<!--// 검색 //-->
+	<a class="app-icon-button" onclick="toggleDialog('app-board-search')">
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+		</svg>
+	</a>
 
-          <input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" placeholder="{lang('common.search_keyword')}" class="app-input app-input-expand tw-mb-3" />
-  
-          <div class="tw-flex tw-justify-end">
-            <button type="submit" class="app-button app-button-rounded primary">{lang('common.cmd_search')}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<div id="app-board-search" class="app-dialog">
+		<div class="app-dialog-container">
+			<div class="app-dialog-box">
+				<div class="app-dialog-header">
+					<h3>{$lang->cmd_search}</h3>
+				</div>
+				
+				<form class="tw-p-5" action="{getUrl()}" method="get" onsubmit="return procFilter(this, search)" no-error-return-url="true">
+					<input type="hidden" name="vid" value="{$vid}" />
+					<input type="hidden" name="mid" value="{$mid}" />
+					<input type="hidden" name="category" value="{$category}" />
+			
+					<div class="app-select app-expand tw-mb-3">
+						<select name="search_target" id="blueberry_search_target" placeholder="{lang('common.search_target')}" onchange="update_input( false );return false;">
+							<option loop="$search_option=>$key,$val" value="{$key}" selected="selected"|cond="$search_target==$key">{$val}</option>
+						</select>
+					</div>
+					
+					<div id="keyword_search_box" class="tw-mb-6">
+						<input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" placeholder="{lang('common.search_keyword')}" class="app-input app-input-expand tw-mb-3" />
+					</div>
+					<div id="dose_search_box" class="tw-mb-6">
+						<input type="number" step="0.01" min="0.01" max="10000000" id="dose" placeholder="0.5" class="app-input tw-mb-1 tw-w-full" />
+						
+						<div class="app-select tw-w-full">
+							<select id="dose_unit" class="app-input tw-w-full">
+								<block loop="lang('blueberry.blueberry_dose_units')=>$key,$val">
+									<option value="{$key}" selected="selected"|cond="(!$oData->isExists() && $key === 'mg') || ($oData->isExists() && $oData->getDoseUnit(false) === $key)">{$val}</option>
+								</block>
+							</select>
+						</div>
+					</div>
+					<div id="route_search_box" class="tw-mb-6 app-select">
+						<select id="dose_route" onchange="procUpdateSheet();updateTCtable( false );return false;" class="app-input tw-w-full">
+							<block loop="lang('blueberry.blueberry_dose_route_options')=>$key,$val">
+								<option value="{$key}" selected="selected"|cond="$oData->isExists() && $oData->getAdministrationRoute() == $val">{lang('blueberry.'.$val)}</option>
+							</block>
+						</select>
+					</div>
+					<div id="date_search_box" class="tw-mb-6">
+						<div class="tw-w-full tw-mb-1">
+							<label for="start_day" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="last_dosing_time_box">{lang('blueberry.blueberry_search_date_from')}</label>
+							<input type="date" name="start_day" class="app-input tw-w-full" required pattern="\d{4}-\d{2}-\d{2}">
+						</div>
+						<div class="tw-w-full tw-m-0">
+							<label for="start_day" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="last_dosing_time_box">{lang('blueberry.blueberry_search_date_to')}</label>
+							<input type="date" name="end_day" class="app-input tw-w-full" required pattern="\d{4}-\d{2}-\d{2}">
+						</div>
+					</div>
+	
+	
+					<div class="tw-flex tw-justify-end">
+						<button type="submit" class="app-button app-button-rounded primary">{lang('common.cmd_search')}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>

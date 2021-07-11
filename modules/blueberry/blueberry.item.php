@@ -1368,6 +1368,9 @@ class blueberryItem extends BaseObject
 		return array($dfdt_2, $dfdt_3);
 	}
 	
+	/*
+	 * @ brief: Return the terminal phase lambda as a array
+	*/
 	public function getLambdaArray() {
 		$time_conc = $this->getTimeConcentrationArray();
 		static $results = null;
@@ -1423,6 +1426,9 @@ class blueberryItem extends BaseObject
 		return $results;
 	}
 	
+	/*
+	 * @ brief: Return the terminal phase lambda as a float value
+	*/
 	public function getLambda($precision = 4) {
 		if($this->getLambdaArray()['lambda_Z'] === null) {
 			return null;
@@ -1430,6 +1436,9 @@ class blueberryItem extends BaseObject
 		return -1 * $this->toPrecision($this->getLambdaArray()['lambda_Z'], $precision);
 	}
 	
+	/*
+	 * @ brief: Return the number of points used to determine terminal phase lambda
+	*/
 	public function getTerminalPoints() {
 		if($this->getLambdaArray()['lambda_Z'] === null) {
 			return null;

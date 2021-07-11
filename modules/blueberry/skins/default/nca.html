@@ -140,14 +140,14 @@
 						</h2>
 						<div class="app-clearfix">
 							<div class="app-widget-content-main tw-flex tw-justify-center">
-								<div class="tw-w-full tw-m-4 tw-flex">
-									<div class="tw-w-1/2 tw-mr-1 sm:tw-mb-1 sm:tw-w-full">
+								<div class="tw-w-full tw-m-4">
+									<div class="tw-mb-1 tw-w-full">
 										<label for="last_dosing_time" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="last_dosing_time_box">{lang('blueberry.time_of_last_dose')} <sub>(Unit: Observation)</sub></label>
 										<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
 											<input type="number" id="last_dosing_time" step="0.01" min="0" placeholder="0" class="app-input tw-w-full sm:tw-w-full" value="{$oData->getLastDosingTime(-1)}"|cond="$oData->isExists()" />
 										</div>
 									</div>
-									<div class="tw-w-1/2 tw-m-0 sm:tw-w-full">
+									<div class="tw-w-full">
 										<label for="tau" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="tau_box">Tau <sub>(Unit: Observation)</sub></label>
 										<div class="tw-flex tw-items-center sm:tw-block tw-mb-6">
 											<input type="number" id="tau" step="0.01" placeholder="0" min="0" class="app-input tw-w-full sm:tw-w-full" value="{$oData->getTau(-1)}"|cond="$oData->isExists()" />

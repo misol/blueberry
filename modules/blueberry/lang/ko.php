@@ -108,3 +108,5 @@ $lang->blueberry_confirm_delete_data = '이 데이터를 삭제하시겠습니�
 $lang->cmd_to_the_top = '맨 위로';
 
 $lang->molecular_weight = '분자량';
+$lang->blueberry_search_date_from = '날짜 시작';
+$lang->blueberry_search_date_to = '날짜 끝';
