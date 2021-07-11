@@ -57,9 +57,23 @@ class blueberryView extends blueberry
 		// use search options on the template (the search options key has been declared, based on the language selected)
 		$search_option = Array();
 		foreach(parent::$search_option as $opt) $search_option[$opt] = lang($opt);
+		
+		// remove a search option that is not public in member config
+		$memberConfig = ModuleModel::getModuleConfig('member');
+		foreach($memberConfig->signupForm as $signupFormElement)
+		{
+			if(in_array($signupFormElement->title, $search_option))
+			{
+				if($signupFormElement->isPublic == 'N')
+				{
+					unset($search_option[$signupFormElement->name]);
+				}
+			}
+		}
 		Context::set('search_option', $search_option);
 		
-		$oData = blueberryModel::getData(intval(Context::get('data_srl')));
+		$data_srl = (intval(Context::get('data_srl')) > 0)? intval(Context::get('data_srl')) : 0;
+		$oData = blueberryModel::getData($data_srl);
 		if($oData->isExists()) {
 			// update the document view count (if the document is not secret)
 			if($oData->isAccessible())
@@ -104,8 +118,7 @@ class blueberryView extends blueberry
 	/**
 	 * @brief display the category list
 	 **/
-	public function dispBlueberryList()
-	{
+	public function dispBlueberryList() {
 		// check the grant
 		if(!$this->grant->list)
 		{
@@ -154,6 +167,60 @@ class blueberryView extends blueberry
 			$args->order_type = $this->module_info->order_type?$this->module_info->order_type:'asc';
 		}
 
+		// get the search target and keyword
+		if ($this->grant->list && $this->grant->view_data)
+		{
+			$args->search_target = trim(Context::get('search_target'));
+		}
+		
+		if(!in_array($args->search_target, parent::$search_option))
+		{
+			$args->search_target = '';
+		} else {
+			switch($args->search_target)
+			{
+				case 'title' :
+					$args->search_title_keyword = trim(Context::get('search_keyword'));
+					break;
+				case 'content' :
+					$args->search_content_keyword = trim(Context::get('search_keyword'));
+					break;
+				case 'tag' :
+					$args->search_tag_keyword = trim(Context::get('search_keyword'));
+				case 'title_content' :
+					$args->search_title_keyword = trim(Context::get('search_keyword'));
+					$args->search_content_keyword = trim(Context::get('search_keyword'));
+					break;
+				case 'dose_dose_unit' :
+					$args->search_dose = (floatval(Context::get('search_dose')) > 0)? floatval(Context::get('search_dose')) : 0;
+					$args->search_dose_start = $args->search_dose * 0.999;
+					$args->search_dose_end = $args->search_dose * 1.001;
+					$args->search_dose_unit = trim(Context::get('search_dose_unit'));
+					if(!isset(lang('blueberry.blueberry_dose_units')[$args->search_dose_unit])) {
+						$args->search_dose_unit = 'mg';
+					}
+					break;
+				case 'dosing_route' :
+					$args->search_dose_route = trim(Context::get('search_dose_route'));
+					if(!isset(blueberry::$available_routes[$args->search_dose_route])) {
+						$args->search_dose_route = 'IVeBo';
+					}
+					break;
+				case 'regdate': 
+					$args->search_regdate_start = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_start_day'))))? date("Ymd", strtotime(trim(Context::get('search_start_day')))): null;
+					$args->search_regdate_end = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_end_day'))))? date("Ymd", strtotime(trim(Context::get('search_end_day')))): null;
+				case 'last_update':
+					$args->search_last_update_start = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_start_day'))))? date("Ymd", strtotime(trim(Context::get('search_start_day')))): null;
+					$args->search_last_update_end = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_end_day'))))? date("Ymd", strtotime(trim(Context::get('search_end_day')))): null;
+					break;
+				default:
+					$args->search_target = null;
+			}
+			
+			
+			
+
+		}
 		// setup the list count to be serach list count, if the category or search keyword has been set
 		if($args->category_srl ?? null || $args->search_keyword ?? null)
 		{

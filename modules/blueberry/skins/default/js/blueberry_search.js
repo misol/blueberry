@@ -27,3 +27,4 @@ function update_input() {
 	}
 	return;
 }
+$(document).ready(update_input());

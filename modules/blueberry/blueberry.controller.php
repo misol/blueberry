@@ -203,6 +203,10 @@ class blueberryController extends blueberry
 			$args->administration_route = 'IVeBo';
 		}
 		
+		if(!isset(lang('blueberry.blueberry_dose_units')[$args->dose_unit])) {
+			$args->dose_unit = 'mg';
+		}
+		
 		if (!is_array($obj->TC_data['time']) || !is_array($obj->TC_data['concentration']) || !is_array($obj->TC_data['lnC']) || !is_array($obj->TC_data['time-concentration']))
 		{
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
@@ -405,6 +409,10 @@ class blueberryController extends blueberry
 		
 		if(!isset(blueberry::$available_routes[$args->administration_route])) {
 			$args->administration_route = 'IVeBo';
+		}
+		
+		if(!isset(lang('blueberry.blueberry_dose_units')[$args->dose_unit])) {
+			$args->dose_unit = 'mg';
 		}
 		
 		if (!is_array($obj->TC_data['time']) || !is_array($obj->TC_data['concentration']) || !is_array($obj->TC_data['lnC']) || !is_array($obj->TC_data['time-concentration']))

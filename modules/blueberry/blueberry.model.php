@@ -107,8 +107,7 @@ class blueberryModel extends module
 	 * @param bool $load_extra_vars
 	 * @return object
 	 */
-	public static function _setSortIndex($obj, $load_extra_vars = true)
-	{
+	private static function _setSortIndex($obj, $load_extra_vars = true) {
 		$args = new stdClass;
 		$args->sort_index = $obj->sort_index ?? null;
 		$args->isExtraVars = false;

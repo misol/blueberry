@@ -6,7 +6,26 @@
 		<column name="*" />
 	</columns>
 	<conditions>
-		<condition operation="equal" column="member_srl" var="member_srl" filter="number" notnull="notnull" />
+		<condition operation="equal" column="member_srl" var="member_srl" filter="number" notnull="notnull" pipe="and" />
+		<group pipe="and">
+			<condition operation="search" column="title" var="search_title_keyword" pipe="or" />
+			<condition operation="search" column="content" var="search_content_keyword" pipe="or" />
+		</group>
+		<condition operation="search" column="tags" var="search_tag_keyword" pipe="and" />
+		<condition operation="equal" column="administration_route" var="search_dose_route" pipe="and" />
+		<group pipe="and">
+			<condition operation="more" column="dose" var="search_dose_start" pipe="and" />
+			<condition operation="below" column="dose" var="search_dose_end" pipe="and" />
+			<condition operation="equal" column="dose_unit" var="search_dose_unit" pipe="and" />
+		</group>
+		<group pipe="and">
+			<condition operation="more" column="regdate" var="search_regdate_start" pipe="and" />
+			<condition operation="below" column="regdate" var="search_regdate_end" pipe="and" />
+		</group>
+		<group pipe="and">
+			<condition operation="more" column="last_update" var="search_last_update_start" pipe="and" />
+			<condition operation="below" column="last_update" var="search_last_update_end" pipe="and" />
+		</group>
 	</conditions>
 	<navigation>
 		<index var="sort_index" default="list_order" order="asc" />
