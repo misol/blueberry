@@ -507,6 +507,8 @@ class blueberryController extends blueberry
 		// set count
 		$args->readed_count = $oData->getReadedCount();
 		
+		
+		
 		// begin transaction
 		$oDB = DB::getInstance();
 		$oDB->begin();

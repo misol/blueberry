@@ -207,11 +207,11 @@ class blueberryView extends blueberry
 					}
 					break;
 				case 'regdate': 
-					$args->search_regdate_start = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_start_day'))))? date("Ymd", strtotime(trim(Context::get('search_start_day')))): null;
-					$args->search_regdate_end = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_end_day'))))? date("Ymd", strtotime(trim(Context::get('search_end_day')))): null;
+					$args->search_regdate_start = (preg_match("/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/", trim(Context::get('search_start_day'))))? date("Ymd", strtotime(trim(Context::get('search_start_day')))): null;
+					$args->search_regdate_end = (preg_match("/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/", trim(Context::get('search_end_day'))))? date("Ymd", strtotime(trim(Context::get('search_end_day')))) + 1: null;
 				case 'last_update':
-					$args->search_last_update_start = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_start_day'))))? date("Ymd", strtotime(trim(Context::get('search_start_day')))): null;
-					$args->search_last_update_end = (preg_match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}", trim(Context::get('search_end_day'))))? date("Ymd", strtotime(trim(Context::get('search_end_day')))): null;
+					$args->search_last_update_start = (preg_match("/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/", trim(Context::get('search_start_day'))))? date("Ymd", strtotime(trim(Context::get('search_start_day')))): null;
+					$args->search_last_update_end = (preg_match("/[0-9]{4}\-[0-9]{2}\-[0-9]{2}/", trim(Context::get('search_end_day'))))? date("Ymd", strtotime(trim(Context::get('search_end_day')))) + 1: null;
 					break;
 				default:
 					$args->search_target = null;
