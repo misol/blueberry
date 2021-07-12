@@ -88,7 +88,7 @@
 								<div class="tw-w-full tw-m-4">
 									<label for="molecular_weight" class="tw-block tw-text-blck tw-font-bold tw-mb-1" id="last_dosing_time_box">{lang('blueberry.molecular_weight')} <sub>(g/mol)</sub></label>
 									<div class="tw-items-center">
-										<input type="number" id="molecular_weight" step="0.01" min="0" placeholder="0" class="app-input tw-w-full sm:tw-w-full" value=""|cond="$oData->isExists()" />
+										<input type="number" id="molecular_weight" step="0.01" min="0" placeholder="0" class="app-input tw-w-full sm:tw-w-full" value="{$oData->getMolecularWeight()}"|cond="$oData->isExists()" />
 									</div>
 								</div>
 							</div>
