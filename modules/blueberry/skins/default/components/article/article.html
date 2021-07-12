@@ -192,17 +192,17 @@
 											</tr>
 											<tr>
 												<td>CL<sub cond="$oData->isMultipleDose()">SS</sub><block cond="$oData->getAdministrationRoute() == 'extravenous'">/F</block></td>
-												<td cond="$oData->getCL() !== null">{$oData->getCL()} {$oData->getVolumeUnit()}/{$oData->getTimeUnit()}</td>
+												<td cond="$oData->getCL() !== null">{$oData->getCL()} {$oData->getVolumeUnit()}/{$oData->getTimeUnit()}<block cond="$oData->isKgNormalized()">/kg</block></td>
 												<td cond="$oData->getCL() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->getAdministrationRoute() !== 'extravenous'">
 												<td>V<sub>SS</sub></td>
-												<td cond="$oData->getVss() !== null">{$oData->getVss()} {$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getVss() !== null">{$oData->getVss()} {$oData->getVolumeUnit()}<block cond="$oData->isKgNormalized()">/kg</block></td>
 												<td cond="$oData->getVss() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>V<sub>Z</sub><block cond="$oData->getAdministrationRoute() == 'extravenous'">/F</block></td>
-												<td cond="$oData->getVz() !== null">{$oData->getVz()} {$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getVz() !== null">{$oData->getVz()} {$oData->getVolumeUnit()}<block cond="$oData->isKgNormalized()">/kg</block></td>
 												<td cond="$oData->getVz() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->isMultipleDose()">

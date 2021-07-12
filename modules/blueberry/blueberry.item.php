@@ -551,6 +551,7 @@ class blueberryItem extends BaseObject
 		} else {
 			$AUC = $this->getAUC(-1);
 		}
+		
 		if(!$AUC || !$dose) {
 			return null;
 		}
@@ -574,7 +575,7 @@ class blueberryItem extends BaseObject
 		} else {
 			$AUC = $this->getAUC(-1);
 		}
-		$lambda = $this->getLambda();
+		$lambda = $this->getLambda(-1);
 		
 		if(!$dose || !$AUC || !$lambda) {
 			return null;
@@ -1253,13 +1254,27 @@ class blueberryItem extends BaseObject
 	}
 
 
+	public function isKgNormalized() {
+		static $kg_normalized = null;
+		if($kg_normalized !== null) return $kg_normalized;
+		
+		$dose_unit = $this->getDoseUnit();
+	
+		if (strpos($dose_unit, '/') > 0) {
+			$kg_normalized = true;
+		} else {
+			$kg_normalized = false;
+		}
+		return $kg_normalized;
+	}
+
 	private function unitConversion($value, $unit_type, $org_unit, $target_unit) {
 		$unit_types = array('amount', 'time', '1/time', 'volume', 'concentration');
 		if (!in_array($unit_type, $unit_types)) {
 			return;
 		}
-		$org_unit = preg_replace(array("/^g/", "/^L/", "/^mol/", "/^IU/"), array("1g", "1L", "1mol", "1IU"), $org_unit);
-		$target_unit = preg_replace(array("/^g/", "/^L/", "/^mol/", "/^IU/"), array("1g", "1L", "1mol", "1IU"), $target_unit);
+		$org_unit = str_replace('μ', 'u', preg_replace(array("/^g/", "/^L/", "/^mol/", "/^IU/"), array("1g", "1L", "1mol", "1IU"), $org_unit));
+		$target_unit = str_replace('μ', 'u', preg_replace(array("/^g/", "/^L/", "/^mol/", "/^IU/"), array("1g", "1L", "1mol", "1IU"), $target_unit));
 		
 		$SI_prefixes = array(
 			'Y'=> 1e24,
