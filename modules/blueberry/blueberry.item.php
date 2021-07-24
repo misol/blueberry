@@ -991,6 +991,14 @@ class blueberryItem extends BaseObject
 		$time_concentration = null;
 		$time_concentration = unserialize($this->get('time_concentration'));
 		
+		if(is_countable($time_concentration) && is_array($time_concentration) && (isset($time_concentration['time']) && isset($time_concentration['concentration'])) && (is_array($time_concentration['time']) && is_array($time_concentration['concentration'])) ) {
+			$time_concentration_old = $time_concentration;
+			$time_concentration = new stdClass();
+			$time_concentration->time = $time_concentration_old['time'];
+			$time_concentration->concentration = $time_concentration_old['concentration'];
+			
+		}
+		
 		if(!is_countable($time_concentration->time) || !is_countable($time_concentration->concentration)) return;
 		
 		$time_concentration->time = array_map( "floatval", $time_concentration->time);
