@@ -47,13 +47,12 @@ class blueberryController extends blueberry
 			}
 		}
 		foreach ($json_inputs as $key) {
-			if (isset($obj->{$key}))
+			if (isset($obj->{$key}) && json_decode($obj->{$key}) && json_last_error() === JSON_ERROR_NONE)
 			{
-				if(json_encode(json_decode($obj->{$key})) === $obj->{$key}) {
-					$obj->{$key} = json_decode($obj->{$key});
-				}
+				$obj->{$key} = json_decode($obj->{$key});
 			}
 		}
+		
 		if (isset($obj->data_srl))
 		{
 			$obj->data_srl = intval($obj->data_srl);
@@ -104,11 +103,9 @@ class blueberryController extends blueberry
 			}
 		}
 		foreach ($json_inputs as $key) {
-			if (isset($obj->{$key}))
+			if (isset($obj->{$key}) && json_decode($obj->{$key}) && json_last_error() === JSON_ERROR_NONE)
 			{
-				if(json_encode(json_decode($obj->{$key})) === $obj->{$key}) {
-					$obj->{$key} = json_decode($obj->{$key});
-				}
+				$obj->{$key} = json_decode($obj->{$key});
 			}
 		}
 		foreach ($required_inputs as $key) {

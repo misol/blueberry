@@ -228,8 +228,6 @@ function sortTimeConcentration(time, concentrations) {
 
 
 function trimTCdata (raw_data) {
-	
-	
 	var times = [];
 	var concentrations = [];
 	var i = 0
@@ -263,6 +261,7 @@ function updateTCtable( is_arrange ) {
 	unset('concentration');
 	unset('lnC');
 	unset('time-concentration');
+	triggerTimer_UpdateSheet = 0;
 	var raw_data = TCtable.getData(false);
 	var time_unit = String($('#time_unit').val()).trim();
 	var amount_unit = String($('#amount_unit').val()).trim().replace("ug", "μg");
@@ -372,7 +371,8 @@ function triggerUpdateSheet(instance, cell, x, y, value) {
 	if (triggerTimer_UpdateSheet > 0) {
 		window.clearTimeout(triggerTimerID_UpdateSheet);
 	}
-	triggerTimerID_UpdateSheet = window.setTimeout(function() { updateTCtable( false ); triggerTimer_UpdateSheet = 0}, 300);
+	triggerTimer_UpdateSheet = 1;
+	triggerTimerID_UpdateSheet = window.setTimeout(function() { updateTCtable( false ); }, 200);
 }
 
 function saveData () {
