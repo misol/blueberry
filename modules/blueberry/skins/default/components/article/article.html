@@ -75,7 +75,7 @@
 											<th>Concentration ({$oData->getAmountUnit()}/{$oData->getVolumeUnit()})</th>
 										</thead>
 										<tbody>
-											<tr loop="$oData->getTimeConcentrationArray()['time-concentration']=>$key,$val">
+											<tr loop="$oData->getTimeConcentrationArray()->time_concentration=>$key,$val">
 												<td>{$val[0]}</td>
 												<td>{$val[1]}</td>
 											</tr>

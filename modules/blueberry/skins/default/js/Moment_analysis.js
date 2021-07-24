@@ -418,11 +418,14 @@ function saveData () {
 		'last_dosing': Number($('#last_dosing_time').val()),
 		'tau': Number($('#tau').val()),
 		'integration_method': String($('#integration_method').val()).trim(),
-		'TC_data': data_array
+		'TC_data': JSON.stringify({
+			'time': data_array['time'],
+			'concentration': data_array['concentration']
+		})
 	};
 	
 	var response_tags = new Array('error','message','results');
-	exec_xml('blueberry', (params['data_srl'])?'procBlueberryUpdateData':'procBlueberryInsertData', params, function(a,b) { window.location.href = a.redirect_url; return; }, response_tags);
+	exec_xml('blueberry', (params['data_srl']>0)?'procBlueberryUpdateData':'procBlueberryInsertData', params, function(a,b) { window.location.href = a.redirect_url; return; }, response_tags);
 	
 }
 

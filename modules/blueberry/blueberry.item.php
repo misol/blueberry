@@ -73,7 +73,6 @@ class blueberryItem extends BaseObject
 			$args = new stdClass();
 			$args->data_srl = $this->data_srl;
 			$output = executeQuery('blueberry.getData', $args, $columnList);
-			
 			$blueberry_item = $output->data;
 			if($blueberry_item)
 			{
@@ -97,7 +96,6 @@ class blueberryItem extends BaseObject
 		
 		
 	}
-
 
 	public function isExists()
 	{
@@ -340,7 +338,7 @@ class blueberryItem extends BaseObject
 			if($this->isMultipleDose()) {
 				$tau_time = [];
 				$tau_conc = [];
-				foreach ($time_concentration['time-concentration'] as $val) {
+				foreach ($time_concentration->time_concentration as $val) {
 					if($this->getLastDosingTime(-1) <= $val[0]) {
 						$tau_time[] = $val[0] - $this->getLastDosingTime(-1);
 						$tau_conc[] = $val[1];
@@ -360,23 +358,23 @@ class blueberryItem extends BaseObject
 				$tau_conc = [];
 				$tau_lnC = [];
 				$i = 0;
-				foreach ($time_concentration['time-concentration'] as $val) {
+				foreach ($time_concentration->time_concentration as $val) {
 					if($this->getLastDosingTime(-1) <= $val[0] && ($this->getLastDosingTime(-1) + $this->getTau(-1)) >= $val[0]) {
 						$tau_time[] = $val[0] - $this->getLastDosingTime(-1);
 						$tau_conc[] = $val[1];
-						$tau_lnC[] = $time_concentration['lnC'][$i];
+						$tau_lnC[] = $time_concentration->lnC[$i];
 					}
 					$i++;
 				}
 				
-				$time_concentration['time'] = $tau_time;
-				$time_concentration['concentration'] = $tau_conc;
-				$time_concentration['lnC'] = $tau_lnC;
+				$time_concentration->time = $tau_time;
+				$time_concentration->concentration = $tau_conc;
+				$time_concentration->lnC = $tau_lnC;
 			}
 			
-			$time_slice = array_slice($time_concentration['time'], 0, 2);
-			$conc_slice = array_slice($time_concentration['concentration'], 0, 2);
-			$lnC_slice = array_slice($time_concentration['lnC'], 0, 2);
+			$time_slice = array_slice($time_concentration->time, 0, 2);
+			$conc_slice = array_slice($time_concentration->concentration, 0, 2);
+			$lnC_slice = array_slice($time_concentration->lnC, 0, 2);
 			
 			if(abs($time_slice[0] - 0) < 0.000001) {
 				if($lnC_slice[0] !== 'NA') {
@@ -389,7 +387,7 @@ class blueberryItem extends BaseObject
 					$C0 = ($lnC_slice[0] === 'NA')? $lnC_slice[1]:$lnC_slice[0];
 					if($C0 === 'NA') {
 						$C0 = 0;
-						foreach ($time_concentration['lnC'] as $lnC_item) {
+						foreach ($time_concentration->lnC as $lnC_item) {
 							if ($lnC_item != "NA" && $C0 == 0) {
 								$C0 = exp($lnC_item);
 							}
@@ -422,7 +420,7 @@ class blueberryItem extends BaseObject
 		
 		$lambda_z = $this->getLambda(-1);
 		$integration_method = $this->getInterpolationMethod();
-		$sorted_T_C = $this->getTimeConcentrationArray()['time-concentration'];
+		$sorted_T_C = $this->getTimeConcentrationArray()->time_concentration;
 		$C0 = $this->getC0(-1);
 		
 		
@@ -590,7 +588,7 @@ class blueberryItem extends BaseObject
 		static $results = null;
 		if ($results !== null) return $results;
 		
-		$sorted_T_C = $this->getTimeConcentrationArray()['time-concentration'];
+		$sorted_T_C = $this->getTimeConcentrationArray()->time_concentration;
 		
 		
 		if($this->isMultipleDose()) {
@@ -632,7 +630,7 @@ class blueberryItem extends BaseObject
 		if(!$this->isExists()) return;
 		$TCmax = $this->getTCmax();
 		
-		return $this->toPrecision($TCmax['time'], $precision);
+		return $this->toPrecision($TCmax->time, $precision);
 	}
 	
 	public function getCss($precision = 4) {
@@ -655,7 +653,7 @@ class blueberryItem extends BaseObject
 		
 		$lambda_z = $this->getLambda(-1);
 		$integration_method = $this->getInterpolationMethod();
-		$sorted_T_C = $this->getTimeConcentrationArray()['time-concentration'];
+		$sorted_T_C = $this->getTimeConcentrationArray()->time_concentration;
 		$C0 = $this->getC0(-1);
 		
 		
@@ -993,21 +991,22 @@ class blueberryItem extends BaseObject
 		$time_concentration = null;
 		$time_concentration = unserialize($this->get('time_concentration'));
 		
-		if(!is_countable($time_concentration['time']) || !is_countable($time_concentration['concentration'])) return;
+		if(!is_countable($time_concentration->time) || !is_countable($time_concentration->concentration)) return;
 		
-		$time_concentration['time'] = array_map( "floatval", $time_concentration['time']);
-		$time_concentration['concentration'] = array_map( "floatval", $time_concentration['concentration']);
+		$time_concentration->time = array_map( "floatval", $time_concentration->time);
+		$time_concentration->concentration = array_map( "floatval", $time_concentration->concentration);
 		
-		if (count($time_concentration['time']) !== count($time_concentration['concentration'])) return;
+		
+		if (count($time_concentration->time) !== count($time_concentration->concentration)) return;
 		$new_time = array();
 		$new_conc = array();
 		$new_lnC = array();
 		$new_TC = array();
-		foreach ($time_concentration['concentration'] as $key=>$val) {
+		foreach ($time_concentration->concentration as $key=>$val) {
 			if(floatval($val) > 0) {
-				$new_time[] = $time_concentration['time'][$key];
+				$new_time[] = $time_concentration->time[$key];
 				$new_conc[] = $val;
-				$new_TC[] = array($time_concentration['time'][$key], $val);
+				$new_TC[] = array($time_concentration->time[$key], $val);
 				
 				if($val > 0) {
 					$new_lnC[] = log($val);
@@ -1017,30 +1016,31 @@ class blueberryItem extends BaseObject
 				
 			}
 		}
-		$time_concentration['time'] = $new_time;
-		$time_concentration['concentration'] = $new_conc;
-		$time_concentration['lnC'] = $new_lnC;
-		$time_concentration['time-concentration'] = $new_TC;
+		$time_concentration->time = $new_time;
+		$time_concentration->concentration = $new_conc;
+		$time_concentration->lnC = $new_lnC;
+		$time_concentration->time_concentration = $new_TC;
+		
 		// match the count;
-		if (count($time_concentration['time']) !== count($time_concentration['concentration'])) return;
+		if (count($time_concentration->time) !== count($time_concentration->concentration)) return;
 		
 		// ascending sort (time)
-		asort($time_concentration['time']);
+		asort($time_concentration->time);
 		$new_time = array();
 		$new_conc = array();
 		$new_lnC = array();
 		$new_TC = array();
-		foreach($time_concentration['time'] as $key => $val) {
-			$new_time[] = $time_concentration['time'][$key];
-			$new_conc[] = $time_concentration['concentration'][$key];
-			$new_lnC[] = $time_concentration['lnC'][$key];
-			$new_TC[] = $time_concentration['time-concentration'][$key];
+		foreach($time_concentration->time as $key => $val) {
+			$new_time[] = $time_concentration->time[$key];
+			$new_conc[] = $time_concentration->concentration[$key];
+			$new_lnC[] = $time_concentration->lnC[$key];
+			$new_TC[] = $time_concentration->time_concentration[$key];
 		}
-		$time_concentration = array();
-		$time_concentration['time'] = $new_time;
-		$time_concentration['concentration'] = $new_conc;
-		$time_concentration['lnC'] = $new_lnC;
-		$time_concentration['time-concentration'] = $new_TC;
+		$time_concentration = new stdClass();
+		$time_concentration->time = $new_time;
+		$time_concentration->concentration = $new_conc;
+		$time_concentration->lnC = $new_lnC;
+		$time_concentration->time_concentration = $new_TC;
 		
 		$this->time_concentration_cache = $time_concentration;
 		return $this->time_concentration_cache;
@@ -1399,11 +1399,11 @@ class blueberryItem extends BaseObject
 		$lambdaZ = null;
 		$intercept = null;
 		$slice_i = null;
-		$n = count($time_conc['time']);
+		$n = count($time_conc->time);
 		$i = 0;
 		while ($i < $n) {
-			$time_slice = array_slice($time_conc['time'], $i);
-			$lnC_slice = array_slice($time_conc['lnC'], $i);
+			$time_slice = array_slice($time_conc->time, $i);
+			$lnC_slice = array_slice($time_conc->lnC, $i);
 			
 			if( $this->getLengthofInfusion(-1) !== null) {
 				if( $this->getLengthofInfusion(-1) > $time_slice[0] ) {
@@ -1437,7 +1437,7 @@ class blueberryItem extends BaseObject
 			$i++;
 		}
 		
-		$results = array("lambda_Z" => $lambdaZ, "intercept"=> $intercept, "terminal_points"=> count(array_slice($time_conc['time'], $slice_i)), "adj_r2"=> $adj_r2, "r2"=> $r2);
+		$results = array("lambda_Z" => $lambdaZ, "intercept"=> $intercept, "terminal_points"=> count(array_slice($time_conc->time, $slice_i)), "adj_r2"=> $adj_r2, "r2"=> $r2);
 		return $results;
 	}
 	

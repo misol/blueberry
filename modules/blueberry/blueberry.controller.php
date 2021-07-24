@@ -32,6 +32,7 @@ class blueberryController extends blueberry
 		
 		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method', 'administration_route'];
 		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'molecular_weight'];
+		$json_inputs = ['TC_data'];
 		
 		// setup variables
 		$obj = Context::getRequestVars();
@@ -43,6 +44,14 @@ class blueberryController extends blueberry
 			if (isset($obj->{$key}))
 			{
 				$obj->{$key} = trim(utf8_clean($obj->{$key}));
+			}
+		}
+		foreach ($json_inputs as $key) {
+			if (isset($obj->{$key}))
+			{
+				if(json_encode(json_decode($obj->{$key})) === $obj->{$key}) {
+					$obj->{$key} = json_decode($obj->{$key});
+				}
 			}
 		}
 		if (isset($obj->data_srl))
@@ -80,6 +89,7 @@ class blueberryController extends blueberry
 		$text_inputs = ['mid', 'act', 'title', 'content', 'time_unit', 'amount_unit', 'volume_unit', 'dose_unit', 'dosing_route', 'dose_repeat', 'integration_method', 'administration_route'];
 		$float_inputs = ['dose', 'last_dosing_time', 'tau', 'molecular_weight'];
 		$required_inputs = ['data_srl'];
+		$json_inputs = ['TC_data'];
 		
 		// setup variables
 		$obj = Context::getRequestVars();
@@ -91,6 +101,14 @@ class blueberryController extends blueberry
 			if (isset($obj->{$key}))
 			{
 				$obj->{$key} = trim(utf8_clean($obj->{$key}));
+			}
+		}
+		foreach ($json_inputs as $key) {
+			if (isset($obj->{$key}))
+			{
+				if(json_encode(json_decode($obj->{$key})) === $obj->{$key}) {
+					$obj->{$key} = json_decode($obj->{$key});
+				}
 			}
 		}
 		foreach ($required_inputs as $key) {
@@ -207,22 +225,18 @@ class blueberryController extends blueberry
 			$args->dose_unit = 'mg';
 		}
 		
-		if (!is_array($obj->TC_data['time']) || !is_array($obj->TC_data['concentration']) || !is_array($obj->TC_data['lnC']) || !is_array($obj->TC_data['time-concentration']))
+		if (!isset($obj->TC_data->time) || !isset($obj->TC_data->concentration) || !is_array($obj->TC_data->time) || !is_array($obj->TC_data->concentration))
 		{
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
-		if (!count($obj->TC_data['time']) || !count($obj->TC_data['concentration']) || !count($obj->TC_data['lnC']) || !count($obj->TC_data['time-concentration']))
+		if (count($obj->TC_data->time) < 1 || count($obj->TC_data->concentration)  < 1)
 		{
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
-		$obj->TC_data['time'] = array_map( "floatval", $obj->TC_data['time']);
-		$obj->TC_data['concentration'] = array_map( "floatval", $obj->TC_data['concentration']);
-		$obj->TC_data['lnC'] = array_map( "floatval", $obj->TC_data['lnC']);
-		foreach ($obj->TC_data['time-concentration'] as $key => $val) {
-			$obj->TC_data['time-concentration'][$key] = array_map( "floatval", $val);
-		}
+		$obj->TC_data->time = array_map( "floatval", $obj->TC_data->time);
+		$obj->TC_data->concentration = array_map( "floatval", $obj->TC_data->concentration);
 		$args->time_concentration = serialize($obj->TC_data);
 		
 		// Register it if no given document_srl exists
@@ -298,7 +312,6 @@ class blueberryController extends blueberry
 			$oDB->rollback();
 			return $output;
 		}
-		
 		
 		ModuleHandler::triggerCall('blueberry.insertInVivoData', 'after', $args);
 
@@ -415,22 +428,18 @@ class blueberryController extends blueberry
 			$args->dose_unit = 'mg';
 		}
 		
-		if (!is_array($obj->TC_data['time']) || !is_array($obj->TC_data['concentration']) || !is_array($obj->TC_data['lnC']) || !is_array($obj->TC_data['time-concentration']))
+		if (!is_array($obj->TC_data->time) || !is_array($obj->TC_data->concentration))
 		{
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
-		if (!count($obj->TC_data['time']) || !count($obj->TC_data['concentration']) || !count($obj->TC_data['lnC']) || !count($obj->TC_data['time-concentration']))
+		if (!count($obj->TC_data->time) || !count($obj->TC_data->concentration) || (!count($obj->TC_data->time) || !count($obj->TC_data->concentration)))
 		{
 			throw new Rhymix\Framework\Exceptions\InvalidRequest;
 		}
 		
-		$obj->TC_data['time'] = array_map( "floatval", $obj->TC_data['time']);
-		$obj->TC_data['concentration'] = array_map( "floatval", $obj->TC_data['concentration']);
-		$obj->TC_data['lnC'] = array_map( "floatval", $obj->TC_data['lnC']);
-		foreach ($obj->TC_data['time-concentration'] as $key => $val) {
-			$obj->TC_data['time-concentration'][$key] = array_map( "floatval", $val);
-		}
+		$obj->TC_data->time = array_map( "floatval", $obj->TC_data->time);
+		$obj->TC_data->concentration = array_map( "floatval", $obj->TC_data->concentration);
 		$args->time_concentration = serialize($obj->TC_data);
 		
 		// Register it if no given document_srl exists
