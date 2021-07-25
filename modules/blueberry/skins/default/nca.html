@@ -260,7 +260,7 @@ $(document).ready(function() {
 	console.log('Copyright (C) 2019-2021 Min-Soo Kim at Seoul National University.');
 	
 	TCtable = jexcel(document.getElementById('time-concentration-data'), {
-		data:<!--@if($oData->isExists())-->{json_encode($oData->getTimeConcentrationArray()['time-concentration'])}<!--@else-->[]<!--@end-->,
+		data:<!--@if($oData->isExists())-->{json_encode($oData->getTimeConcentrationArray()->time_concentration)}<!--@else-->[]<!--@end-->,
 		tableWidth: "100%",
 		columns: [
 			{ type: 'numeric', title:'Time', width: '100', mask:'#.#', decimal:'.' },

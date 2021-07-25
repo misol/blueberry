@@ -146,11 +146,13 @@
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>AUC<sub>&tau;</sub></td>
-												<td>{$oData->getAUCtau()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUCtau() !== null">{$oData->getAUCtau()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUCtau() === null">N/A</td>
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>AUC<sub cond="$oData->isMultipleDose()">&tau;-&infin;</sub></td>
-												<td>{$oData->getAUCtauinf()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUCtauinf() !== null">{$oData->getAUCtauinf()} {$oData->getAmountUnit()}&sdot;{$oData->getTimeUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getAUCtauinf() === null">N/A</td>
 											</tr>
 											<tr>
 												<td>% Extrapolated<sub>AUC</sub></td>
@@ -159,7 +161,8 @@
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>C<sub>SS, avg</sub></td>
-												<td>{$oData->getCss()} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getCss() !== null">{$oData->getCss()} {$oData->getAmountUnit()}/{$oData->getVolumeUnit()}</td>
+												<td cond="$oData->getCss() === null">N/A</td>
 											</tr>
 											<tr cond="!$oData->isMultipleDose()">
 												<td>AUMC</td>
@@ -207,7 +210,8 @@
 											</tr>
 											<tr cond="$oData->isMultipleDose()">
 												<td>Accumulation Index</td>
-												<td>{$oData->getAccumulationIndex()}</td>
+												<td cond="$oData->getAccumulationIndex() !== null">{$oData->getAccumulationIndex()}</td>
+												<td cond="$oData->getAccumulationIndex() === null">N/A</td>
 											</tr>
 										<tbody>
 									</table>

@@ -441,7 +441,7 @@ class blueberryItem extends BaseObject
 		}
 		
 		$i = 0;
-		$AUC = $AUCinf = $AUCtau = 0;
+		$AUC = $AUCinf = $AUCtau = $C_AUCtau_last = $T_AUCtau_last = 0;
 		$time_before = $time_this = $conc_before = $conc_this = 0;
 		foreach ($sorted_T_C as $time_conc) {
 			if ($i != 0) {
@@ -451,9 +451,6 @@ class blueberryItem extends BaseObject
 				$conc_before = floatval($sorted_T_C[$i-1][1]);
 				$conc_this = floatval($sorted_T_C[$i][1]);
 				
-				if($this->isMultipleDose() && $AUCtau === 0 && $time_this > $this->getTau(-1)) {
-					$AUCtau = $AUC;
-				}
 				
 				if ($integration_method == "log_trapezoidal_method" && ($conc_this > 0 && $conc_before > 0) && $conc_this != $conc_before) {
 					$AUC += ($time_this - $time_before) * ($conc_this - $conc_before) / ( log($conc_this / $conc_before) );
@@ -471,6 +468,11 @@ class blueberryItem extends BaseObject
 						$AUC +=  ($dfdt[0] - $dfdt[1]) * pow(($time_before - $time_this), 2) / 12;
 					}
 				}
+				if($this->isMultipleDose() && $lambda_z !== null && $time_this <= $this->getTau(-1)) {
+					$AUCtau = $AUC;
+					$C_AUCtau_last = $conc_this;
+					$T_AUCtau_last = $time_this;
+				}
 			}
 			$i++;
 		}
@@ -480,13 +482,18 @@ class blueberryItem extends BaseObject
 		if($lambda_z !== null) {
 			$AUCinf += $AUC + $conc_last/$lambda_z;
 			$Extrapolation_portion = ($conc_last/$lambda_z)/$AUCinf;
+			
+			$AUCtau = $AUCtau + $C_AUCtau_last / $lambda_z * ( 1- exp(-1 * $lambda_z * ($this->getTau(-1) - $T_AUCtau_last)));
+			$AUCtauinf = $AUCinf - $AUCtau;
 		} else {
 			$AUCinf = null;
 			$Extrapolation_portion = null;
+			
+			$AUCtau = null;
+			$AUCtauinf = null;
 		}
 		
-		
-		$results = array("AUC"=> $AUCinf, "AUClast"=> $AUC, "AUCtauinf" => $AUCinf - $AUCtau, "AUCtau" => $AUCtau, "Extrapolation_portion"=> $Extrapolation_portion);
+		$results = array("AUC"=> $AUCinf, "AUClast"=> $AUC, "AUCtauinf" => $AUCtauinf, "AUCtau" => $AUCtau, "Extrapolation_portion"=> $Extrapolation_portion);
 		return $results;
 	}
 	
@@ -630,7 +637,7 @@ class blueberryItem extends BaseObject
 		if(!$this->isExists()) return;
 		$TCmax = $this->getTCmax();
 		
-		return $this->toPrecision($TCmax->time, $precision);
+		return $this->toPrecision($TCmax['time'], $precision);
 	}
 	
 	public function getCss($precision = 4) {
@@ -641,6 +648,10 @@ class blueberryItem extends BaseObject
 		$tau = $this->getTau(-1);
 		
 		if($tau <= 0) return;
+		
+		if($AUCtau === null) {
+			return null;
+		}
 		
 		return $this->toPrecision($AUCtau / $tau, $precision);
 	}
@@ -686,9 +697,6 @@ class blueberryItem extends BaseObject
 				$conc_before = floatval($sorted_T_C[$i-1][1]);
 				$conc_this = floatval($sorted_T_C[$i][1]);
 				
-				if($this->isMultipleDose() && $AUMCtau === 0 && $time_this > $this->getTau(-1)) {
-					$AUMCtau = $AUMC;
-				}
 				
 				if ($integration_method == "log_trapezoidal_method" && ($conc_this > 0 && $conc_before > 0) && $conc_this != $conc_before && log($conc_this / $conc_before) !== 0) {
 					$AUMC += ((($time_this - $time_before) / (log($conc_this / $conc_before))) * ($time_this * $conc_this - $time_before * $conc_before)) - (pow(($time_this - $time_before) / (log($conc_this / $conc_before)), 2) * ($conc_this - $conc_before));
@@ -706,6 +714,12 @@ class blueberryItem extends BaseObject
 						$AUMC +=  ($dfdt[0] - $dfdt[1]) * pow(($time_before - $time_this), 2) / 12;
 					}
 				}
+				
+				if($this->isMultipleDose() && $lambda_z !== null && $time_this <= $this->getTau(-1)) {
+					$AUMCtau = $AUMC;
+					$C_AUCtau_last = $conc_this;
+					$T_AUCtau_last = $time_this;
+				}
 			}
 			$i++;
 		}
@@ -718,11 +732,14 @@ class blueberryItem extends BaseObject
 		if($lambda_z !== null) {
 			$AUMCinf = $AUMC + $conc_last / pow($lambda_z, 2) + $time_last * $conc_last / $lambda_z;
 			$Extrapolation_portion = ($AUMCinf - $AUMC) / $AUMCinf;
+			
+			$AUMCtau = $AUMCtau + $C_AUCtau_last * (1/(-1 * $lambda_z) * ($this->getTau(-1) * exp(-1 * $lambda_z * ($this->getTau(-1) - $T_AUCtau_last)) - $T_AUCtau_last) - 1/pow($lambda_z,2) * (exp(-1 * $lambda_z * ($this->getTau(-1) - $T_AUCtau_last)) - 1));
 		} else {
 			$AUMCinf = null;
 			$Extrapolation_portion = null;
+			
+			$AUMCtau = null;
 		}
-		
 		
 		$results = array("AUMC"=> $AUMCinf, "AUMClast"=> $AUMC, "AUMCtau" => $AUMCtau, "Extrapolation_portion"=> $Extrapolation_portion);
 		return $results;
