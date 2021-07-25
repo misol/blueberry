@@ -1,50 +1,50 @@
 <div class="app-board-article-head">
-  <div class="app-board-container">
+	<div class="app-board-container">
 
 
-    <h1 class="tw-font-bold tw-text-3xl md:tw-text-xl">{$oData->getTitle()}</h1>
+		<h1 class="tw-font-bold tw-text-3xl md:tw-text-xl">{$oData->getTitle()}</h1>
 
-    <div class="tw-flex tw-items-end">
-      <div class="app-board-article-profile tw-flex tw-items-center" cond="$module_info->article_profile !== 'N'">
-        <div class="app-profile-image app-avatar">
-          <img cond="$oData->getProfileImage()" src="{$oData->getProfileImage()}" alt="Profile" />
-          <img cond="!$oData->getProfileImage()" src="../../assets/images/ic_profile_default.png" alt="Profile" />
-        </div>
-      
-        <div class="tw-flex-1 app-profile-body">
-          {@
-            $anony_random_color = '';
-            if($mi->anonymous_mode == 'Y') $anony_random_color = substr(md5($oData->getNickName()), 0, 6);
-          }
+		<div class="tw-flex tw-items-end">
+			<div class="app-board-article-profile tw-flex tw-items-center" cond="$module_info->article_profile !== 'N'">
+				<div class="app-profile-image app-avatar">
+					<img cond="$oData->getProfileImage()" src="{$oData->getProfileImage()}" alt="Profile" />
+					<img cond="!$oData->getProfileImage()" src="../../assets/images/ic_profile_default.png" alt="Profile" />
+				</div>
+			
+				<div class="tw-flex-1 app-profile-body">
+					{@
+						$anony_random_color = '';
+						if($mi->anonymous_mode == 'Y') $anony_random_color = substr(md5($oData->getNickName()), 0, 6);
+					}
 
-          <a class="tw-flex tw-items-center tw-font-bold tw-text-sm link member_{$oData->get('member_srl')} author" href="#popup_menu_area" onclick="return false" style="color: #{$anony_random_color};">{$oData->getNickName()}</a>
-          <div class="app-article-meta">
-            <el-tooltip content="{zdate($oData->get('regdate'), 'Y-m-d H:i:s')}">
-              <div class="app-article-meta-item">{$oData->getRegdateDT('Y.m.d')}</div>
-            </el-tooltip>
-            <div class="app-article-meta-divider"> ・ </div>
-            <div class="app-article-meta-item">{$lang->readed_count} {$oData->getReadedCount()}</div>
-            <div class="app-article-meta-divider"> ・ </div>
-            <div class="app-article-meta-item">{$lang->voted_count} {$oData->get('voted_count')}</div>
-          </div>
-        </div>
-      </div>
+					<a class="tw-flex tw-items-center tw-font-bold tw-text-sm link member_{$oData->get('member_srl')} author" href="#popup_menu_area" onclick="return false" style="color: #{$anony_random_color};">{$oData->getNickName()}</a>
+					<div class="app-article-meta">
+						<el-tooltip content="{zdate($oData->get('regdate'), 'Y-m-d H:i:s')}">
+							<div class="app-article-meta-item">{$oData->getRegdateDT('Y.m.d')}</div>
+						</el-tooltip>
+						<div class="app-article-meta-divider"> ・ </div>
+						<div class="app-article-meta-item">{$lang->readed_count} {$oData->getReadedCount()}</div>
+						<div class="app-article-meta-divider"> ・ </div>
+						<div class="app-article-meta-item">{$lang->voted_count} {$oData->get('voted_count')}</div>
+					</div>
+				</div>
+			</div>
 
-      <div class="tw-flex-1"></div>
+			<div class="tw-flex-1"></div>
 
-      {@ // 수정, 삭제 }
-      <include target="article-edit.html" />
-    </div>
+			{@ // 수정, 삭제 }
+			<include target="article-edit.html" />
+		</div>
 
-  </div>
+	</div>
 </div>
 
 <div class="app-board-container tw-flex tw-items-center tw-pt-5">
-  <ion-icon name="link-outline" class="tw-text-base tw-mr-2"></ion-icon>
-  <a class="app-link" href="{$oData->getPermanentUrl()}">
-    <span>{$oData->getPermanentUrl()}</span>
-  </a>
+	<ion-icon name="link-outline" class="tw-text-base tw-mr-2"></ion-icon>
+	<a class="app-link" href="{$oData->getPermanentUrl()}">
+		<span>{$oData->getPermanentUrl()}</span>
+	</a>
 
-  <div class="tw-flex-1"></div>
+	<div class="tw-flex-1"></div>
 
 </div>
