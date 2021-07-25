@@ -4,8 +4,8 @@
 	<title xml:lang="en">Blueberry</title>
 	<description xml:lang="ko">Moment analysis</description>
 	<description xml:lang="en">Moment analysis</description>
-	<version>0.1.3</version>
-	<date>2021-07-12</date>
+	<version>0.1.4</version>
+	<date>2021-07-25</date>
 	<category>service</category>
 
 	<author email_address="misol@snu.ac.kr" link="https://github.com/misol">

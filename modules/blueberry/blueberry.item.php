@@ -452,7 +452,7 @@ class blueberryItem extends BaseObject
 				$conc_this = floatval($sorted_T_C[$i][1]);
 				
 				
-				if ($integration_method == "log_trapezoidal_method" && ($conc_this > 0 && $conc_before > 0) && $conc_this != $conc_before) {
+				if ($integration_method == "log_trapezoidal_method" && ($conc_this > 0 && $conc_before > 0) && ($conc_this < $conc_before)) {
 					$AUC += ($time_this - $time_before) * ($conc_this - $conc_before) / ( log($conc_this / $conc_before) );
 				} else {
 					$AUC += ($time_this - $time_before) * ($conc_this + $conc_before) / 2;
@@ -705,7 +705,7 @@ class blueberryItem extends BaseObject
 				$conc_this = floatval($sorted_T_C[$i][1]);
 				
 				
-				if ($integration_method == "log_trapezoidal_method" && ($conc_this > 0 && $conc_before > 0) && $conc_this != $conc_before && log($conc_this / $conc_before) !== 0) {
+				if ($integration_method == "log_trapezoidal_method" && ($conc_this > 0 && $conc_before > 0) && $conc_this < $conc_before && log($conc_this / $conc_before) !== 0) {
 					$AUMC += ((($time_this - $time_before) / (log($conc_this / $conc_before))) * ($time_this * $conc_this - $time_before * $conc_before)) - (pow(($time_this - $time_before) / (log($conc_this / $conc_before)), 2) * ($conc_this - $conc_before));
 				} else {
 					$AUMC += ($time_this - $time_before) * ($time_this * $conc_this + $time_before * $conc_before) / 2;
