@@ -733,7 +733,7 @@ class blueberryController extends blueberry
 	 * @param documentItem $oDocument
 	 * @return bool|void
 	 */
-	public function updateReadedCount(&$oData) {
+	public static function updateReadedCount(&$oData) {
 		// Pass if Crawler access
 		if (\Rhymix\Framework\UA::isRobot())
 		{

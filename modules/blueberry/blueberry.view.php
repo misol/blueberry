@@ -158,7 +158,7 @@ class blueberryView extends blueberry
 		// setup the sort index and order index
 		$args->sort_index = Context::get('sort_index');
 		$args->order_type = Context::get('order_type');
-		if(!in_array($args->sort_index, $this->order_target))
+		if(is_null($this->order_target) || (!is_null($this->order_target) && !in_array($args->sort_index, $this->order_target)))
 		{
 			$args->sort_index = $this->module_info->order_target?$this->module_info->order_target:'list_order';
 		}
